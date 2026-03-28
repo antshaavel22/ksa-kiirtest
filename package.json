@@ -1,0 +1,13 @@
+{
+  "name": "ksa-kiirtest",
+  "version": "1.0.0",
+  "description": "KSA Silmakeskus Quick Vision Test Quiz",
+  "scripts": {
+    "start": "npx serve public -p 5000",
+    "dev": "npx serve public -p 5000"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "serve": "^14.2.3"
+  }
+}

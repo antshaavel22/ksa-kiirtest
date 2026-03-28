@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="KSA Silmakeskuse kiirtest — uuri, kas oled sobiv Flow3 laserprotseduuri kandidaat. Vastata võtab alla 2 minuti.">
+  <title>Kiirtest — KSA Silmakeskus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2387be23'/%3E%3Ctext x='6' y='23' font-family='sans-serif' font-weight='700' font-size='16' fill='white'%3Eksa%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+
+<!-- ── Header ─────────────────────────────────── -->
+<header class="header">
+  <div class="header__inner">
+    <a href="https://ksa.ee" class="header__logo" aria-label="KSA Silmakeskus koduleht">
+      <svg height="38" viewBox="0 0 180 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- ksa wordmark -->
+        <text x="0" y="36" font-family="'Geist', -apple-system, sans-serif" font-size="38" font-weight="600" letter-spacing="-1" fill="#87be23">ksa</text>
+        <text x="2" y="47" font-family="'Geist', -apple-system, sans-serif" font-size="8.5" font-weight="500" letter-spacing="3.5" fill="#87be23">SILMAKESKUS</text>
+      </svg>
+    </a>
+    <div class="header__actions">
+      <nav class="lang-switch" aria-label="Keelevalik">
+        <a href="index.html" class="active" aria-current="page">ET</a>
+        <span class="sep">|</span>
+        <a href="ru.html">RU</a>
+        <span class="sep">|</span>
+        <a href="en.html">EN</a>
+      </nav>
+      <a href="https://my.ksa.ee/et/icb-service-page" class="btn-book" target="_blank" rel="noopener">
+        Broneeri aeg
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <path d="M2.5 6h7M6.5 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- ── Progress bar ───────────────────────────── -->
+<div class="progress-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="20" aria-label="Testi edenemisriba">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<!-- ── Quiz ───────────────────────────────────── -->
+<main class="quiz-page">
+  <div class="quiz-container">
+
+    <!-- Step indicator -->
+    <div class="step-indicator" id="stepIndicator" aria-live="polite">
+      Samm <strong>1</strong> / 5
+    </div>
+
+    <!-- Slides wrapper -->
+    <div class="quiz-slides" id="quizSlides">
+
+      <!-- ── Step 1: Gender ── -->
+      <div class="quiz-step active" id="step-1" data-step="1">
+        <h1 class="step-question">Ma olen…</h1>
+        <div class="option-grid option-grid--two" role="group" aria-label="Sugu">
+          <button class="opt-btn" data-value="Naine" onclick="selectOption(this, 1)">
+            <span class="opt-icon">♀</span>
+            <span>Naine</span>
+          </button>
+          <button class="opt-btn" data-value="Mees" onclick="selectOption(this, 1)">
+            <span class="opt-icon">♂</span>
+            <span>Mees</span>
+          </button>
+        </div>
+        <div class="quiz-nav">
+          <span></span>
+          <button class="btn-next" id="next-1" disabled onclick="goNext(1)">
+            Edasi
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 2: Age ── -->
+      <div class="quiz-step" id="step-2" data-step="2">
+        <h2 class="step-question">Minu vanus</h2>
+        <div class="option-grid" role="group" aria-label="Vanus">
+          <button class="opt-btn" data-value="18-25" onclick="selectOption(this, 2)">18–25</button>
+          <button class="opt-btn" data-value="26-35" onclick="selectOption(this, 2)">26–35</button>
+          <button class="opt-btn" data-value="36-45" onclick="selectOption(this, 2)">36–45</button>
+          <button class="opt-btn" data-value="46-55" onclick="selectOption(this, 2)">46–55</button>
+          <button class="opt-btn" data-value="56+" onclick="selectOption(this, 2)">56+</button>
+        </div>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goBack(2)">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Tagasi
+          </button>
+          <button class="btn-next" id="next-2" disabled onclick="goNext(2)">
+            Edasi
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 3: Vision problem ── -->
+      <div class="quiz-step" id="step-3" data-step="3">
+        <h2 class="step-question">Minu nägemisega…</h2>
+        <div class="option-grid" role="group" aria-label="Nägemisprobleemi tüüp">
+          <button class="opt-btn" data-value="Miinusprillid" onclick="selectOption(this, 3)">Kannan miinusprille</button>
+          <button class="opt-btn" data-value="Plussprillid" onclick="selectOption(this, 3)">Kannan plussprille</button>
+          <button class="opt-btn" data-value="Muu" onclick="selectOption(this, 3)">Muu nägemisravi</button>
+        </div>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goBack(3)">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Tagasi
+          </button>
+          <button class="btn-next" id="next-3" disabled onclick="goNext(3)">
+            Edasi
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 4: Prescription (only for miinus) ── -->
+      <div class="quiz-step" id="step-4" data-step="4">
+        <h2 class="step-question">Minu prillide tugevus</h2>
+        <p class="step-subtitle">Ligikaudne diopter piisab</p>
+        <div class="option-grid" role="group" aria-label="Prillide tugevus">
+          <button class="opt-btn" data-value="-0.5 kuni -3" onclick="selectOption(this, 4)">−0,5 kuni −3</button>
+          <button class="opt-btn" data-value="-3 kuni -6" onclick="selectOption(this, 4)">−3 kuni −6</button>
+          <button class="opt-btn" data-value="-6 kuni -9" onclick="selectOption(this, 4)">−6 kuni −9</button>
+          <button class="opt-btn" data-value="Rohkem kui -9" onclick="selectOption(this, 4)">Rohkem kui −9</button>
+          <button class="opt-btn" data-value="Ei tea" onclick="selectOption(this, 4)">Ei tea</button>
+        </div>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goBack(4)">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Tagasi
+          </button>
+          <button class="btn-next" id="next-4" disabled onclick="goNext(4)">
+            Edasi
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 5: Interest ── -->
+      <div class="quiz-step" id="step-5" data-step="5">
+        <h2 class="step-question">Kas oled mõelnud laserprotseduurile?</h2>
+        <div class="option-grid" role="group" aria-label="Huvi tase">
+          <button class="opt-btn" data-value="Jah, uurin aktiivselt" onclick="selectOption(this, 5)">Jah, uurin aktiivselt</button>
+          <button class="opt-btn" data-value="Olen mõelnud" onclick="selectOption(this, 5)">Olen mõelnud</button>
+          <button class="opt-btn" data-value="Alles uurin" onclick="selectOption(this, 5)">Alles uurin</button>
+        </div>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goBack(5)">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Tagasi
+          </button>
+          <button class="btn-next" id="next-5" disabled onclick="goNext(5)">
+            Vaata tulemust
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Result + Contact ── -->
+      <div class="quiz-step" id="step-result" data-step="result">
+
+        <!-- Result card -->
+        <div class="result-screen" id="resultDisplay" aria-live="polite"></div>
+
+        <!-- Divider -->
+        <div class="result-divider"></div>
+
+        <!-- Contact form -->
+        <div class="contact-section" id="contactSection">
+          <p class="contact-label">Personaalne tagasiside</p>
+          <h3 class="contact-title">Soovid personaalset tagasisidet?</h3>
+          <p class="contact-sub">Jäta oma andmed ja võtame sinuga ühendust.</p>
+
+          <form class="quiz-form" id="contactForm" novalidate>
+            <!-- Hidden Web3Forms fields -->
+            <input type="hidden" name="access_key" value="f56ae819-28ae-4b51-9177-120a7fe65863">
+            <input type="hidden" name="subject" value="Uus kiirtesti tulemus — KSA">
+            <input type="hidden" name="from_name" value="KSA Kiirtest">
+            <input type="hidden" name="ccemail" value="registreerumised@ksa.ee">
+            <input type="hidden" name="redirect" value="false">
+            <!-- Quiz answers (populated by JS) -->
+            <input type="hidden" name="gender" id="h_gender">
+            <input type="hidden" name="age" id="h_age">
+            <input type="hidden" name="vision_type" id="h_vision">
+            <input type="hidden" name="prescription" id="h_prescription">
+            <input type="hidden" name="interest_level" id="h_interest">
+            <input type="hidden" name="result" id="h_result">
+            <input type="hidden" name="language" value="ET">
+
+            <!-- User fields (all optional) -->
+            <div class="form-field">
+              <input type="text" name="name" placeholder="Eesnimi" autocomplete="given-name">
+            </div>
+            <div class="form-field">
+              <input type="tel" name="phone" placeholder="Telefon" autocomplete="tel">
+            </div>
+            <div class="form-field">
+              <input type="email" name="email" placeholder="E-post" autocomplete="email">
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">
+              <span class="btn-label">Saada</span>
+              <div class="spinner"></div>
+            </button>
+
+            <p class="form-privacy">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <path d="M6 1L2 3v3c0 2.5 1.8 4.7 4 5 2.2-.3 4-2.5 4-5V3L6 1z" stroke="#9a9a9a" stroke-width="1" fill="none"/>
+                <path d="M4 6l1.5 1.5L8 4.5" stroke="#9a9a9a" stroke-width="1" stroke-linecap="round"/>
+              </svg>
+              Sinu andmed on kaitstud. Kasutame neid ainult sinuga ühenduse võtmiseks.
+            </p>
+          </form>
+        </div>
+
+        <!-- Thank you state (hidden until submit) -->
+        <div class="thankyou-state" id="thankyouState" style="display:none;">
+          <div class="thankyou-icon">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+              <path d="M6 14l5 5 11-11" stroke="#87be23" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3 class="thankyou-title">Täname! Võtame sinuga peagi ühendust.</h3>
+          <p class="thankyou-text">Meie tiim vaatab sinu andmed üle ja võtab ühendust esimesel võimalusel.</p>
+          <a href="https://my.ksa.ee/et/icb-service-page" class="btn-cta-book" target="_blank" rel="noopener">
+            Broneeri aeg kohe
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+
+        <!-- Back button -->
+        <div style="margin-top: var(--space-8); text-align:center;">
+          <button class="btn-back" onclick="restartQuiz()" style="margin: 0 auto;">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Alusta uuesti
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /quiz-slides -->
+  </div><!-- /quiz-container -->
+
+  <!-- ── Stats bar ─────────────────────────────── -->
+  <div class="stats-bar" role="region" aria-label="KSA statistika">
+    <div class="stats-inner">
+      <div class="stat-item">
+        <div class="stat-number">55 000+</div>
+        <div class="stat-label">laserprotseduuri</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">300 000+</div>
+        <div class="stat-label">silmauuringut</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">7-aastane</div>
+        <div class="stat-label">garantii</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">Patenditud</div>
+        <div class="stat-label">tehnoloogia</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  // ── State ────────────────────────────────────────
+  const answers = { gender: '', age: '', vision: '', prescription: '', interest: '' };
+  let currentStep = 1;
+  let skippedStep4 = false;
+
+  // Step sequence management
+  function getStepSequence() {
+    if (answers.vision === 'Miinusprillid') {
+      return [1, 2, 3, 4, 5];
+    }
+    return [1, 2, 3, 5]; // skip step 4 for non-miinus
+  }
+
+  function getNextStep(current) {
+    const seq = getStepSequence();
+    const idx = seq.indexOf(current);
+    if (idx === -1 || idx >= seq.length - 1) return 'result';
+    return seq[idx + 1];
+  }
+
+  function getPrevStep(current) {
+    if (current === 'result') {
+      const seq = getStepSequence();
+      return seq[seq.length - 1];
+    }
+    const seq = getStepSequence();
+    const idx = seq.indexOf(current);
+    if (idx <= 0) return 1;
+    return seq[idx - 1];
+  }
+
+  // ── Progress ──────────────────────────────────────
+  function updateProgress(step) {
+    const totalSteps = 5;
+    const stepNum = (step === 'result') ? totalSteps + 1 : getStepSequence().indexOf(step) + 1;
+    const pct = step === 'result' ? 100 : Math.round((stepNum / totalSteps) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.querySelector('[aria-valuenow]').setAttribute('aria-valuenow', pct);
+
+    const ind = document.getElementById('stepIndicator');
+    if (step === 'result') {
+      ind.innerHTML = 'Tulemus';
+    } else {
+      const displayNum = getStepSequence().indexOf(step) + 1;
+      const totalDisplay = getStepSequence().length;
+      ind.innerHTML = `Samm <strong>${displayNum}</strong> / ${totalDisplay}`;
+    }
+  }
+
+  // ── Select option ─────────────────────────────────
+  function selectOption(btn, step) {
+    const grid = btn.closest('.option-grid');
+    grid.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+
+    const val = btn.dataset.value;
+    if (step === 1) answers.gender = val;
+    if (step === 2) answers.age = val;
+    if (step === 3) { answers.vision = val; answers.prescription = ''; }
+    if (step === 4) answers.prescription = val;
+    if (step === 5) answers.interest = val;
+
+    const nextBtn = document.getElementById(`next-${step}`);
+    if (nextBtn) nextBtn.disabled = false;
+  }
+
+  // ── Navigate forward ──────────────────────────────
+  function goNext(fromStep) {
+    const toStep = getNextStep(fromStep);
+    transitionTo(fromStep, toStep);
+  }
+
+  function goBack(fromStep) {
+    const toStep = getPrevStep(fromStep);
+    transitionTo(fromStep, toStep, true);
+  }
+
+  function restartQuiz() {
+    // Reset state
+    Object.keys(answers).forEach(k => answers[k] = '');
+    currentStep = 1;
+    document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('.btn-next').forEach(b => b.disabled = true);
+    transitionTo('result', 1, true);
+    // Reset contact form visibility
+    document.getElementById('contactSection').style.display = '';
+    document.getElementById('thankyouState').style.display = 'none';
+    document.getElementById('contactForm').reset();
+  }
+
+  function transitionTo(fromStep, toStep, reverse = false) {
+    const fromEl = document.getElementById(`step-${fromStep}`);
+    const toEl = document.getElementById(`step-${toStep}`);
+
+    if (!fromEl || !toEl) return;
+
+    // Update active class
+    fromEl.classList.remove('active');
+    toEl.classList.add('active');
+
+    // Exit current
+    fromEl.style.transform = reverse ? 'translateX(40px)' : 'translateX(-40px)';
+    fromEl.style.opacity = '0';
+    fromEl.style.pointerEvents = 'none';
+    fromEl.style.position = 'absolute';
+
+    // Prepare incoming
+    toEl.style.position = 'relative';
+    toEl.style.transform = reverse ? 'translateX(-40px)' : 'translateX(40px)';
+    toEl.style.opacity = '0';
+    toEl.style.pointerEvents = 'none';
+
+    // Force reflow
+    toEl.offsetHeight;
+
+    // Animate in
+    requestAnimationFrame(() => {
+      toEl.style.transition = 'opacity 220ms cubic-bezier(0.25,0.46,0.45,0.94), transform 220ms cubic-bezier(0.25,0.46,0.45,0.94)';
+      toEl.style.transform = 'translateX(0)';
+      toEl.style.opacity = '1';
+      toEl.style.pointerEvents = 'all';
+
+      // Clean up from
+      setTimeout(() => {
+        fromEl.style.cssText = '';
+        fromEl.style.position = 'absolute';
+        fromEl.style.opacity = '0';
+        fromEl.style.transform = 'translateX(40px)';
+        fromEl.style.pointerEvents = 'none';
+      }, 230);
+    });
+
+    currentStep = toStep;
+
+    if (toStep === 'result') {
+      showResult();
+    }
+
+    updateProgress(toStep);
+  }
+
+  // ── Result logic ──────────────────────────────────
+  function showResult() {
+    const age = answers.age;
+    const vision = answers.vision;
+    const presc = answers.prescription;
+
+    const youngAges = ['18-25', '26-35', '36-45'];
+    const isYoung = youngAges.includes(age);
+    const isMiinus = vision === 'Miinusprillid';
+    const isHighPresc = presc === 'Rohkem kui -9';
+    const isPlus = vision === 'Plussprillid';
+    const isOld = age === '46-55' || age === '56+';
+
+    let resultType, resultLabel, resultIcon, resultTitle, resultText;
+
+    if (isYoung && isMiinus && !isHighPresc) {
+      // Good candidate
+      resultType = 'good';
+      resultLabel = 'Suurepärane uudis';
+      resultIcon = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-label="Linnuke"><path d="M6 16l7 7 13-13" stroke="#87be23" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      resultTitle = 'Sa oled tõenäoliselt sobiv Flow3 kandidaat.';
+      resultText = 'Sinu vanus ja nägemisretsept vastavad Flow3 laserprotseduuri tingimustele. Kiirtesti täitjana on Flow3 silmauuring sulle vaid <strong>19&nbsp;€</strong> (tavahind 69&nbsp;€). Uuringul hindame täpselt sinu silmade sobivust.';
+    } else if (isOld || isPlus) {
+      // Age/type mismatch
+      resultType = 'info';
+      resultLabel = 'Isiklik soovitus';
+      resultIcon = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-label="Info"><circle cx="16" cy="16" r="13" stroke="#5a6b6c" stroke-width="1.5" fill="none"/><path d="M16 14v8M16 11v1" stroke="#5a6b6c" stroke-width="2" stroke-linecap="round"/></svg>`;
+      resultTitle = 'Flow3 ei pruugi olla parim valik, aga abi leiame.';
+      resultText = 'Flow3 protseduur on mõeldud 18–45-aastastele miinusprillide kandjatele. Soovitame konsultatsiooni meie optometristiga — leiame sobiva lahenduse just sinu silmade jaoks.';
+    } else if (isHighPresc) {
+      // High prescription
+      resultType = 'info';
+      resultLabel = 'Lisauuringut vajav';
+      resultIcon = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-label="Info"><circle cx="16" cy="16" r="13" stroke="#5a6b6c" stroke-width="1.5" fill="none"/><path d="M16 14v8M16 11v1" stroke="#5a6b6c" stroke-width="2" stroke-linecap="round"/></svg>`;
+      resultTitle = 'Tugev retsept vajab lisauuringut.';
+      resultText = 'Kõrgema miinusega silmade puhul on vajalik põhjalikum diagnostiline uuring enne sobivuse kinnitamist. Broneeri konsultatsioon — me selgitame välja parimad võimalused.';
+    } else {
+      // Default / other
+      resultType = 'info';
+      resultLabel = 'Konsultatsiooni soovitus';
+      resultIcon = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-label="Info"><circle cx="16" cy="16" r="13" stroke="#5a6b6c" stroke-width="1.5" fill="none"/><path d="M16 14v8M16 11v1" stroke="#5a6b6c" stroke-width="2" stroke-linecap="round"/></svg>`;
+      resultTitle = 'Broneeri tasuta konsultatsioon.';
+      resultText = 'Sinu vastuste põhjal soovitame isiklikku konsultatsiooni, kus saame anda täpsema hinnangu sinu nägemise kohta.';
+    }
+
+    // Store result string
+    answers.resultType = resultType;
+    const resultString = resultTitle;
+    document.getElementById('h_result').value = resultString;
+
+    const display = document.getElementById('resultDisplay');
+    display.innerHTML = `
+      <div class="result-icon result-icon--${resultType === 'good' ? 'good' : 'info'}" aria-hidden="true">
+        ${resultIcon}
+      </div>
+      <p class="result-label ${resultType !== 'good' ? 'result-label--info' : ''}">${resultLabel}</p>
+      <h2 class="result-title">${resultTitle}</h2>
+      <p class="result-text">${resultText}</p>
+      ${resultType === 'good' ? `
+        <div class="price-offer" style="margin-top: var(--space-6); padding: var(--space-4) var(--space-6); background: rgba(135,190,35,0.08); border-radius: 8px; text-align: center;">
+          <p style="margin: 0 0 4px; font-size: var(--text-sm); color: var(--color-text-secondary);">Flow3 silmauuring kiirtesti täitjale</p>
+          <p style="margin: 0; font-size: var(--text-xl); font-weight: 600; color: var(--color-text); letter-spacing: -0.02em;">19 € <span style="font-size: var(--text-sm); font-weight: 400; color: var(--color-text-muted); text-decoration: line-through;">69 €</span></p>
+        </div>
+      ` : `
+        <a href="https://my.ksa.ee/et/icb-service-page" class="btn-cta-book" target="_blank" rel="noopener" style="margin-top: var(--space-6); display:inline-flex;">
+          Broneeri konsultatsioon
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      `}
+    `;
+  }
+
+  // ── Form submission ───────────────────────────────
+  document.getElementById('contactForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    // Populate hidden answer fields
+    document.getElementById('h_gender').value = answers.gender;
+    document.getElementById('h_age').value = answers.age;
+    document.getElementById('h_vision').value = answers.vision;
+    document.getElementById('h_prescription').value = answers.prescription || 'N/A';
+    document.getElementById('h_interest').value = answers.interest;
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.classList.add('loading');
+
+    try {
+      const formData = new FormData(this);
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formData
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        document.getElementById('contactSection').style.display = 'none';
+        document.getElementById('thankyouState').style.display = 'block';
+        document.querySelector('.result-divider').style.display = 'none';
+      } else {
+        throw new Error('Submission failed');
+      }
+    } catch (err) {
+      btn.disabled = false;
+      btn.classList.remove('loading');
+      // Fallback: mailto
+      const name = this.querySelector('[name="name"]').value || '';
+      const phone = this.querySelector('[name="phone"]').value || '';
+      const email = this.querySelector('[name="email"]').value || '';
+      const body = `Nimi: ${name}\nTelefon: ${phone}\nEmail: ${email}\n\nVastused:\nSugu: ${answers.gender}\nVanus: ${answers.age}\nNägemine: ${answers.vision}\nRetsept: ${answers.prescription}\nHuvi: ${answers.interest}`;
+      window.location.href = `mailto:registreerumised@ksa.ee?subject=Uus%20kiirtesti%20tulemus&body=${encodeURIComponent(body)}`;
+    }
+  });
+
+  // ── Init ──────────────────────────────────────────
+  updateProgress(1);
+
+  // Ensure all non-active steps are hidden
+  document.querySelectorAll('.quiz-step:not(.active)').forEach(s => {
+    s.style.position = 'absolute';
+    s.style.opacity = '0';
+    s.style.transform = 'translateX(40px)';
+    s.style.pointerEvents = 'none';
+  });
+</script>
+
+</body>
+</html>

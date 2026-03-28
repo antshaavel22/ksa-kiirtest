@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="KSA Silmakeskus quick vision test — find out if you're a suitable candidate for Flow3 laser surgery. Takes under 2 minutes.">
+  <title>Quick Vision Test — KSA Silmakeskus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2387be23'/%3E%3Ctext x='6' y='23' font-family='sans-serif' font-weight='700' font-size='16' fill='white'%3Eksa%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+
+<!-- ── Header ─────────────────────────────────── -->
+<header class="header">
+  <div class="header__inner">
+    <a href="https://ksa.ee" class="header__logo" aria-label="KSA Silmakeskus website">
+      <svg height="38" viewBox="0 0 180 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <text x="0" y="36" font-family="'Geist', -apple-system, sans-serif" font-size="38" font-weight="600" letter-spacing="-1" fill="#87be23">ksa</text>
+        <text x="2" y="47" font-family="'Geist', -apple-system, sans-serif" font-size="8.5" font-weight="500" letter-spacing="3.5" fill="#87be23">SILMAKESKUS</text>
+      </svg>
+    </a>
+    <div class="header__actions">
+      <nav class="lang-switch" aria-label="Language selection">
+        <a href="index.html">ET</a>
+        <span class="sep">|</span>
+        <a href="ru.html">RU</a>
+        <span class="sep">|</span>
+        <a href="en.html" class="active" aria-current="page">EN</a>
+      </nav>
+      <a href="https://my.ksa.ee/et/icb-service-page" class="btn-book" target="_blank" rel="noopener">
+        Book a time
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <path d="M2.5 6h7M6.5 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- ── Progress bar ───────────────────────────── -->
+<div class="progress-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="20" aria-label="Quiz progress">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<!-- ── Quiz ───────────────────────────────────── -->
+<main class="quiz-page">
+  <div class="quiz-container">
+
+    <div class="step-indicator" id="stepIndicator" aria-live="polite">
+      Step <strong>1</strong> of 5
+    </div>
+
+    <div class="quiz-slides" id="quizSlides">
+
+      <!-- ── Step 1: Gender ── -->
+      <div class="quiz-step active" id="step-1" data-step="1">
+        <h1 class="step-question">I am…</h1>
+        <div class="option-grid option-grid--two" role="group" aria-label="Gender">
+          <button class="opt-btn" data-value="Female" onclick="selectOption(this, 1)">
+            <span class="opt-icon">♀</span>
+            <span>Female</span>
+          </button>
+          <button class="opt-btn" data-value="Male" onclick="selectOption(this, 1)">
+            <span class="opt-icon">♂</span>
+            <span>Male</span>
+          </button>
+        </div>
+        <div class="quiz-nav">
+          <span></span>
+          <button class="btn-next" id="next-1" disabled onclick="goNext(1)">
+            Continue
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 2: Age ── -->
+      <div class="quiz-step" id="step-2" data-step="2">
+        <h2 class="step-question">My age</h2>
+        <div class="option-grid" role="group" aria-label="Age group">
+          <button class="opt-btn" data-value="18-25" onclick="selectOption(this, 2)">18–25</button>
+          <button class="opt-btn" data-value="26-35" onclick="selectOption(this, 2)">26–35</button>
+          <button class="opt-btn" data-value="36-45" onclick="selectOption(this, 2)">36–45</button>
+          <button class="opt-btn" data-value="46-55" onclick="selectOption(this, 2)">46–55</button>
+          <button class="opt-btn" data-value="56+" onclick="selectOption(this, 2)">56+</button>
+        </div>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goBack(2)">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Back
+          </button>
+          <button class="btn-next" id="next-2" disabled onclick="goNext(2)">
+            Continue
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 3: Vision ── -->
+      <div class="quiz-step" id="step-3" data-step="3">
+        <h2 class="step-question">My vision…</h2>
+        <div class="option-grid" role="group" aria-label="Vision type">
+          <button class="opt-btn" data-value="Minus glasses" onclick="selectOption(this, 3)">I wear minus glasses</button>
+          <button class="opt-btn" data-value="Plus glasses" onclick="selectOption(this, 3)">I wear plus glasses</button>
+          <button class="opt-btn" data-value="Other" onclick="selectOption(this, 3)">Other vision needs</button>
+        </div>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goBack(3)">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Back
+          </button>
+          <button class="btn-next" id="next-3" disabled onclick="goNext(3)">
+            Continue
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 4: Prescription ── -->
+      <div class="quiz-step" id="step-4" data-step="4">
+        <h2 class="step-question">My prescription strength</h2>
+        <p class="step-subtitle">An approximate value is fine</p>
+        <div class="option-grid" role="group" aria-label="Prescription strength">
+          <button class="opt-btn" data-value="-0.5 to -3" onclick="selectOption(this, 4)">−0.5 to −3</button>
+          <button class="opt-btn" data-value="-3 to -6" onclick="selectOption(this, 4)">−3 to −6</button>
+          <button class="opt-btn" data-value="-6 to -9" onclick="selectOption(this, 4)">−6 to −9</button>
+          <button class="opt-btn" data-value="More than -9" onclick="selectOption(this, 4)">More than −9</button>
+          <button class="opt-btn" data-value="Not sure" onclick="selectOption(this, 4)">Not sure</button>
+        </div>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goBack(4)">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Back
+          </button>
+          <button class="btn-next" id="next-4" disabled onclick="goNext(4)">
+            Continue
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 5: Interest ── -->
+      <div class="quiz-step" id="step-5" data-step="5">
+        <h2 class="step-question">Have you considered laser surgery?</h2>
+        <div class="option-grid" role="group" aria-label="Interest level">
+          <button class="opt-btn" data-value="Yes, actively researching" onclick="selectOption(this, 5)">Yes, actively researching</button>
+          <button class="opt-btn" data-value="I've thought about it" onclick="selectOption(this, 5)">I've thought about it</button>
+          <button class="opt-btn" data-value="Just exploring" onclick="selectOption(this, 5)">Just exploring</button>
+        </div>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goBack(5)">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Back
+          </button>
+          <button class="btn-next" id="next-5" disabled onclick="goNext(5)">
+            See my result
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Result + Contact ── -->
+      <div class="quiz-step" id="step-result" data-step="result">
+
+        <div class="result-screen" id="resultDisplay" aria-live="polite"></div>
+
+        <div class="result-divider"></div>
+
+        <div class="contact-section" id="contactSection">
+          <p class="contact-label">Personalised feedback</p>
+          <h3 class="contact-title">Would you like personalised feedback?</h3>
+          <p class="contact-sub">Leave your details and we'll be in touch.</p>
+
+          <form class="quiz-form" id="contactForm" novalidate>
+            <input type="hidden" name="access_key" value="f56ae819-28ae-4b51-9177-120a7fe65863">
+            <input type="hidden" name="subject" value="New quick test result — KSA">
+            <input type="hidden" name="from_name" value="KSA Kiirtest (EN)">
+            <input type="hidden" name="ccemail" value="registreerumised@ksa.ee">
+            <input type="hidden" name="redirect" value="false">
+            <input type="hidden" name="gender" id="h_gender">
+            <input type="hidden" name="age" id="h_age">
+            <input type="hidden" name="vision_type" id="h_vision">
+            <input type="hidden" name="prescription" id="h_prescription">
+            <input type="hidden" name="interest_level" id="h_interest">
+            <input type="hidden" name="result" id="h_result">
+            <input type="hidden" name="language" value="EN">
+
+            <div class="form-field">
+              <input type="text" name="name" placeholder="First name" autocomplete="given-name">
+            </div>
+            <div class="form-field">
+              <input type="tel" name="phone" placeholder="Phone number" autocomplete="tel">
+            </div>
+            <div class="form-field">
+              <input type="email" name="email" placeholder="Email address" autocomplete="email">
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">
+              <span class="btn-label">Send</span>
+              <div class="spinner"></div>
+            </button>
+
+            <p class="form-privacy">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <path d="M6 1L2 3v3c0 2.5 1.8 4.7 4 5 2.2-.3 4-2.5 4-5V3L6 1z" stroke="#9a9a9a" stroke-width="1" fill="none"/>
+                <path d="M4 6l1.5 1.5L8 4.5" stroke="#9a9a9a" stroke-width="1" stroke-linecap="round"/>
+              </svg>
+              Your data is protected. We use it solely to contact you.
+            </p>
+          </form>
+        </div>
+
+        <div class="thankyou-state" id="thankyouState" style="display:none;">
+          <div class="thankyou-icon">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+              <path d="M6 14l5 5 11-11" stroke="#87be23" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3 class="thankyou-title">Thank you! We'll be in touch shortly.</h3>
+          <p class="thankyou-text">Our team will review your details and get in touch at the earliest opportunity.</p>
+          <a href="https://my.ksa.ee/et/icb-service-page" class="btn-cta-book" target="_blank" rel="noopener">
+            Book your appointment
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+
+        <div style="margin-top: var(--space-8); text-align:center;">
+          <button class="btn-back" onclick="restartQuiz()" style="margin: 0 auto;">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Start over
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Stats bar ─────────────────────────────── -->
+  <div class="stats-bar" role="region" aria-label="KSA statistics">
+    <div class="stats-inner">
+      <div class="stat-item">
+        <div class="stat-number">55,000+</div>
+        <div class="stat-label">laser procedures</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">300,000+</div>
+        <div class="stat-label">eye examinations</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">7-year</div>
+        <div class="stat-label">guarantee</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">Patented</div>
+        <div class="stat-label">technology</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  const answers = { gender: '', age: '', vision: '', prescription: '', interest: '' };
+  let currentStep = 1;
+
+  function getStepSequence() {
+    if (answers.vision === 'Minus glasses') return [1, 2, 3, 4, 5];
+    return [1, 2, 3, 5];
+  }
+  function getNextStep(current) {
+    const seq = getStepSequence();
+    const idx = seq.indexOf(current);
+    if (idx === -1 || idx >= seq.length - 1) return 'result';
+    return seq[idx + 1];
+  }
+  function getPrevStep(current) {
+    if (current === 'result') { const seq = getStepSequence(); return seq[seq.length - 1]; }
+    const seq = getStepSequence();
+    const idx = seq.indexOf(current);
+    if (idx <= 0) return 1;
+    return seq[idx - 1];
+  }
+
+  function updateProgress(step) {
+    const seq = getStepSequence();
+    const pct = step === 'result' ? 100 : Math.round(((seq.indexOf(step) + 1) / seq.length) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.querySelector('[aria-valuenow]').setAttribute('aria-valuenow', pct);
+    const ind = document.getElementById('stepIndicator');
+    if (step === 'result') { ind.innerHTML = 'Your result'; }
+    else { ind.innerHTML = `Step <strong>${seq.indexOf(step) + 1}</strong> of ${seq.length}`; }
+  }
+
+  function selectOption(btn, step) {
+    btn.closest('.option-grid').querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    const val = btn.dataset.value;
+    if (step === 1) answers.gender = val;
+    if (step === 2) answers.age = val;
+    if (step === 3) { answers.vision = val; answers.prescription = ''; }
+    if (step === 4) answers.prescription = val;
+    if (step === 5) answers.interest = val;
+    const nextBtn = document.getElementById(`next-${step}`);
+    if (nextBtn) nextBtn.disabled = false;
+  }
+
+  function goNext(from) { transitionTo(from, getNextStep(from)); }
+  function goBack(from) { transitionTo(from, getPrevStep(from), true); }
+  function restartQuiz() {
+    Object.keys(answers).forEach(k => answers[k] = '');
+    currentStep = 1;
+    document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('.btn-next').forEach(b => b.disabled = true);
+    transitionTo('result', 1, true);
+    document.getElementById('contactSection').style.display = '';
+    document.getElementById('thankyouState').style.display = 'none';
+    document.getElementById('contactForm').reset();
+  }
+
+  function transitionTo(fromStep, toStep, reverse = false) {
+    const fromEl = document.getElementById(`step-${fromStep}`);
+    const toEl = document.getElementById(`step-${toStep}`);
+    if (!fromEl || !toEl) return;
+
+    fromEl.classList.remove('active');
+    toEl.classList.add('active');
+
+    fromEl.style.transform = reverse ? 'translateX(40px)' : 'translateX(-40px)';
+    fromEl.style.opacity = '0';
+    fromEl.style.pointerEvents = 'none';
+    fromEl.style.position = 'absolute';
+
+    toEl.style.position = 'relative';
+    toEl.style.transform = reverse ? 'translateX(-40px)' : 'translateX(40px)';
+    toEl.style.opacity = '0';
+    toEl.style.pointerEvents = 'none';
+    toEl.offsetHeight;
+
+    requestAnimationFrame(() => {
+      toEl.style.transition = 'opacity 220ms cubic-bezier(0.25,0.46,0.45,0.94), transform 220ms cubic-bezier(0.25,0.46,0.45,0.94)';
+      toEl.style.transform = 'translateX(0)';
+      toEl.style.opacity = '1';
+      toEl.style.pointerEvents = 'all';
+      setTimeout(() => {
+        fromEl.style.cssText = '';
+        fromEl.style.position = 'absolute';
+        fromEl.style.opacity = '0';
+        fromEl.style.transform = 'translateX(40px)';
+        fromEl.style.pointerEvents = 'none';
+      }, 230);
+    });
+
+    currentStep = toStep;
+    if (toStep === 'result') showResult();
+    updateProgress(toStep);
+  }
+
+  function showResult() {
+    const youngAges = ['18-25', '26-35', '36-45'];
+    const isYoung = youngAges.includes(answers.age);
+    const isMiinus = answers.vision === 'Minus glasses';
+    const isHighPresc = answers.prescription === 'More than -9';
+    const isOld = answers.age === '46-55' || answers.age === '56+';
+    const isPlus = answers.vision === 'Plus glasses';
+
+    let resultType, resultLabel, resultIcon, resultTitle, resultText;
+
+    if (isYoung && isMiinus && !isHighPresc) {
+      resultType = 'good';
+      resultLabel = 'Excellent news';
+      resultIcon = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M6 16l7 7 13-13" stroke="#87be23" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      resultTitle = 'You are likely a suitable candidate for Flow3.';
+      resultText = 'Your age and prescription align with the requirements for Flow3 laser surgery. The next step is a free initial consultation, where we will assess your eyes in detail.';
+    } else if (isOld || isPlus) {
+      resultType = 'info';
+      resultLabel = 'Personal recommendation';
+      resultIcon = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="13" stroke="#5a6b6c" stroke-width="1.5" fill="none"/><path d="M16 14v8M16 11v1" stroke="#5a6b6c" stroke-width="2" stroke-linecap="round"/></svg>`;
+      resultTitle = 'Flow3 may not be the right fit, but we can help.';
+      resultText = 'The Flow3 procedure is designed for patients aged 18–45 with myopia. We recommend a consultation with our optometrist — we\'ll find the best solution for your eyes.';
+    } else if (isHighPresc) {
+      resultType = 'info';
+      resultLabel = 'Further assessment needed';
+      resultIcon = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="13" stroke="#5a6b6c" stroke-width="1.5" fill="none"/><path d="M16 14v8M16 11v1" stroke="#5a6b6c" stroke-width="2" stroke-linecap="round"/></svg>`;
+      resultTitle = 'A strong prescription requires a closer look.';
+      resultText = 'Higher prescriptions require more detailed diagnostic testing before suitability can be confirmed. Book a consultation — we\'ll find the best path forward for you.';
+    } else {
+      resultType = 'info';
+      resultLabel = 'Consultation recommended';
+      resultIcon = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="13" stroke="#5a6b6c" stroke-width="1.5" fill="none"/><path d="M16 14v8M16 11v1" stroke="#5a6b6c" stroke-width="2" stroke-linecap="round"/></svg>`;
+      resultTitle = 'Book a free consultation.';
+      resultText = 'Based on your answers, a personal consultation would give you the most accurate assessment of your suitability for laser surgery.';
+    }
+
+    document.getElementById('h_result').value = resultTitle;
+    document.getElementById('resultDisplay').innerHTML = `
+      <div class="result-icon result-icon--${resultType === 'good' ? 'good' : 'info'}" aria-hidden="true">${resultIcon}</div>
+      <p class="result-label ${resultType !== 'good' ? 'result-label--info' : ''}">${resultLabel}</p>
+      <h2 class="result-title">${resultTitle}</h2>
+      <p class="result-text">${resultText}</p>
+      ${resultType !== 'good' ? `<a href="https://my.ksa.ee/et/icb-service-page" class="btn-cta-book" target="_blank" rel="noopener" style="margin-top:var(--space-6);display:inline-flex;">Book a consultation <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="margin-left:6px"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>` : ''}
+    `;
+  }
+
+  document.getElementById('contactForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    document.getElementById('h_gender').value = answers.gender;
+    document.getElementById('h_age').value = answers.age;
+    document.getElementById('h_vision').value = answers.vision;
+    document.getElementById('h_prescription').value = answers.prescription || 'N/A';
+    document.getElementById('h_interest').value = answers.interest;
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true; btn.classList.add('loading');
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: new FormData(this) });
+      const data = await res.json();
+      if (data.success) {
+        document.getElementById('contactSection').style.display = 'none';
+        document.getElementById('thankyouState').style.display = 'block';
+        document.querySelector('.result-divider').style.display = 'none';
+      } else throw new Error();
+    } catch {
+      btn.disabled = false; btn.classList.remove('loading');
+      const n = this.querySelector('[name="name"]').value || '';
+      const p = this.querySelector('[name="phone"]').value || '';
+      const em = this.querySelector('[name="email"]').value || '';
+      window.location.href = `mailto:registreerumised@ksa.ee?subject=KSA%20Quick%20Test%20Result&body=${encodeURIComponent(`Name: ${n}\nPhone: ${p}\nEmail: ${em}\n\nGender: ${answers.gender}\nAge: ${answers.age}\nVision: ${answers.vision}\nPrescription: ${answers.prescription}\nInterest: ${answers.interest}`)}`;
+    }
+  });
+
+  updateProgress(1);
+  document.querySelectorAll('.quiz-step:not(.active)').forEach(s => {
+    s.style.position = 'absolute'; s.style.opacity = '0';
+    s.style.transform = 'translateX(40px)'; s.style.pointerEvents = 'none';
+  });
+</script>
+</body>
+</html>

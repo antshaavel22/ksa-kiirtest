@@ -25,6 +25,23 @@ gtag("config", "AW-18030087653");
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2387be23'/%3E%3Ctext x='6' y='23' font-family='sans-serif' font-weight='700' font-size='16' fill='white'%3Eksa%3C/text%3E%3C/svg%3E">
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '116445785392738');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
 </head>
 <body>
 <!-- Google Tag Manager (noscript) -->
@@ -592,6 +609,8 @@ gtag("config", "AW-18030087653");
       // Fire Google Ads conversion event
       if (typeof gtag !== 'undefined') {
         gtag('event', 'conversion', {'send_to': 'AW-18030087653/lXXnCMHKwI8cEOWbtZVD'});
+      // Meta Pixel: Lead
+      if (typeof fbq !== 'undefined') { fbq('track', 'Lead'); }
       }
       // Fire GTM conversion event
       window.dataLayer = window.dataLayer || [];

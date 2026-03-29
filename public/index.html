@@ -458,7 +458,7 @@
       resultLabel = 'Suurepärane uudis';
       resultIcon = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-label="Linnuke"><path d="M6 16l7 7 13-13" stroke="#87be23" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
       resultTitle = 'Sa oled tõenäoliselt sobiv Flow3 kandidaat.';
-      resultText = 'Sinu vanus ja nägemisretsept vastavad Flow3 laserprotseduuri tingimustele. Kiirtesti täitjana on Flow3 silmauuring sulle vaid <strong>19&nbsp;€</strong> (tavahind 69&nbsp;€). Uuringul hindame täpselt sinu silmade sobivust.';
+      resultText = 'Sinu vanus ja nägemisretsept vastavad Flow3 laserprotseduuri tingimustele. Uuringul hindame täpselt sinu silmade sobivust.';
     } else if (isOld || isPlus) {
       // Age/type mismatch
       resultType = 'info';
@@ -497,8 +497,9 @@
       <p class="result-text">${resultText}</p>
       ${resultType === 'good' ? `
         <div class="price-offer" style="margin-top: var(--space-6); padding: var(--space-4) var(--space-6); background: rgba(135,190,35,0.08); border-radius: 8px; text-align: center;">
-          <p style="margin: 0 0 4px; font-size: var(--text-sm); color: var(--color-text-secondary);">Flow3 silmauuring kiirtesti täitjale</p>
-          <p style="margin: 0; font-size: var(--text-xl); font-weight: 600; color: var(--color-text); letter-spacing: -0.02em;">19 € <span style="font-size: var(--text-sm); font-weight: 400; color: var(--color-text-muted); text-decoration: line-through;">69 €</span></p>
+          <p style="margin: 0 0 4px; font-size: var(--text-sm); color: var(--color-text-secondary);">Flow3 silmauuring kiirtesti täitjatele vaid täna</p>
+          <p style="margin: 0; font-size: var(--text-xl); font-weight: 600; color: var(--color-text); letter-spacing: -0.02em;">39 € <span style="font-size: var(--text-sm); font-weight: 400; color: var(--color-text-muted); text-decoration: line-through;">69 €</span></p>
+          <p style="margin: 4px 0 0; font-size: var(--text-sm); color: var(--color-accent); font-weight: 500;">Sooduskood: KT-3</p>
         </div>
       ` : `
         <a href="https://my.ksa.ee/et/icb-service-page" class="btn-cta-book" target="_blank" rel="noopener" style="margin-top: var(--space-6); display:inline-flex;">

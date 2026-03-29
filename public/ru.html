@@ -395,7 +395,7 @@
       resultLabel = 'Отличные новости';
       resultIcon = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M6 16l7 7 13-13" stroke="#87be23" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
       resultTitle = 'Вы, скорее всего, подходящий кандидат для Flow3.';
-      resultText = 'Ваш возраст и рецепт соответствуют условиям процедуры Flow3. Следующий шаг — бесплатная первичная консультация, где мы точно оценим состояние ваших глаз.';
+      resultText = 'Ваш возраст и рецепт соответствуют условиям процедуры Flow3. На обследовании мы точно оценим состояние ваших глаз.';
     } else if (isOld || isPlus) {
       resultType = 'info';
       resultLabel = 'Личная рекомендация';
@@ -422,7 +422,13 @@
       <p class="result-label ${resultType !== 'good' ? 'result-label--info' : ''}">${resultLabel}</p>
       <h2 class="result-title">${resultTitle}</h2>
       <p class="result-text">${resultText}</p>
-      ${resultType !== 'good' ? `<a href="https://my.ksa.ee/et/icb-service-page" class="btn-cta-book" target="_blank" rel="noopener" style="margin-top:var(--space-6);display:inline-flex;">Записаться на консультацию <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="margin-left:6px"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>` : ''}
+      ${resultType === 'good' ? `
+        <div class="price-offer" style="margin-top: var(--space-6); padding: var(--space-4) var(--space-6); background: rgba(135,190,35,0.08); border-radius: 8px; text-align: center;">
+          <p style="margin: 0 0 4px; font-size: var(--text-sm); color: var(--color-text-secondary);">Flow3 обследование для участников теста — только сегодня</p>
+          <p style="margin: 0; font-size: var(--text-xl); font-weight: 600; color: var(--color-text); letter-spacing: -0.02em;">39 € <span style="font-size: var(--text-sm); font-weight: 400; color: var(--color-text-muted); text-decoration: line-through;">69 €</span></p>
+          <p style="margin: 4px 0 0; font-size: var(--text-sm); color: var(--color-accent); font-weight: 500;">Промокод: KT-3</p>
+        </div>
+      ` : `<a href="https://my.ksa.ee/et/icb-service-page" class="btn-cta-book" target="_blank" rel="noopener" style="margin-top:var(--space-6);display:inline-flex;">Записаться на консультацию <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="margin-left:6px"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>`}
     `;
   }
 

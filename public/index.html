@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html lang="et">
 <head>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({"gtm.start":
+new Date().getTime(),event:"gtm.js"});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
+"https://www.googletagmanager.com/gtm.js?id="+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,"script","dataLayer","GTM-KCZVRJ8");</script>
+<!-- End Google Tag Manager -->
+<!-- Google Ads tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18030087653"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag("js", new Date());
+gtag("config", "AW-18030087653");
+</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="KSA Silmakeskuse kiirtest — uuri, kas oled sobiv Flow3 laserprotseduuri kandidaat. Vastata võtab alla 2 minuti.">
@@ -12,6 +27,9 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2387be23'/%3E%3Ctext x='6' y='23' font-family='sans-serif' font-weight='700' font-size='16' fill='white'%3Eksa%3C/text%3E%3C/svg%3E">
 </head>
 <body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KCZVRJ8" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 
 <!-- ── Header ─────────────────────────────────── -->
 <header class="header">
@@ -537,6 +555,18 @@
 
       if (data.success) {
         document.getElementById('contactSection').style.display = 'none';
+      // Fire Google Ads conversion event
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'conversion', {'send_to': 'AW-18030087653/lXXnCMHKwI8cEOWbtZVD'});
+      }
+      // Fire GTM conversion event
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        'event': 'form_submission',
+        'form_name': 'kiirtest_contact',
+        'lp_source': 'LP-Kiirtest-ET',
+        'quiz_result': answers.resultType || 'unknown'
+      });
         document.getElementById('thankyouState').style.display = 'block';
         document.querySelector('.result-divider').style.display = 'none';
       } else {

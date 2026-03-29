@@ -502,6 +502,40 @@ gtag("config", "AW-18030087653");
 
     // Store result string
     answers.resultType = resultType;
+    
+    // ── Analytics: Track quiz completion (every completion, no personal data) ──
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      'event': 'quiz_completed',
+      'quiz_result': resultType,
+      'quiz_language': 'ET',
+      'quiz_gender': answers.gender,
+      'quiz_age': answers.age,
+      'quiz_vision': answers.vision,
+      'quiz_prescription': answers.prescription || 'N/A',
+      'quiz_interest': answers.interest
+    });
+    
+    // Send to Slack webhook (anonymous stats only)
+    try {
+      fetch('/api/track', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          type: 'quiz_completed',
+          result: resultType,
+          language: 'ET',
+          answers: {
+            gender: answers.gender,
+            age: answers.age,
+            vision: answers.vision,
+            prescription: answers.prescription || 'N/A',
+            interest: answers.interest
+          },
+          timestamp: new Date().toISOString()
+        })
+      }).catch(function() {});
+    } catch(e) {}
     const resultString = resultTitle;
     document.getElementById('h_result').value = resultString;
 

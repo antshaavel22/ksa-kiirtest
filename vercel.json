@@ -1,26 +1,35 @@
 {
-  "version": 2,
-  "public": true,
+  "crons": [
+    {
+      "path": "/api/analytics-report",
+      "schedule": "0 5 * * *"
+    },
+    {
+      "path": "/api/analytics-report?type=weekly",
+      "schedule": "30 5 * * 1"
+    }
+  ],
   "rewrites": [
+    { "source": "/taname", "destination": "/taname.html" },
+    { "source": "/taname-en", "destination": "/taname-en.html" },
+    { "source": "/taname-ru", "destination": "/taname-ru.html" },
+    { "source": "/en", "destination": "/en.html" },
     { "source": "/ru", "destination": "/ru.html" },
-    { "source": "/en", "destination": "/en.html" }
+    { "source": "/lilia-qr", "destination": "/lilia-qr.html" },
+    { "source": "/lilia", "destination": "/lilia-qr.html" },
+    { "source": "/19", "destination": "/19.html" },
+    { "source": "/broneeri-19", "destination": "/19.html" },
+    { "source": "/flow3/kiirtest", "destination": "/index.html" },
+    { "source": "/flow3/quicktest", "destination": "/en.html" },
+    { "source": "/flow3/bystryj-test", "destination": "/ru.html" }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
         { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
-      ]
-    },
-    {
-      "source": "/style.css",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        { "key": "Content-Security-Policy", "value": "frame-ancestors 'self' https://ksa.ee https://blog.ksa.ee https://*.vercel.app http://localhost:*" }
       ]
     }
-  ],
-  "buildCommand": null,
-  "outputDirectory": "public"
+  ]
 }

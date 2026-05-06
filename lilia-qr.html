@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Lilia — tänane QR kood + broneerimislink</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js" defer></script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #F5F4F2;
+      color: #0F0F0F;
+      margin: 0;
+      padding: 32px 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container {
+      max-width: 540px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 14px;
+      padding: 32px 28px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .brand {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #87BE23;
+      margin: 0 0 8px;
+    }
+    h1 {
+      font-size: 22px;
+      font-weight: 600;
+      margin: 0 0 6px;
+      letter-spacing: -0.02em;
+    }
+    .meta {
+      font-size: 13px;
+      color: #666;
+      margin: 0 0 24px;
+    }
+    .day-picker {
+      display: flex;
+      gap: 4px;
+      margin: 0 0 24px;
+      padding: 4px;
+      background: #F5F4F2;
+      border-radius: 10px;
+    }
+    .day-btn {
+      flex: 1;
+      padding: 8px 4px;
+      background: transparent;
+      border: none;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      color: #5a6b6c;
+      transition: all 0.15s;
+    }
+    .day-btn:hover { background: #fff; }
+    .day-btn.active {
+      background: #0F0F0F;
+      color: #fff;
+      font-weight: 600;
+    }
+    .qr-card {
+      background: #fff;
+      border: 1px solid #E6E6E6;
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .qr-canvas-wrap {
+      display: inline-block;
+      padding: 12px;
+      background: #fff;
+      border-radius: 8px;
+    }
+    canvas#qrCanvas {
+      display: block;
+      margin: 0 auto;
+      width: 256px;
+      height: 256px;
+    }
+    .code-display {
+      font-family: 'SFMono-Regular', Consolas, monospace;
+      font-size: 28px;
+      font-weight: 700;
+      color: #87BE23;
+      margin: 16px 0 4px;
+      letter-spacing: 0.04em;
+    }
+    .code-label {
+      font-size: 11px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin: 0;
+    }
+    .url-row {
+      background: #F5F4F2;
+      border: 1px solid #E6E6E6;
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+    }
+    .url-row__label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #888;
+      margin: 0 0 6px;
+    }
+    .url-row__value {
+      font-family: 'SFMono-Regular', Consolas, monospace;
+      font-size: 12px;
+      color: #0F0F0F;
+      margin: 0;
+      word-break: break-all;
+      line-height: 1.4;
+    }
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .btn {
+      display: block;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      text-align: center;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: opacity 0.15s, transform 0.05s;
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn--primary {
+      background: #87BE23;
+      color: #0F0F0F;
+    }
+    .btn--primary:hover { opacity: 0.9; }
+    .btn--secondary {
+      background: #0F0F0F;
+      color: #fff;
+    }
+    .btn--secondary:hover { opacity: 0.9; }
+    .copied-toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0F0F0F;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    .copied-toast.visible { opacity: 1; }
+    .help {
+      margin-top: 24px;
+      padding: 16px;
+      background: #F9F7F4;
+      border-radius: 8px;
+      font-size: 12px;
+      color: #5a6b6c;
+      line-height: 1.6;
+    }
+    .help h2 {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin: 0 0 8px;
+      color: #0F0F0F;
+    }
+    .help ol { margin: 0; padding-left: 18px; }
+    .help li { margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <p class="brand">KSA · Lilia tööriistad</p>
+  <h1>Tänane QR + broneerimislink</h1>
+  <p class="meta" id="metaLine">Reede, 5. mai 2026 · kood kehtib täna kuni südaööni</p>
+
+  <!-- Day picker — defaults to today, lets Lilia prep tomorrow's email -->
+  <div class="day-picker" id="dayPicker">
+    <!-- Populated by JS — 7 buttons for today + next 6 days -->
+  </div>
+
+  <div class="qr-card">
+    <div class="qr-canvas-wrap">
+      <canvas id="qrCanvas"></canvas>
+    </div>
+    <p class="code-display" id="codeDisplay">FLOW-X</p>
+    <p class="code-label">Tänane sooduskood</p>
+  </div>
+
+  <div class="url-row">
+    <p class="url-row__label">Broneerimislink (UTM-iga)</p>
+    <p class="url-row__value" id="urlDisplay"></p>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn--primary" onclick="copyUrl()">📋 Kopeeri link</button>
+    <button class="btn btn--secondary" onclick="downloadQr()">⬇️ Lae QR alla</button>
+  </div>
+
+  <div class="help">
+    <h2>Kuidas kasutada</h2>
+    <ol>
+      <li><strong>Lae QR alla</strong> ja lisa Gmaili (drag-drop kirjasse) — või paremklõpsa QR-il ja vali "Salvesta pilt".</li>
+      <li><strong>Kopeeri link</strong> nupuga URL-i ka tekstina kirjasse — mõni klient ei skani QR-i.</li>
+      <li>Kui soovid valmistada homse päeva kirja — vali ülal teine päev ja QR ning kood uuenevad.</li>
+      <li>Kõik lingid on UTM-tagiseeritud — saame kampaaniaaruandes näha mitu broneeringut tuli sinu kirjadest.</li>
+    </ol>
+  </div>
+</div>
+
+<div class="copied-toast" id="toast">✓ Kopeeritud lõikepuhvrisse</div>
+
+<script>
+  // Daily promo codes — same rotation as kiirtest LP (Erply codes regenerated each Monday)
+  var DAILY_CODES = {
+    0: 'FLOW-P',  // Pühapäev
+    1: 'FLOW-E',  // Esmaspäev
+    2: 'FLOW-T',  // Teisipäev
+    3: 'FLOW-K',  // Kolmapäev
+    4: 'FLOW-N',  // Neljapäev
+    5: 'FLOW-R',  // Reede
+    6: 'FLOW-L',  // Laupäev
+  };
+  var DAY_LABELS_SHORT = ['P', 'E', 'T', 'K', 'N', 'R', 'L'];
+  var DAY_LABELS_FULL = ['Pühapäev', 'Esmaspäev', 'Teisipäev', 'Kolmapäev', 'Neljapäev', 'Reede', 'Laupäev'];
+  var MONTH_LABELS = ['jaanuar','veebruar','märts','aprill','mai','juuni','juuli','august','september','oktoober','november','detsember'];
+
+  var currentOffset = 0;  // 0 = today, 1 = tomorrow, etc.
+
+  function getDateForOffset(offset) {
+    var d = new Date();
+    d.setDate(d.getDate() + offset);
+    return d;
+  }
+
+  function buildBookingUrl(code) {
+    // Route through the branded bridge page (/19) so leads get the warm welcome
+    // + Flow3 mini-FAQ + callback option BEFORE landing on my.ksa.ee booking.
+    // Bridge page forwards them to my.ksa.ee with the same promo code prefilled.
+    var base = 'https://kiirtest.ksa.ee/19';
+    var params = [
+      'code=' + encodeURIComponent(code),
+      'from=lilia',
+      'utm_source=lilia_email',
+      'utm_medium=email',
+      'utm_campaign=lilia_followup',
+    ];
+    return base + '?' + params.join('&');
+  }
+
+  function renderDayPicker() {
+    var picker = document.getElementById('dayPicker');
+    picker.innerHTML = '';
+    for (var i = 0; i < 7; i++) {
+      var d = getDateForOffset(i);
+      var dow = d.getDay();
+      var label = i === 0 ? 'Täna' : (i === 1 ? 'Homme' : DAY_LABELS_SHORT[dow]);
+      var btn = document.createElement('button');
+      btn.className = 'day-btn' + (i === currentOffset ? ' active' : '');
+      btn.textContent = label;
+      btn.dataset.offset = i;
+      btn.onclick = (function(off) { return function() { selectDay(off); }; })(i);
+      picker.appendChild(btn);
+    }
+  }
+
+  function selectDay(offset) {
+    currentOffset = offset;
+    renderDayPicker();
+    render();
+  }
+
+  function render() {
+    var d = getDateForOffset(currentOffset);
+    var dow = d.getDay();
+    var code = DAILY_CODES[dow] || 'FLOW19';
+    var url = buildBookingUrl(code);
+
+    document.getElementById('codeDisplay').textContent = code;
+    document.getElementById('urlDisplay').textContent = url;
+
+    var dayName = DAY_LABELS_FULL[dow];
+    var dateStr = dayName + ', ' + d.getDate() + '. ' + MONTH_LABELS[d.getMonth()] + ' ' + d.getFullYear();
+    var validity = currentOffset === 0 ? 'kood kehtib täna kuni südaööni' : 'kood kehtib ' + dayName.toLowerCase() + 'al kuni südaööni';
+    document.getElementById('metaLine').textContent = dateStr + ' · ' + validity;
+
+    var canvas = document.getElementById('qrCanvas');
+    var renderQr = function() {
+      if (typeof QRCode === 'undefined' || !QRCode.toCanvas) {
+        setTimeout(renderQr, 200);
+        return;
+      }
+      QRCode.toCanvas(canvas, url, {
+        width: 256,
+        margin: 1,
+        color: { dark: '#0F0F0F', light: '#FFFFFF' },
+        errorCorrectionLevel: 'M'
+      }, function(err){
+        if (err) console.error('QR render error', err);
+      });
+    };
+    renderQr();
+  }
+
+  function showToast(text) {
+    var t = document.getElementById('toast');
+    t.textContent = text;
+    t.classList.add('visible');
+    setTimeout(function() { t.classList.remove('visible'); }, 1600);
+  }
+
+  function copyUrl() {
+    var url = document.getElementById('urlDisplay').textContent;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(function() {
+        showToast('✓ Link kopeeritud — kleebi nüüd Gmaili');
+      }).catch(function() {
+        fallbackCopy(url);
+      });
+    } else {
+      fallbackCopy(url);
+    }
+  }
+
+  function fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); showToast('✓ Link kopeeritud'); }
+    catch (e) { showToast('✗ Kopeerimine ebaõnnestus'); }
+    document.body.removeChild(ta);
+  }
+
+  function downloadQr() {
+    var canvas = document.getElementById('qrCanvas');
+    var d = getDateForOffset(currentOffset);
+    var code = DAILY_CODES[d.getDay()];
+    var dateStr = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    var filename = 'KSA-Flow3-QR-' + dateStr + '-' + code + '.png';
+
+    canvas.toBlob(function(blob) {
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function() { URL.revokeObjectURL(url); }, 100);
+      showToast('✓ QR salvestatud: ' + filename);
+    }, 'image/png');
+  }
+
+  // ── Activity tracking — posts to /api/track for Slack visibility ──
+  // Throttled: page-open fires once per session, day-select per change, actions per click.
+  function trackLilia(type, extra) {
+    var d = getDateForOffset(currentOffset);
+    var code = DAILY_CODES[d.getDay()];
+    var payload = Object.assign({
+      type: 'lilia_qr_' + type,
+      tool: 'lilia-qr-page',
+      offset: currentOffset,
+      code: code,
+      date: d.toISOString().slice(0, 10),
+      timestamp: new Date().toISOString()
+    }, extra || {});
+    try {
+      // Use sendBeacon if available (more reliable on page unload)
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon('/api/track', JSON.stringify(payload));
+      } else {
+        fetch('/api/track', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(payload),
+          keepalive: true
+        }).catch(function(){});
+      }
+    } catch (e) {}
+  }
+
+  // Patch existing functions to also track
+  var _origCopyUrl = copyUrl;
+  copyUrl = function() {
+    trackLilia('url_copied');
+    _origCopyUrl();
+  };
+  var _origDownloadQr = downloadQr;
+  downloadQr = function() {
+    trackLilia('downloaded');
+    _origDownloadQr();
+  };
+  var _origSelectDay = selectDay;
+  selectDay = function(offset) {
+    if (offset !== currentOffset) trackLilia('day_selected', { selected_offset: offset });
+    _origSelectDay(offset);
+  };
+
+  // Re-bind the day picker buttons to the new selectDay (since they captured the old reference)
+  function rebindDayPicker() {
+    var btns = document.querySelectorAll('.day-btn');
+    btns.forEach(function(btn) {
+      var off = parseInt(btn.dataset.offset, 10);
+      btn.onclick = function() { selectDay(off); };
+    });
+  }
+
+  // Initial render — and re-render every minute in case the day changes while page is open
+  renderDayPicker();
+  rebindDayPicker();
+  render();
+
+  // Track that Lilia opened the page (once per page-load)
+  trackLilia('opened');
+
+  setInterval(function() {
+    if (currentOffset === 0) {
+      // If a date rollover happens while the page is open, re-render today's QR
+      render();
+    }
+  }, 60000);
+
+  // Re-bind picker after day-picker re-renders (selectDay calls renderDayPicker)
+  var _origRenderDayPicker = renderDayPicker;
+  renderDayPicker = function() {
+    _origRenderDayPicker();
+    rebindDayPicker();
+  };
+</script>
+
+</body>
+</html>

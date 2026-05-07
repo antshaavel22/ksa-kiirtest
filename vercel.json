@@ -1,4 +1,5 @@
 {
+  "outputDirectory": ".",
   "crons": [
     {
       "path": "/api/analytics-report",

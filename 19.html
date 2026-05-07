@@ -307,6 +307,20 @@
         </div>
       </div>
 
+      <!-- Callback request -->
+      <div class="callback">
+        <p class="callback__title">Vajad abi broneerimisega?</p>
+        <p class="callback__sub">Jäta number ja helistame tagasi. Aitame leida sobiva aja Tallinnas või Tartus.</p>
+        <form id="callbackForm" onsubmit="submitCallback(event)">
+          <div class="callback__form">
+            <input class="callback__input" type="text" id="cbName" placeholder="Eesnimi" autocomplete="given-name" required>
+            <input class="callback__input" type="tel" id="cbPhone" placeholder="+372 5XX XXXX" autocomplete="tel" required>
+          </div>
+          <button class="callback__btn" id="cbBtn" type="submit">Helistage mulle tagasi →</button>
+        </form>
+        <div class="callback__done" id="callbackDone">✓ Aitäh! Helistame teile 1 tööpäeva jooksul.</div>
+      </div>
+
       <h2 class="section-h">Mis Flow3 silmauuringus toimub?</h2>
 
       <details class="faq-item">
@@ -334,20 +348,6 @@
         <p class="faq-item__body">Praegused prillid ja/või kontaktläätsede retsept (kui on käepärast). Ja keegi sinuga kaasa, kui võimalik — pärast pupilli laiendamist on hea, kui ei pea ise autot juhtima.</p>
       </details>
 
-      <!-- Callback request -->
-      <div class="callback">
-        <p class="callback__title">Vajad abi broneerimisega?</p>
-        <p class="callback__sub">Helistame teile tagasi kui broneeringuga abi vajate. Töötame Mon–Fri 09–18, Sat 10–14.</p>
-        <form id="callbackForm" onsubmit="submitCallback(event)">
-          <div class="callback__form">
-            <input class="callback__input" type="text" id="cbName" placeholder="Eesnimi" autocomplete="given-name" required>
-            <input class="callback__input" type="tel" id="cbPhone" placeholder="+372 5XX XXXX" autocomplete="tel" required>
-          </div>
-          <button class="callback__btn" id="cbBtn" type="submit">Helistage mulle tagasi →</button>
-        </form>
-        <div class="callback__done" id="callbackDone">✓ Aitäh! Helistame teile 1 tööpäeva jooksul.</div>
-      </div>
-
       <p class="bridge-footer">
         Küsimusi? Helista <a href="tel:+3726445060">+372 644 5060</a> &middot; <a href="mailto:info@ksa.ee">info@ksa.ee</a><br>
         KSA Silmakeskus &middot; Tallinn: J. Vilmsi 5 &middot; Tartu: Kvartali keskus, Riia mnt. 2
@@ -371,21 +371,61 @@
   function getQueryParam(name) {
     return new URLSearchParams(window.location.search).get(name);
   }
+  function getTrackingParams() {
+    var p = new URLSearchParams(window.location.search);
+    return {
+      source: p.get('utm_source') || p.get('from') || 'kiirtest_bridge',
+      medium: p.get('utm_medium') || 'web',
+      campaign: p.get('utm_campaign') || 'flow3_19',
+      content: p.get('utm_content') || null,
+      term: p.get('utm_term') || null,
+      gclid: p.get('gclid') || null,
+      gbraid: p.get('gbraid') || null,
+      wbraid: p.get('wbraid') || null,
+      fbclid: p.get('fbclid') || null,
+      entry_source: p.get('source') || null,
+      funnel: p.get('funnel') || 'flow3_kiirtest',
+      slug: p.get('slug') || null,
+      lang: p.get('lang') || (document.documentElement.lang || 'et').toLowerCase(),
+    };
+  }
+  function buildTrackedUrl(url, extra) {
+    var isAbsolute = /^https?:\/\//i.test(url);
+    var u = new URL(url, window.location.origin);
+    var t = getTrackingParams();
+    var params = Object.assign({
+      utm_source: t.source || '',
+      utm_medium: t.medium || '',
+      utm_campaign: t.campaign || '',
+      utm_content: t.content || '',
+      utm_term: t.term || '',
+      gclid: t.gclid || '',
+      gbraid: t.gbraid || '',
+      wbraid: t.wbraid || '',
+      fbclid: t.fbclid || '',
+      source: t.entry_source || t.source || '',
+      funnel: t.funnel || 'flow3_kiirtest',
+      slug: t.slug || '',
+      lang: t.lang || 'et'
+    }, extra || {});
+    Object.keys(params).forEach(function(key) {
+      var value = params[key];
+      if (value !== undefined && value !== null && value !== '') {
+        u.searchParams.set(key, value);
+      }
+    });
+    return isAbsolute ? u.href : (u.pathname + u.search + u.hash);
+  }
 
   function applyConfig() {
     // Use code from URL if provided (Lilia's QR sets this), otherwise today's
     var code = (getQueryParam('code') || '').trim().toUpperCase() || getTodayCode();
     document.getElementById('codeText').textContent = code;
 
-    // Build booking URL with code + UTM passthrough
-    var utmSource = getQueryParam('utm_source') || getQueryParam('from') || 'kiirtest_bridge';
-    var utmMedium = getQueryParam('utm_medium') || 'web';
-    var utmCampaign = getQueryParam('utm_campaign') || 'flow3_19';
-    var bookUrl = 'https://my.ksa.ee/et/icb-time?serviceId=1'
-      + '&promokood=' + encodeURIComponent(code)
-      + '&utm_source=' + encodeURIComponent(utmSource)
-      + '&utm_medium=' + encodeURIComponent(utmMedium)
-      + '&utm_campaign=' + encodeURIComponent(utmCampaign);
+    // Build booking URL with code + full tracking passthrough.
+    var bookUrl = buildTrackedUrl('https://my.ksa.ee/et/icb-time?serviceId=1', {
+      promokood: code
+    });
     document.getElementById('bookBtn').setAttribute('href', bookUrl);
 
     // Personalised greeting based on `from`
@@ -405,7 +445,7 @@
         type: 'bridge_19_viewed',
         code: code,
         from: from || null,
-        utm: { source: utmSource, medium: utmMedium, campaign: utmCampaign },
+        utm: getTrackingParams(),
         timestamp: new Date().toISOString()
       })
     }).catch(function(){});
@@ -414,7 +454,7 @@
   function trackBookClick() {
     var code = document.getElementById('codeText').textContent;
     if (typeof gtag !== 'undefined') {
-      gtag('event', 'conversion', {'send_to': 'AW-18030087653/jKMDCPWrupYcEOWbtZVD'});
+      // Confirmed bookings should be the primary Google Ads conversion.
       gtag('event', 'book_click', { code: code, source: 'bridge_19' });
     }
     if (typeof fbq !== 'undefined') { fbq('track', 'Lead'); }
@@ -424,6 +464,7 @@
       body: JSON.stringify({
         type: 'bridge_19_book_clicked',
         code: code,
+        utm: getTrackingParams(),
         timestamp: new Date().toISOString()
       })
     }).catch(function(){});
@@ -481,12 +522,7 @@
         vision_issue: getQueryParam('vision_issue') || 'myopia',
       },
       group_hint: getQueryParam('group_hint') || 'flow3_eligible_myope',
-      utm: {
-        source: getQueryParam('utm_source') || from || 'kiirtest_bridge',
-        medium: getQueryParam('utm_medium') || 'web',
-        campaign: getQueryParam('utm_campaign') || 'flow3_19',
-        term: getQueryParam('utm_term') || null,
-      },
+      utm: getTrackingParams(),
       // Extra fields the proxy passes to /api/track for Slack visibility
       code: code,
       from: from,

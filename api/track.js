@@ -34,11 +34,11 @@ async function utmLabel(utm) {
   if (!utm) return 'Otse';
 
   // All fields empty → direct / no tracking
-  const hasAny = utm.gclid || utm.fbclid || utm.source || utm.referrer || utm.campaign;
+  const hasAny = utm.gclid || utm.gbraid || utm.wbraid || utm.fbclid || utm.source || utm.referrer || utm.campaign;
   if (!hasAny) return 'Otse';
 
   // Referrer-only (no ad click) — came from ksa.ee or another known page
-  if (!utm.gclid && !utm.fbclid && !utm.source && utm.referrer) {
+  if (!utm.gclid && !utm.gbraid && !utm.wbraid && !utm.fbclid && !utm.source && utm.referrer) {
     try {
       const host = new URL(utm.referrer).hostname.replace('www.', '');
       if (host === 'ksa.ee') return 'Orgaaniline — ksa.ee';
@@ -51,7 +51,7 @@ async function utmLabel(utm) {
   const src = (utm.source || '').toLowerCase();
   const med = (utm.medium || '').toLowerCase();
   let channel = '';
-  if (utm.gclid || src === 'google') {
+  if (utm.gclid || utm.gbraid || utm.wbraid || src === 'google') {
     channel = 'Google Ads';
   } else if (utm.fbclid || ['facebook', 'meta', 'instagram', 'fb'].includes(src)) {
     channel = 'Meta';
@@ -78,6 +78,9 @@ async function utmLabel(utm) {
       parts.push(utm.campaign);
     }
   }
+
+  if (utm.gbraid) parts.push('gbraid');
+  if (utm.wbraid) parts.push('wbraid');
 
   // Content/term — same treatment
   if (utm.content) {

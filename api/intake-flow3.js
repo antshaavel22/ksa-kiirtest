@@ -17,8 +17,10 @@
 //
 // MAI'S SPEC: see project_ksa_kiirtest_v3.md memory file (locked 2026-05-05).
 
+// CRM endpoint — Mai's CRM lives at crm.ksa.ee (my.ksa.ee still routes to legacy
+// Erply). URL clarified by Mai 2026-05-05 11:51. Override via env var if needed.
 const KSA_TICKETS_ENDPOINT = process.env.KSA_TICKETS_ENDPOINT
-  || 'https://my.ksa.ee/api/v1/tickets/intake/flow3';
+  || 'https://crm.ksa.ee/api/v1/tickets/intake/flow3';
 const KSA_TICKETS_API_KEY = process.env.KSA_TICKETS_API_KEY || '';
 
 // Allowed enums per Mai's spec — we validate before forwarding to fail fast on bad input
@@ -106,7 +108,16 @@ export default async function handler(req, res) {
       source: utm.source || null,
       medium: utm.medium || null,
       campaign: utm.campaign || null,
+      content: utm.content || null,
       term: utm.term || null,
+      gclid: utm.gclid || null,
+      gbraid: utm.gbraid || null,
+      wbraid: utm.wbraid || null,
+      fbclid: utm.fbclid || null,
+      entry_source: utm.entry_source || null,
+      funnel: utm.funnel || null,
+      slug: utm.slug || null,
+      lang: utm.lang || lang,
     },
     ...(sessionId ? { client_session_id: String(sessionId).slice(0, 64) } : {}),
   };
@@ -131,6 +142,9 @@ export default async function handler(req, res) {
     crmResp = { status: 0, ok: false, body: { error: { code: 'upstream_unreachable', message: String(err) } } };
   }
 
+  // Mai's CRM wraps the response: { data: { ticket: {...} }, meta: {...} }
+  const ticket = crmResp.body?.data?.ticket || crmResp.body?.ticket || null;
+
   // ── Slack ping via /api/track (awaited — Vercel kills fire-and-forget) ──────
   // Mai's CRM has its own Lilia notification, but we keep #kiirtesti-täitmised
   // as the team's canonical channel. We await this to ensure delivery, but
@@ -148,9 +162,10 @@ export default async function handler(req, res) {
         contact: { name: contact.name || null, phone },
         code: body.code || null,
         from: body.from || null,
-        crm_ticket_id: crmResp?.body?.ticket?.id || null,
-        crm_ticket_number: crmResp?.body?.ticket?.number || null,
+        crm_ticket_id: ticket?.id || null,
+        crm_ticket_number: ticket?.number || null,
         crm_status: crmResp.status,
+        utm: payload.utm,
         timestamp: new Date().toISOString(),
       }),
     }).catch((err) => { console.warn('[intake-flow3] track ping failed:', err); });
@@ -168,7 +183,7 @@ export default async function handler(req, res) {
 
   return res.status(201).json({
     ok: true,
-    ticket: crmResp.body?.ticket || null,
+    ticket,
     raw: crmResp.body,
   });
 }

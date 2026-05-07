@@ -497,7 +497,13 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
     content:  p.get('utm_content')  || '',
     term:     p.get('utm_term')     || '',
     gclid:    p.get('gclid')        || '',
+    gbraid:   p.get('gbraid')       || '',
+    wbraid:   p.get('wbraid')       || '',
     fbclid:   p.get('fbclid')       || '',
+    entry_source: p.get('source')    || '',
+    funnel:   p.get('funnel')       || 'flow3_kiirtest',
+    slug:     p.get('slug')         || '',
+    lang:     p.get('lang')         || 'et',
     referrer: document.referrer     || '',
   };
   // Always save — if all empty, marks as direct (avoids '—' in Slack reports)
@@ -508,6 +514,33 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
 })();
 function getUtmData() {
   try { return JSON.parse(sessionStorage.getItem('ksa_utm') || 'null'); } catch(e) { return null; }
+}
+function buildTrackedUrl(url, extra) {
+  var isAbsolute = /^https?:\/\//i.test(url);
+  var u = new URL(url, window.location.origin);
+  var utm = getUtmData() || {};
+  var params = Object.assign({
+    utm_source: utm.source || '',
+    utm_medium: utm.medium || '',
+    utm_campaign: utm.campaign || '',
+    utm_content: utm.content || '',
+    utm_term: utm.term || '',
+    gclid: utm.gclid || '',
+    gbraid: utm.gbraid || '',
+    wbraid: utm.wbraid || '',
+    fbclid: utm.fbclid || '',
+    source: utm.entry_source || utm.source || '',
+    funnel: utm.funnel || 'flow3_kiirtest',
+    slug: utm.slug || '',
+    lang: utm.lang || 'et'
+  }, extra || {});
+  Object.keys(params).forEach(function(key) {
+    var value = params[key];
+    if (value !== undefined && value !== null && value !== '') {
+      u.searchParams.set(key, value);
+    }
+  });
+  return isAbsolute ? u.href : (u.pathname + u.search + u.hash);
 }
 </script>
 
@@ -648,10 +681,14 @@ function getUtmData() {
     // Set bridge button href with today's promo code + UTM passthrough
     var todayCode = getTodayCode();
     var utm = getUtmData() || {};
-    var bridgeUrl = '/19?from=kiirtest&code=' + encodeURIComponent(todayCode)
-      + '&utm_source=' + encodeURIComponent(utm.source || 'kiirtest_lp_et')
-      + '&utm_medium=' + encodeURIComponent(utm.medium || 'web')
-      + '&utm_campaign=' + encodeURIComponent(utm.campaign || 'flow3_19');
+    var bridgeUrl = buildTrackedUrl('/19', {
+      from: 'kiirtest',
+      code: todayCode,
+      utm_source: utm.source || 'kiirtest_lp_et',
+      utm_medium: utm.medium || 'web',
+      utm_campaign: utm.campaign || 'flow3_19',
+      lang: 'et'
+    });
     var btn = document.getElementById('bridgeBtn');
     if (btn) btn.setAttribute('href', bridgeUrl);
 
@@ -669,7 +706,7 @@ function getUtmData() {
     fetch('/api/track', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ type: type, language: 'ET', answers: answers, timestamp: new Date().toISOString() })
+      body: JSON.stringify({ type: type, language: 'ET', answers: answers, utm: getUtmData(), timestamp: new Date().toISOString() })
     }).catch(function(){});
   }
 
@@ -678,7 +715,7 @@ function getUtmData() {
     trackGateEvent('eligible_gate_bridge_clicked');
     if (typeof fbq !== 'undefined') { fbq('track', 'Lead'); }
     if (typeof gtag !== 'undefined') {
-      gtag('event', 'conversion', {'send_to': 'AW-18030087653/5sz0CIaE850cEOWbtZVD', 'value': 5.0, 'currency': 'EUR'});
+      // Confirmed bookings should be the primary Google Ads conversion.
       gtag('event', 'generate_lead', { language: 'ET', via: 'bridge_redirect' });
     }
   };
@@ -769,6 +806,7 @@ function getUtmData() {
         language: 'ET',
         email: capturedEmail || null,
         answers: answers,
+        utm: getUtmData(),
         timestamp: new Date().toISOString()
       })
     }).catch(function(){});
@@ -799,8 +837,12 @@ function getUtmData() {
       if (el) el.textContent = code;
     });
     // Update booking button URLs with today's promo code (skips slow service-page)
-    var bookingUrl = 'https://my.ksa.ee/et/icb-time?serviceId=1&promokood=' + code;
-    var btns = ['bookNowBtn'];
+    var bookingUrl = buildTrackedUrl('https://my.ksa.ee/et/icb-time?serviceId=1', {
+      promokood: code,
+      lang: 'et',
+      funnel: 'flow3_kiirtest'
+    });
+    var btns = ['bookNowBtn', 'bookNowBtn2'];
     btns.forEach(function(id) {
       var el = document.getElementById(id);
       if (el) el.href = bookingUrl;
@@ -873,7 +915,8 @@ function getUtmData() {
 
   window.trackBookNow = function() {
     if (typeof gtag !== 'undefined') {
-      gtag('event', 'conversion', {'send_to': 'AW-18030087653/5sz0CIaE850cEOWbtZVD'});
+      // Confirmed bookings should be the primary Google Ads conversion.
+      gtag('event', 'booking_click', { language: 'ET', promo: getTodayCode(), source: 'kiirtest' });
     }
     if (typeof fbq !== 'undefined') { fbq('track', 'Lead'); }
     window.dataLayer.push({ event: 'book_now_clicked', lp_source: 'LP-KiirtestAd-ET-V3' });
@@ -939,7 +982,7 @@ function getUtmData() {
         document.getElementById('thankYou').classList.add('active');
 
         if (typeof gtag !== 'undefined') {
-          gtag('event', 'conversion', {'send_to': 'AW-18030087653/5sz0CIaE850cEOWbtZVD'});
+          gtag('event', 'generate_lead', { language: 'ET', source: 'kiirtest_fallback_form' });
         }
         if (typeof fbq !== 'undefined') { fbq('track', 'Lead'); }
         window.dataLayer.push({
@@ -957,6 +1000,7 @@ function getUtmData() {
             contact: { name: nameVal, phone: phoneVal, email: capturedEmail },
             answers: answers,
             promoCode: getTodayCode(),
+            utm: getUtmData(),
             timestamp: new Date().toISOString()
           })
         }).catch(function(){});

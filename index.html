@@ -226,12 +226,13 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
             <p class="qualified-phone__title">Jäta number enne broneerimist</p>
             <p class="qualified-phone__copy">KSA spetsialist saab vajadusel aidata sobiva aja leidmisega ja vastab küsimustele päris vestluses. Kui broneerid kohe ise ära, jääb number lihtsalt turvavõrguks.</p>
             <form class="qualified-phone__form" onsubmit="submitQualifiedPhone(event)">
+              <input class="gate-form__input" id="qualifiedName" type="text" placeholder="Eesnimi" autocomplete="given-name" required>
               <input class="gate-form__input" id="qualifiedPhone" type="tel" placeholder="+372 5XX XXXX" autocomplete="tel" inputmode="tel" required>
               <button class="btn btn--primary btn--full btn--gate" id="qualifiedPhoneBtn" type="submit" style="font-size:16px;padding:18px 20px;">
                 Jätkan broneerima → <strong>19&nbsp;€</strong>
               </button>
             </form>
-            <p class="qualified-phone__error" id="qualifiedPhoneError">Palun sisesta korrektne mobiilinumber.</p>
+            <p class="qualified-phone__error" id="qualifiedPhoneError">Palun sisesta eesnimi ja korrektne mobiilinumber.</p>
             <a id="bridgeBtn" href="/19?from=kiirtest" class="qualified-phone__secondary" onclick="trackBridgeClick('without_phone')">Jätkan ilma numbrita</a>
           </div>
           <p style="margin:10px 0 0;font-size:11px;color:var(--color-text-muted);line-height:1.5;">Järgmine leht avab broneerimise ja lühikese FAQ.</p>
@@ -673,6 +674,7 @@ function buildTrackedUrl(url, extra) {
 
   var capturedEmail = '';   // legacy — unused but kept to avoid breaking tracking refs
   var capturedPhone = '';   // legacy
+  var capturedName = '';
   var LEAD_CONTEXT_KEY = 'ksa_flow3_lead_context';
 
   function normalisePhoneE164(raw) {
@@ -691,8 +693,9 @@ function buildTrackedUrl(url, extra) {
     return parts.join(' | ') || 'book_flow3_exam';
   }
 
-  function buildLeadContext(phone, via) {
+  function buildLeadContext(phone, via, name) {
     return {
+      name: name || capturedName || null,
       phone: phone || capturedPhone || null,
       language: 'ET',
       result: isGoodCandidate() ? 'good_candidate' : 'not_ideal',
@@ -704,8 +707,8 @@ function buildTrackedUrl(url, extra) {
     };
   }
 
-  function saveLeadContext(phone, via) {
-    var ctx = buildLeadContext(phone, via);
+  function saveLeadContext(phone, via, name) {
+    var ctx = buildLeadContext(phone, via, name);
     try { sessionStorage.setItem(LEAD_CONTEXT_KEY, JSON.stringify(ctx)); } catch(e) {}
     return ctx;
   }
@@ -772,25 +775,32 @@ function buildTrackedUrl(url, extra) {
 
   window.submitQualifiedPhone = function(e) {
     e.preventDefault();
+    var nameInput = document.getElementById('qualifiedName');
     var input = document.getElementById('qualifiedPhone');
     var error = document.getElementById('qualifiedPhoneError');
     var btn = document.getElementById('qualifiedPhoneBtn');
+    var name = nameInput.value.trim();
     var phone = normalisePhoneE164(input.value);
-    if (!phone) {
-      input.style.borderColor = 'var(--color-danger)';
+    if (!name || !phone) {
+      nameInput.style.borderColor = !name ? 'var(--color-danger)' : '';
+      input.style.borderColor = !phone ? 'var(--color-danger)' : '';
       error.style.display = 'block';
-      input.focus();
+      (!name ? nameInput : input).focus();
       return;
     }
+    nameInput.style.borderColor = '';
     input.style.borderColor = '';
     error.style.display = 'none';
+    capturedName = name;
     capturedPhone = phone;
     btn.disabled = true;
     btn.textContent = 'Avan broneeringut...';
-    var ctx = saveLeadContext(phone, 'phone_before_booking');
+    var ctx = saveLeadContext(phone, 'phone_before_booking', name);
     postTrack({
       type: 'qualified_flow3_phone_lead',
       language: 'ET',
+      contact: { name: name, phone: phone },
+      name: name,
       phone: phone,
       intent: ctx.intent,
       result: ctx.result,

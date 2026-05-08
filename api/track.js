@@ -512,8 +512,13 @@ function leadPhone(body) {
   return body?.phone || body?.contact?.phone || body?.lead_context?.phone || null;
 }
 
-function leadFields({ answers = {}, lang, phone, adSource, intent, code, extra = [] }) {
+function leadName(body) {
+  return body?.name || body?.contact?.name || body?.lead_context?.name || null;
+}
+
+function leadFields({ answers = {}, lang, name, phone, adSource, intent, code, extra = [] }) {
   const fields = [
+    { type: 'mrkdwn', text: `*Nimi:*\n${valueOrDash(name)}` },
     { type: 'mrkdwn', text: `*Telefon:*\n${phone ? `<tel:${phone}|${phone}>` : '—'}` },
     { type: 'mrkdwn', text: `*Keel:*\n${valueOrDash(lang)}` },
     { type: 'mrkdwn', text: `*Allikas:*\n${valueOrDash(adSource)}` },
@@ -1188,13 +1193,14 @@ export default async function handler(req, res) {
     // Qualified Kiirtest lead left a phone number before moving to the 19€ booking bridge.
     const lang = detectLang(lp_source, language);
     const leadData = leadAnswers(body, answers);
+    const name = leadName(body);
     const phone = leadPhone(body);
     const intent = leadIntent(leadData, body.intent);
     const qualified = isQualifiedFlow3Answers(leadData);
     blocks = [
       { type: 'header', text: { type: 'plain_text', text: qualified ? `📞 Flow3 kandidaat jättis telefoni` : `📞 Kiirtest telefon — kontrolli sobivust` } },
       { type: 'section', text: { type: 'mrkdwn', text: `*Lilia / CS:* inimene liigub broneerima, aga jättis numbri. Kui broneeringut ei ilmu, aita leida sobiv aeg ja vasta küsimustele live-kõnes.` } },
-      { type: 'section', fields: leadFields({ answers: leadData, lang, phone, adSource, intent }) },
+      { type: 'section', fields: leadFields({ answers: leadData, lang, name, phone, adSource, intent }) },
       { type: 'context', elements: [{ type: 'mrkdwn', text: `_${ts}_ · ${qualified ? 'Flow3-qualified by Kiirtest' : 'Not marked hot: answers need review'}` }] },
     ];
 
@@ -1202,6 +1208,7 @@ export default async function handler(req, res) {
     // Diagnostic booking intent events. These are not confirmed bookings/conversions.
     const lang = detectLang(lp_source, language);
     const leadData = leadAnswers(body, answers);
+    const name = leadName(body);
     const phone = leadPhone(body);
     const intent = leadIntent(leadData, body.intent);
     const eventLabels = {
@@ -1212,7 +1219,7 @@ export default async function handler(req, res) {
     blocks = [
       { type: 'header', text: { type: 'plain_text', text: `📅 ${eventLabels[type]}` } },
       { type: 'section', text: { type: 'mrkdwn', text: `Diagnostiline sündmus: kasutaja vajutas broneerimise suunas. See ei ole veel kinnitatud online broneering.` } },
-      { type: 'section', fields: leadFields({ answers: leadData, lang, phone, adSource, intent, code: body.code }) },
+      { type: 'section', fields: leadFields({ answers: leadData, lang, name, phone, adSource, intent, code: body.code }) },
       { type: 'context', elements: [{ type: 'mrkdwn', text: `_${ts}_` }] },
     ];
 

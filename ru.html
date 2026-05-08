@@ -514,6 +514,31 @@
 function getUtmData() {
   try { return JSON.parse(sessionStorage.getItem('ksa_utm') || 'null'); } catch(e) { return null; }
 }
+function getFunnelVariant() {
+  var p = new URLSearchParams(window.location.search);
+  var forced = (p.get('funnel_variant') || p.get('ab_variant') || '').toUpperCase();
+  if (forced === 'A' || forced === 'B' || forced === 'C') return forced;
+  if (p.get('booking_first') === '1' || p.get('direct_booking') === '1') return 'B';
+  if (p.get('no_contact') === '1' || p.get('result_first') === '1') return 'C';
+  if (p.get('ab_funnel') !== '1' && p.get('funnel_test') !== '1') return null;
+  try {
+    var key = 'ksa_kiirtest_ab_variant';
+    var saved = localStorage.getItem(key);
+    if (saved === 'A' || saved === 'B' || saved === 'C') return saved;
+    var variants = p.get('abc_funnel') === '1' ? ['A', 'B', 'C'] : ['A', 'B'];
+    var next = variants[Math.floor(Math.random() * variants.length)];
+    localStorage.setItem(key, next);
+    return next;
+  } catch(e) {
+    return Math.random() < 0.5 ? 'A' : 'B';
+  }
+}
+function isBookingFirstMode() {
+  return getFunnelVariant() === 'B';
+}
+function isResultFirstMode() {
+  return getFunnelVariant() === 'C';
+}
 function buildTrackedUrl(url, extra) {
   var isAbsolute = /^https?:\/\//i.test(url);
   var u = new URL(url, window.location.origin);
@@ -531,7 +556,8 @@ function buildTrackedUrl(url, extra) {
     source: utm.entry_source || utm.source || '',
     funnel: utm.funnel || 'flow3_kiirtest',
     slug: utm.slug || '',
-    lang: utm.lang || 'ru'
+    lang: utm.lang || 'ru',
+    ab_variant: getFunnelVariant() || ''
   }, extra || {});
   Object.keys(params).forEach(function(key) {
     var value = params[key];
@@ -695,6 +721,7 @@ function buildTrackedUrl(url, extra) {
       result: isGoodCandidate() ? 'good_candidate' : 'not_ideal',
       intent: getLeadIntent(),
       via: via || null,
+      ab_variant: getFunnelVariant() || 'control',
       answers: answers,
       utm: getUtmData(),
       meta: getMetaClickIds(),
@@ -762,10 +789,25 @@ function buildTrackedUrl(url, extra) {
       utm_medium: utm.medium || 'web',
       utm_campaign: utm.campaign || 'flow3_19',
       lang: 'ru',
-      kiirtest_lead_id: kiirtestLeadId
+      kiirtest_lead_id: kiirtestLeadId,
+      ab_variant: getFunnelVariant() || 'control'
     });
     var btn = document.getElementById('bridgeBtn');
     if (btn) btn.setAttribute('href', bridgeUrl);
+
+    if (isBookingFirstMode()) {
+      trackGateEvent('eligible_gate_bridge_clicked');
+      trackMetaCustom('KiirtestBridgeClicked', { funnel_step: 'booking_first_bridge', ab_variant: getFunnelVariant() || 'B' });
+      window.location.href = bridgeUrl;
+      return;
+    }
+
+    if (isResultFirstMode()) {
+      trackGateEvent('eligible_gate_result_unlocked');
+      trackMetaCustom('KiirtestResultUnlocked', { funnel_step: 'result_first_no_contact', ab_variant: getFunnelVariant() || 'C' });
+      showResult({ via: 'result_first_no_contact' });
+      return;
+    }
 
     setTimeout(function() {
       gate.scrollIntoView({ behavior: 'smooth', block: 'center' });

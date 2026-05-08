@@ -385,6 +385,7 @@
       wbraid: p.get('wbraid') || null,
       fbclid: p.get('fbclid') || null,
       kiirtest_lead_id: p.get('kiirtest_lead_id') || null,
+      ab_variant: p.get('ab_variant') || null,
       entry_source: p.get('source') || null,
       funnel: p.get('funnel') || 'flow3_kiirtest',
       slug: p.get('slug') || null,
@@ -453,7 +454,8 @@
       source: t.entry_source || t.source || '',
       funnel: t.funnel || 'flow3_kiirtest',
       slug: t.slug || '',
-      lang: t.lang || 'et'
+      lang: t.lang || 'et',
+      ab_variant: t.ab_variant || ''
     }, extra || {});
     Object.keys(params).forEach(function(key) {
       var value = params[key];

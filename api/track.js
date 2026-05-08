@@ -520,6 +520,10 @@ function leadEmail(body) {
   return body?.email || body?.contact?.email || body?.lead_context?.email || null;
 }
 
+function leadVariant(body) {
+  return body?.ab_variant || body?.lead_context?.ab_variant || body?.utm?.ab_variant || null;
+}
+
 function leadFields({ answers = {}, lang, name, phone, email, adSource, intent, code, extra = [] }) {
   const fields = [
     { type: 'mrkdwn', text: `*Nimi:*\n${valueOrDash(name)}` },
@@ -1001,6 +1005,9 @@ export default async function handler(req, res) {
     }
 
   } else if (type === 'quiz_completed') {
+    if (!isQualifiedFlow3Answers(answers)) {
+      return res.status(200).json({ ok: true, skipped: 'quiz_not_flow3_qualified' });
+    }
     const emoji = result === 'good_candidate' ? '✅' : 'ℹ️';
     const label = result === 'good_candidate' ? 'Sobiv kandidaat' : 'Vajab konsultatsiooni';
     blocks = [
@@ -1202,12 +1209,16 @@ export default async function handler(req, res) {
     const phone = leadPhone(body);
     const email = leadEmail(body);
     const intent = leadIntent(leadData, body.intent);
+    const variant = leadVariant(body);
     const qualified = isQualifiedFlow3Answers(leadData);
+    if (!qualified) {
+      return res.status(200).json({ ok: true, skipped: 'phone_lead_not_flow3_qualified' });
+    }
     blocks = [
-      { type: 'header', text: { type: 'plain_text', text: qualified ? `📞 Flow3 kandidaat jättis telefoni` : `📞 Kiirtest telefon — kontrolli sobivust` } },
+      { type: 'header', text: { type: 'plain_text', text: `📞 Flow3 kandidaat jättis telefoni` } },
       { type: 'section', text: { type: 'mrkdwn', text: `*Lilia / CS:* inimene liigub broneerima, aga jättis numbri. Kui broneeringut ei ilmu, aita leida sobiv aeg ja vasta küsimustele live-kõnes.` } },
-      { type: 'section', fields: leadFields({ answers: leadData, lang, name, phone, email, adSource, intent }) },
-      { type: 'context', elements: [{ type: 'mrkdwn', text: `_${ts}_ · ${qualified ? 'Flow3-qualified by Kiirtest' : 'Not marked hot: answers need review'}` }] },
+      { type: 'section', fields: leadFields({ answers: leadData, lang, name, phone, email, adSource, intent, extra: variant ? [{ type: 'mrkdwn', text: `*Funnel:*\n${variant}` }] : [] }) },
+      { type: 'context', elements: [{ type: 'mrkdwn', text: `_${ts}_ · Flow3-qualified by Kiirtest` }] },
     ];
 
   } else if (['book_now_clicked', 'bridge_19_book_clicked', 'eligible_gate_bridge_clicked'].includes(type)) {
@@ -1218,6 +1229,10 @@ export default async function handler(req, res) {
     const phone = leadPhone(body);
     const email = leadEmail(body);
     const intent = leadIntent(leadData, body.intent);
+    const variant = leadVariant(body);
+    if (!isQualifiedFlow3Answers(leadData)) {
+      return res.status(200).json({ ok: true, skipped: 'booking_click_not_flow3_qualified' });
+    }
     const eventLabels = {
       book_now_clicked: 'Kiirtest result booking click',
       bridge_19_book_clicked: 'Bridge /19 booking click',
@@ -1226,19 +1241,20 @@ export default async function handler(req, res) {
     blocks = [
       { type: 'header', text: { type: 'plain_text', text: `📅 ${eventLabels[type]}` } },
       { type: 'section', text: { type: 'mrkdwn', text: `Diagnostiline sündmus: kasutaja vajutas broneerimise suunas. See ei ole veel kinnitatud online broneering.` } },
-      { type: 'section', fields: leadFields({ answers: leadData, lang, name, phone, email, adSource, intent, code: body.code }) },
+      { type: 'section', fields: leadFields({ answers: leadData, lang, name, phone, email, adSource, intent, code: body.code, extra: variant ? [{ type: 'mrkdwn', text: `*Funnel:*\n${variant}` }] : [] }) },
       { type: 'context', elements: [{ type: 'mrkdwn', text: `_${ts}_` }] },
     ];
 
   } else if (type === 'hot_lead_lens_user') {
     // Daily lens user — high-value lead, flag for Lilia to call same day
-    if (!isQualifiedFlow3Answers(answers)) {
+    const leadData = leadAnswers(body, answers);
+    if (!isQualifiedFlow3Answers(leadData)) {
       return res.status(200).json({ ok: true, skipped: 'hot_lead_not_flow3_qualified' });
     }
     const { email } = body;
     const lang = detectLang(lp_source, language);
     const phone = leadPhone(body);
-    const intent = leadIntent(answers, body.intent);
+    const intent = leadIntent(leadData, body.intent);
     blocks = [
       { type: 'header', text: { type: 'plain_text', text: `🔥 Igapäevane läätsekandja — Flow3 kandidaat` } },
       { type: 'section', text: { type: 'mrkdwn', text: `*Lilia — helista täna!* See inimene kannab läätsesid iga päev (~500€/aastas). Flow3 tasub end ära ~5 aastaga — motivatsioon kõrge.` } },
@@ -1247,11 +1263,11 @@ export default async function handler(req, res) {
         { type: 'mrkdwn', text: `*E-post:*\n${email || '—'}` },
         { type: 'mrkdwn', text: `*Keel:*\n${lang}` },
         { type: 'mrkdwn', text: `*Reklaamiallikas:*\n${adSource || '—'}` },
-        { type: 'mrkdwn', text: `*Sugu:*\n${answers.gender || '—'}` },
-        { type: 'mrkdwn', text: `*Vanus:*\n${answers.age || '—'}` },
-        { type: 'mrkdwn', text: `*Nägemine:*\n${answers.vision || '—'}` },
-        { type: 'mrkdwn', text: `*Dioptrid:*\n${answers.prescription || '—'}` },
-        { type: 'mrkdwn', text: `*Huvi tase:*\n${answers.interest || '—'}` },
+        { type: 'mrkdwn', text: `*Sugu:*\n${leadData.gender || '—'}` },
+        { type: 'mrkdwn', text: `*Vanus:*\n${leadData.age || '—'}` },
+        { type: 'mrkdwn', text: `*Nägemine:*\n${leadData.vision || '—'}` },
+        { type: 'mrkdwn', text: `*Dioptrid:*\n${leadData.prescription || '—'}` },
+        { type: 'mrkdwn', text: `*Huvi tase:*\n${leadData.interest || '—'}` },
         { type: 'mrkdwn', text: `*Soov / intent:*\n${intent || '—'}` },
       ]},
       { type: 'context', elements: [{ type: 'mrkdwn', text: `_${ts}_` }] },

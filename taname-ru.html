@@ -40,6 +40,7 @@
     (window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
     fbq('init','116445785392738');
     fbq('track','PageView');
+    fbq('track','Lead',{content_name:'kiirtest_thank_you',content_category:'kiirtest_flow3',language:'RU'});
     fbq('trackCustom','EmailCaptured');
   </script>
 
@@ -232,7 +233,7 @@
       </div>
 
       <!-- Primary CTA -->
-      <a href="https://my.ksa.ee/et/icb-time?serviceId=1" class="btn-cta" id="bookBtn">
+      <a href="https://booking.ksa.ee/et/icb-time?serviceId=1" class="btn-cta" id="bookBtn">
         Записаться на обследование &rarr; активировать бонус
       </a>
       <p class="btn-sub">Онлайн 19&euro; &nbsp;&middot;&nbsp; В клинике 39&euro; &nbsp;&middot;&nbsp; Таллинн &amp; Тарту</p>
@@ -291,7 +292,7 @@
     document.getElementById('promoCode').textContent = code;
     document.getElementById('promoCode2').textContent = code;
     document.getElementById('bookBtn').href =
-      'https://my.ksa.ee/et/icb-time?serviceId=1&promokood=' + code;
+      'https://booking.ksa.ee/et/icb-time?serviceId=1&promokood=' + code;
 
     // Copy to clipboard
     function copyCode() {

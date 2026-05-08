@@ -306,7 +306,7 @@
           <span id="promoCodeBtn" style="display:none;">FLOW19</span>
 
           <!-- Primary CTA -->
-          <a href="https://my.ksa.ee/et/icb-time?serviceId=1&promokood=FLOW19" id="bookNowBtn" onclick="if(typeof gtag!=='undefined'){gtag('event','booking_click',{language:'RU',promo:getTodayCode()});} trackBookNow();" target="_blank" rel="noopener noreferrer"
+          <a href="https://booking.ksa.ee/et/icb-time?serviceId=1&promokood=FLOW19" id="bookNowBtn" onclick="if(typeof gtag!=='undefined'){gtag('event','booking_click',{language:'RU',promo:getTodayCode()});} trackBookNow();" target="_blank" rel="noopener noreferrer"
              class="btn btn--primary btn--full btn--cta">
             Записаться и оплатить &rarr; <strong>19&nbsp;&euro;</strong>
           </a>
@@ -360,7 +360,7 @@
           <p class="result__text">Судя по вашим ответам, лазерная коррекция Flow3 может быть не самым подходящим вариантом. Мы рекомендуем пройти обследование Audit — оптометрист и врач проведут детальную диагностику и составят письменное заключение.</p>
           <hr class="result-divider">
           <p class="result__subheading">Рекомендуем обследование Audit</p>
-          <a href="https://my.ksa.ee/et/icb-time?serviceId=6" target="_blank" rel="noopener noreferrer" class="btn btn--dark btn--full btn--cta">
+          <a href="https://booking.ksa.ee/et/icb-time?serviceId=6" target="_blank" rel="noopener noreferrer" class="btn btn--dark btn--full btn--cta">
             Записаться на обследование Audit
           </a>
           <p class="result-contact">
@@ -461,7 +461,7 @@
       <div class="cta">
         <h2 class="cta__title">Готовы видеть чётко?</h2>
         <div class="cta__buttons">
-          <a href="https://my.ksa.ee/et/icb-time?serviceId=1" id="bookNowBtn2" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--lg">Записаться на обследование &mdash; 19&nbsp;&euro;</a>
+          <a href="https://booking.ksa.ee/et/icb-time?serviceId=1" id="bookNowBtn2" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--lg">Записаться на обследование &mdash; 19&nbsp;&euro;</a>
           <a href="https://ksa.ee/vabane-prillidest/" target="_blank" rel="noopener noreferrer" class="btn btn--outline btn--lg">Подробнее</a>
         </div>
         <p class="cta__contact">Звоните: <a href="tel:+3726445060">+372 644 5060</a> | <a href="mailto:info@ksa.ee">info@ksa.ee</a></p>
@@ -654,6 +654,20 @@ function buildTrackedUrl(url, extra) {
   var capturedPhone = '';   // legacy
   var capturedName = '';
   var LEAD_CONTEXT_KEY = 'ksa_flow3_lead_context';
+  var KIIRTEST_LEAD_ID_KEY = 'ksa_kiirtest_lead_id';
+  var kiirtestLeadId = getOrCreateKiirtestLeadId();
+
+  function getOrCreateKiirtestLeadId() {
+    try {
+      var existing = sessionStorage.getItem(KIIRTEST_LEAD_ID_KEY);
+      if (existing) return existing;
+      var next = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('kt_' + Date.now() + '_' + Math.random().toString(36).slice(2));
+      sessionStorage.setItem(KIIRTEST_LEAD_ID_KEY, next);
+      return next;
+    } catch(e) {
+      return 'kt_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+    }
+  }
 
   function normalisePhoneE164(raw) {
     var p = String(raw || '').replace(/[\s\-()]/g, '');
@@ -674,6 +688,7 @@ function buildTrackedUrl(url, extra) {
   function buildLeadContext(phone, via, name, email) {
     return {
       name: name || capturedName || null,
+      kiirtest_lead_id: kiirtestLeadId,
       phone: phone || capturedPhone || null,
       email: email || capturedEmail || null,
       language: 'RU',
@@ -682,6 +697,7 @@ function buildTrackedUrl(url, extra) {
       via: via || null,
       answers: answers,
       utm: getUtmData(),
+      meta: getMetaClickIds(),
       timestamp: new Date().toISOString()
     };
   }
@@ -701,6 +717,34 @@ function buildTrackedUrl(url, extra) {
     }).catch(function(){});
   }
 
+  function getCookieValue(name) {
+    var match = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/[.$?*|{}()[\]\\/+^]/g, '\\$&') + '=([^;]*)'));
+    return match ? decodeURIComponent(match[1]) : null;
+  }
+
+  function getMetaClickIds() {
+    return {
+      fbp: getCookieValue('_fbp'),
+      fbc: getCookieValue('_fbc')
+    };
+  }
+
+  function trackMetaStandard(eventName, params) {
+    if (typeof fbq === 'undefined') return;
+    fbq('track', eventName, Object.assign({
+      content_category: 'kiirtest_flow3',
+      language: 'RU'
+    }, params || {}));
+  }
+
+  function trackMetaCustom(eventName, params) {
+    if (typeof fbq === 'undefined') return;
+    fbq('trackCustom', eventName, Object.assign({
+      content_category: 'kiirtest_flow3',
+      language: 'RU'
+    }, params || {}));
+  }
+
   function showSmsGate() {
     quizEl.style.display = 'none';
 
@@ -717,7 +761,8 @@ function buildTrackedUrl(url, extra) {
       utm_source: utm.source || 'kiirtest_lp_ru',
       utm_medium: utm.medium || 'web',
       utm_campaign: utm.campaign || 'flow3_19',
-      lang: 'ru'
+      lang: 'ru',
+      kiirtest_lead_id: kiirtestLeadId
     });
     var btn = document.getElementById('bridgeBtn');
     if (btn) btn.setAttribute('href', bridgeUrl);
@@ -739,7 +784,7 @@ function buildTrackedUrl(url, extra) {
   window.trackBridgeClick = function(via) {
     saveLeadContext(capturedPhone, via || 'bridge_clicked');
     trackGateEvent('eligible_gate_bridge_clicked');
-    if (typeof fbq !== 'undefined') { fbq('track', 'Lead'); }
+    trackMetaCustom('KiirtestBridgeClicked', { funnel_step: 'bridge_clicked' });
     if (typeof gtag !== 'undefined') {
       // Confirmed bookings should be the primary Google Ads conversion.
       gtag('event', 'generate_lead', { language: 'RU', via: 'bridge_redirect' });
@@ -772,6 +817,13 @@ function buildTrackedUrl(url, extra) {
     btn.disabled = true;
     btn.textContent = 'Открываем запись...';
     var ctx = saveLeadContext(phone, 'phone_before_booking', name, email);
+    trackMetaStandard('Lead', {
+      content_name: 'kiirtest_qualified_contact',
+      funnel_step: 'qualified_contact',
+      value: 19,
+      currency: 'EUR'
+    });
+    trackMetaCustom('KiirtestQualifiedContact', { funnel_step: 'qualified_contact' });
     postTrack({
       type: 'qualified_flow3_phone_lead',
       language: 'RU',
@@ -788,7 +840,7 @@ function buildTrackedUrl(url, extra) {
       timestamp: ctx.timestamp
     }).finally(function() {
       var bridge = document.getElementById('bridgeBtn');
-      window.location.href = bridge ? bridge.href : buildTrackedUrl('/19', { from: 'kiirtest', code: getTodayCode(), lang: 'ru' });
+      window.location.href = bridge ? bridge.href : buildTrackedUrl('/19', { from: 'kiirtest', code: getTodayCode(), lang: 'ru', kiirtest_lead_id: kiirtestLeadId });
     });
   };
 
@@ -856,9 +908,7 @@ function buildTrackedUrl(url, extra) {
       'quiz_language': 'RU',
       'quiz_answers': answers
     });
-    if (typeof fbq !== 'undefined') {
-      fbq('trackCustom', 'QuizCompleted', { result: resultType });
-    }
+    trackMetaCustom('KiirtestQuizCompleted', { funnel_step: 'quiz_completed' });
 
     fetch('/api/track', {
       method: 'POST',
@@ -899,10 +949,11 @@ function buildTrackedUrl(url, extra) {
       if (el) el.textContent = code;
     });
     // Update booking button URLs with today's promo code (skips slow service-page)
-    var bookingUrl = buildTrackedUrl('https://my.ksa.ee/et/icb-time?serviceId=1', {
+    var bookingUrl = buildTrackedUrl('https://booking.ksa.ee/et/icb-time?serviceId=1', {
       promokood: code,
       lang: 'ru',
-      funnel: 'flow3_kiirtest'
+      funnel: 'flow3_kiirtest',
+      kiirtest_lead_id: kiirtestLeadId
     });
     var btns = ['bookNowBtn', 'bookNowBtn2'];
     btns.forEach(function(id) {
@@ -960,7 +1011,7 @@ function buildTrackedUrl(url, extra) {
       .then(function() {
         document.getElementById('installmentForm').style.display = 'none';
         document.getElementById('installmentDone').style.display = 'block';
-        if (typeof fbq !== 'undefined') fbq('track', 'Lead');
+        trackMetaStandard('Lead', { content_name: 'kiirtest_installment_contact', funnel_step: 'installment_contact' });
         window.dataLayer.push({ event: 'installment_lead', language: 'RU' });
         fetch('/api/track', {
           method: 'POST',
@@ -976,14 +1027,20 @@ function buildTrackedUrl(url, extra) {
       // Confirmed bookings should be the primary Google Ads conversion.
       gtag('event', 'booking_click', { language: 'RU', promo: getTodayCode(), source: 'kiirtest' });
     }
-    if (typeof fbq !== 'undefined') { fbq('track', 'Lead'); }
+    trackMetaStandard('InitiateCheckout', {
+      content_name: 'flow3_exam_booking_click',
+      funnel_step: 'booking_click',
+      value: 19,
+      currency: 'EUR'
+    });
+    trackMetaCustom('Flow3BookingClick', { funnel_step: 'booking_click' });
     window.dataLayer.push({ event: 'book_now_clicked', lp_source: 'LP-KiirtestAd-RU-V2' });
     var ctx = saveLeadContext(capturedPhone, 'result_booking_click');
     postTrack({ type: 'book_now_clicked', language: 'RU', phone: capturedPhone || null, email: capturedEmail || null, intent: ctx.intent, lead_context: ctx, answers: answers, utm: getUtmData(), timestamp: new Date().toISOString() });
   };
 
   window.trackWhatsApp = function() {
-    if (typeof fbq !== 'undefined') { fbq('trackCustom', 'WhatsAppClicked'); }
+    trackMetaCustom('WhatsAppClicked');
     window.dataLayer.push({ event: 'whatsapp_clicked', lp_source: 'LP-KiirtestAd-RU-V2' });
     fetch('/api/track', {
       method: 'POST',
@@ -1011,7 +1068,7 @@ function buildTrackedUrl(url, extra) {
           if (typeof gtag !== 'undefined') {
             gtag('event', 'generate_lead', { language: 'RU', source: 'kiirtest_fallback_form' });
           }
-          if (typeof fbq !== 'undefined') { fbq('track', 'Lead'); }
+          trackMetaStandard('Lead', { content_name: 'kiirtest_legacy_contact', funnel_step: 'legacy_contact_form' });
         } else {
           submitBtn.disabled = false;
           submitBtn.textContent = 'Перезвоните мне →';

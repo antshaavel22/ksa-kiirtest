@@ -288,7 +288,7 @@
 
         <a href="#" id="bookBtn" class="book-cta" target="_blank" rel="noopener noreferrer" onclick="trackBookClick()">
           📅 Broneeri Flow3 silmauuring → 19&nbsp;€
-          <span class="book-cta__sub">Avaneb my.ksa.ee &middot; soodushind juba peal</span>
+          <span class="book-cta__sub">Avaneb booking.ksa.ee &middot; soodushind juba peal</span>
         </a>
 
         <div class="quick-stats">
@@ -384,11 +384,36 @@
       gbraid: p.get('gbraid') || null,
       wbraid: p.get('wbraid') || null,
       fbclid: p.get('fbclid') || null,
+      kiirtest_lead_id: p.get('kiirtest_lead_id') || null,
       entry_source: p.get('source') || null,
       funnel: p.get('funnel') || 'flow3_kiirtest',
       slug: p.get('slug') || null,
       lang: p.get('lang') || (document.documentElement.lang || 'et').toLowerCase(),
     };
+  }
+  function getCookieValue(name) {
+    var match = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/[.$?*|{}()[\]\\/+^]/g, '\\$&') + '=([^;]*)'));
+    return match ? decodeURIComponent(match[1]) : null;
+  }
+  function getMetaClickIds() {
+    return {
+      fbp: getCookieValue('_fbp'),
+      fbc: getCookieValue('_fbc')
+    };
+  }
+  function trackMetaStandard(eventName, params) {
+    if (typeof fbq === 'undefined') return;
+    fbq('track', eventName, Object.assign({
+      content_category: 'kiirtest_flow3',
+      language: (document.documentElement.lang || 'et').toUpperCase()
+    }, params || {}));
+  }
+  function trackMetaCustom(eventName, params) {
+    if (typeof fbq === 'undefined') return;
+    fbq('trackCustom', eventName, Object.assign({
+      content_category: 'kiirtest_flow3',
+      language: (document.documentElement.lang || 'et').toUpperCase()
+    }, params || {}));
   }
   function getLeadContext() {
     try { return JSON.parse(sessionStorage.getItem('ksa_flow3_lead_context') || 'null'); } catch(e) { return null; }
@@ -424,6 +449,7 @@
       gbraid: t.gbraid || '',
       wbraid: t.wbraid || '',
       fbclid: t.fbclid || '',
+      kiirtest_lead_id: t.kiirtest_lead_id || '',
       source: t.entry_source || t.source || '',
       funnel: t.funnel || 'flow3_kiirtest',
       slug: t.slug || '',
@@ -444,7 +470,7 @@
     document.getElementById('codeText').textContent = code;
 
     // Build booking URL with code + full tracking passthrough.
-    var bookUrl = buildTrackedUrl('https://my.ksa.ee/et/icb-time?serviceId=1', {
+    var bookUrl = buildTrackedUrl('https://booking.ksa.ee/et/icb-time?serviceId=1', {
       promokood: code
     });
     document.getElementById('bookBtn').setAttribute('href', bookUrl);
@@ -467,9 +493,11 @@
         code: code,
         from: from || null,
         utm: getTrackingParams(),
+        meta: getMetaClickIds(),
         timestamp: new Date().toISOString()
       })
     }).catch(function(){});
+    trackMetaCustom('Flow3BridgeViewed', { funnel_step: 'bridge_viewed' });
   }
 
   function trackBookClick() {
@@ -478,7 +506,13 @@
       // Confirmed bookings should be the primary Google Ads conversion.
       gtag('event', 'book_click', { code: code, source: 'bridge_19' });
     }
-    if (typeof fbq !== 'undefined') { fbq('track', 'Lead'); }
+    trackMetaStandard('InitiateCheckout', {
+      content_name: 'flow3_exam_booking_click',
+      funnel_step: 'booking_click',
+      value: 19,
+      currency: 'EUR'
+    });
+    trackMetaCustom('Flow3BookingClick', { funnel_step: 'booking_click' });
     fetch('/api/track', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
@@ -492,6 +526,7 @@
         lead_context: getLeadContext(),
         answers: getBridgeAnswers(),
         utm: getTrackingParams(),
+        meta: getMetaClickIds(),
         timestamp: new Date().toISOString()
       })
     }).catch(function(){});
@@ -552,6 +587,7 @@
       },
       group_hint: getQueryParam('group_hint') || 'flow3_eligible_myope',
       utm: getTrackingParams(),
+      meta: getMetaClickIds(),
       // Extra fields the proxy passes to /api/track for Slack visibility
       code: code,
       from: from,
@@ -582,7 +618,13 @@
       document.getElementById('callbackDone').style.display = 'block';
     });
 
-    if (typeof fbq !== 'undefined') { fbq('track', 'Lead'); }
+    trackMetaStandard('Lead', {
+      content_name: 'flow3_callback_request',
+      funnel_step: 'callback_request',
+      value: 19,
+      currency: 'EUR'
+    });
+    trackMetaCustom('Flow3CallbackRequested', { funnel_step: 'callback_request' });
     if (typeof gtag !== 'undefined') {
       gtag('event', 'generate_lead', { source: 'bridge_19_callback' });
     }

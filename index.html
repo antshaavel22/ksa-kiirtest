@@ -220,13 +220,21 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
           </div>
 
           <p style="margin:0 0 8px;font-size:var(--text-base);font-weight:600;color:var(--color-text);">Sa sobid Flow3 silmauuringule</p>
-          <p style="margin:0 0 24px;font-size:var(--text-sm);color:var(--color-text-secondary);line-height:1.55;">Vali endale sobiv aeg Tallinnas või Tartus. Soodushind 19&nbsp;€ kohaldatakse automaatselt.</p>
+          <p style="margin:0 0 20px;font-size:var(--text-sm);color:var(--color-text-secondary);line-height:1.55;">Vali endale sobiv aeg Tallinnas või Tartus. Soodushind 19&nbsp;€ kohaldatakse automaatselt.</p>
 
-          <!-- Single primary CTA → bridge page /19 with today's code prefilled -->
-          <a id="bridgeBtn" href="/19?from=kiirtest" class="btn btn--primary btn--full btn--gate" style="text-decoration:none;font-size:16px;padding:18px 20px;" onclick="trackBridgeClick()">
-            📅 Vaata broneeringuvõimalusi → <strong>19&nbsp;€</strong>
-          </a>
-          <p style="margin:10px 0 0;font-size:11px;color:var(--color-text-muted);line-height:1.5;">Avaneb broneerimisleht koos FAQ-iga. Vajadusel saad sealt jätta tagasihelistamise soovi.</p>
+          <div class="qualified-phone">
+            <p class="qualified-phone__title">Jäta number enne broneerimist</p>
+            <p class="qualified-phone__copy">KSA spetsialist saab vajadusel aidata sobiva aja leidmisega ja vastab küsimustele päris vestluses. Kui broneerid kohe ise ära, jääb number lihtsalt turvavõrguks.</p>
+            <form class="qualified-phone__form" onsubmit="submitQualifiedPhone(event)">
+              <input class="gate-form__input" id="qualifiedPhone" type="tel" placeholder="+372 5XX XXXX" autocomplete="tel" inputmode="tel" required>
+              <button class="btn btn--primary btn--full btn--gate" id="qualifiedPhoneBtn" type="submit" style="font-size:16px;padding:18px 20px;">
+                Jätkan broneerima → <strong>19&nbsp;€</strong>
+              </button>
+            </form>
+            <p class="qualified-phone__error" id="qualifiedPhoneError">Palun sisesta korrektne mobiilinumber.</p>
+            <a id="bridgeBtn" href="/19?from=kiirtest" class="qualified-phone__secondary" onclick="trackBridgeClick('without_phone')">Jätkan ilma numbrita</a>
+          </div>
+          <p style="margin:10px 0 0;font-size:11px;color:var(--color-text-muted);line-height:1.5;">Järgmine leht avab broneerimise ja lühikese FAQ.</p>
 
           <!-- Three trust checkmarks -->
           <ul style="list-style:none;padding:0;margin:var(--space-5) 0 0;text-align:left;font-size:13px;color:var(--color-text-secondary);line-height:1.6;">
@@ -665,6 +673,51 @@ function buildTrackedUrl(url, extra) {
 
   var capturedEmail = '';   // legacy — unused but kept to avoid breaking tracking refs
   var capturedPhone = '';   // legacy
+  var LEAD_CONTEXT_KEY = 'ksa_flow3_lead_context';
+
+  function normalisePhoneE164(raw) {
+    var p = String(raw || '').replace(/[\s\-()]/g, '');
+    if (/^\+[1-9]\d{6,14}$/.test(p)) return p;
+    if (/^[1-9]\d{6,7}$/.test(p)) return '+372' + p;
+    if (/^00[1-9]\d{5,14}$/.test(p)) return '+' + p.slice(2);
+    return null;
+  }
+
+  function getLeadIntent() {
+    var parts = [];
+    if (answers.interest) parts.push('interest:' + answers.interest);
+    if (answers.painpoint) parts.push('pain:' + answers.painpoint);
+    if (answers.lenses) parts.push('lenses:' + answers.lenses);
+    return parts.join(' | ') || 'book_flow3_exam';
+  }
+
+  function buildLeadContext(phone, via) {
+    return {
+      phone: phone || capturedPhone || null,
+      language: 'ET',
+      result: isGoodCandidate() ? 'good_candidate' : 'not_ideal',
+      intent: getLeadIntent(),
+      via: via || null,
+      answers: answers,
+      utm: getUtmData(),
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  function saveLeadContext(phone, via) {
+    var ctx = buildLeadContext(phone, via);
+    try { sessionStorage.setItem(LEAD_CONTEXT_KEY, JSON.stringify(ctx)); } catch(e) {}
+    return ctx;
+  }
+
+  function postTrack(payload) {
+    return fetch('/api/track', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      keepalive: true,
+      body: JSON.stringify(payload)
+    }).catch(function(){});
+  }
 
   function showSmsGate() {
     quizEl.style.display = 'none';
@@ -703,21 +756,53 @@ function buildTrackedUrl(url, extra) {
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({ event: type, quiz_language: 'ET' });
     if (typeof gtag !== 'undefined') { gtag('event', type, { language: 'ET' }); }
-    fetch('/api/track', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ type: type, language: 'ET', answers: answers, utm: getUtmData(), timestamp: new Date().toISOString() })
-    }).catch(function(){});
+    postTrack({ type: type, language: 'ET', intent: getLeadIntent(), lead_context: buildLeadContext(capturedPhone, type), answers: answers, utm: getUtmData(), timestamp: new Date().toISOString() });
   }
 
   // User clicked the bridge button — log + fire conversion + let link navigate normally
-  window.trackBridgeClick = function() {
+  window.trackBridgeClick = function(via) {
+    saveLeadContext(capturedPhone, via || 'bridge_clicked');
     trackGateEvent('eligible_gate_bridge_clicked');
     if (typeof fbq !== 'undefined') { fbq('track', 'Lead'); }
     if (typeof gtag !== 'undefined') {
       // Confirmed bookings should be the primary Google Ads conversion.
       gtag('event', 'generate_lead', { language: 'ET', via: 'bridge_redirect' });
     }
+  };
+
+  window.submitQualifiedPhone = function(e) {
+    e.preventDefault();
+    var input = document.getElementById('qualifiedPhone');
+    var error = document.getElementById('qualifiedPhoneError');
+    var btn = document.getElementById('qualifiedPhoneBtn');
+    var phone = normalisePhoneE164(input.value);
+    if (!phone) {
+      input.style.borderColor = 'var(--color-danger)';
+      error.style.display = 'block';
+      input.focus();
+      return;
+    }
+    input.style.borderColor = '';
+    error.style.display = 'none';
+    capturedPhone = phone;
+    btn.disabled = true;
+    btn.textContent = 'Avan broneeringut...';
+    var ctx = saveLeadContext(phone, 'phone_before_booking');
+    postTrack({
+      type: 'qualified_flow3_phone_lead',
+      language: 'ET',
+      phone: phone,
+      intent: ctx.intent,
+      result: ctx.result,
+      via: ctx.via,
+      lead_context: ctx,
+      answers: answers,
+      utm: getUtmData(),
+      timestamp: ctx.timestamp
+    }).finally(function() {
+      var bridge = document.getElementById('bridgeBtn');
+      window.location.href = bridge ? bridge.href : buildTrackedUrl('/19', { from: 'kiirtest', code: getTodayCode(), lang: 'et' });
+    });
   };
 
   window.skipSmsGate = function() {
@@ -765,12 +850,8 @@ function buildTrackedUrl(url, extra) {
     if (resultType === 'good_candidate') { showPersonalLine(); }
 
     // Flag daily lens users for Lilia
-    if (answers.lenses === 'iga_paev') {
-      fetch('/api/track', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ type: 'hot_lead_lens_user', language: 'ET', phone: capturedPhone || null, email: capturedEmail || null, via: opts.via || null, answers: answers, utm: getUtmData(), timestamp: new Date().toISOString() })
-      }).catch(function(){});
+    if (resultType === 'good_candidate' && answers.lenses === 'iga_paev') {
+      postTrack({ type: 'hot_lead_lens_user', language: 'ET', phone: capturedPhone || null, email: capturedEmail || null, intent: getLeadIntent(), via: opts.via || null, lead_context: buildLeadContext(capturedPhone, opts.via || 'result_viewed'), answers: answers, utm: getUtmData(), timestamp: new Date().toISOString() });
     }
 
     // Scroll result into view
@@ -920,11 +1001,8 @@ function buildTrackedUrl(url, extra) {
     }
     if (typeof fbq !== 'undefined') { fbq('track', 'Lead'); }
     window.dataLayer.push({ event: 'book_now_clicked', lp_source: 'LP-KiirtestAd-ET-V3' });
-    fetch('/api/track', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ type: 'book_now_clicked', language: 'ET', email: capturedEmail || null, answers: answers, utm: getUtmData(), timestamp: new Date().toISOString() })
-    }).catch(function(){});
+    var ctx = saveLeadContext(capturedPhone, 'result_booking_click');
+    postTrack({ type: 'book_now_clicked', language: 'ET', phone: capturedPhone || null, email: capturedEmail || null, intent: ctx.intent, lead_context: ctx, answers: answers, utm: getUtmData(), timestamp: new Date().toISOString() });
   };
 
   window.trackWhatsApp = function() {

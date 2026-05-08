@@ -482,6 +482,51 @@ function detectLang(lp_source, language) {
   return 'ET';
 }
 
+function valueOrDash(value) {
+  return value === undefined || value === null || value === '' ? '—' : String(value);
+}
+
+function isQualifiedFlow3Answers(answers = {}) {
+  const eligibleAge = ['18-25', '26-35', '36-45', '18_45'].includes(String(answers.age || answers.age_band || ''));
+  const vision = String(answers.vision || answers.vision_issue || '').toLowerCase();
+  const isMinus = vision === 'miinus' || vision === 'myopia' || vision.includes('minus') || vision.includes('myop');
+  const prescription = String(answers.prescription || '').toLowerCase();
+  const tooHighMinus = prescription.includes('rohkem kui -9') || prescription.includes('more than -9') || prescription.includes('больше -9');
+  return eligibleAge && isMinus && !tooHighMinus;
+}
+
+function leadIntent(answers = {}, explicit) {
+  if (explicit) return explicit;
+  const parts = [];
+  if (answers.interest) parts.push(`interest:${answers.interest}`);
+  if (answers.painpoint) parts.push(`pain:${answers.painpoint}`);
+  if (answers.lenses) parts.push(`lenses:${answers.lenses}`);
+  return parts.join(' | ') || '—';
+}
+
+function leadAnswers(body, fallback = {}) {
+  return body?.lead_context?.answers || body?.answers || fallback || {};
+}
+
+function leadPhone(body) {
+  return body?.phone || body?.contact?.phone || body?.lead_context?.phone || null;
+}
+
+function leadFields({ answers = {}, lang, phone, adSource, intent, code, extra = [] }) {
+  const fields = [
+    { type: 'mrkdwn', text: `*Telefon:*\n${phone ? `<tel:${phone}|${phone}>` : '—'}` },
+    { type: 'mrkdwn', text: `*Keel:*\n${valueOrDash(lang)}` },
+    { type: 'mrkdwn', text: `*Allikas:*\n${valueOrDash(adSource)}` },
+    { type: 'mrkdwn', text: `*Soov / intent:*\n${valueOrDash(intent)}` },
+    { type: 'mrkdwn', text: `*Vanus:*\n${valueOrDash(answers.age || answers.age_band)}` },
+    { type: 'mrkdwn', text: `*Nägemine:*\n${valueOrDash(answers.vision || answers.vision_issue)}` },
+    { type: 'mrkdwn', text: `*Dioptrid:*\n${valueOrDash(answers.prescription || answers.prescription_sphere)}` },
+    { type: 'mrkdwn', text: `*Läätsed:*\n${valueOrDash(answers.lenses)}` },
+  ];
+  if (code) fields.push({ type: 'mrkdwn', text: `*Sooduskood:*\n${code}` });
+  return fields.concat(extra);
+}
+
 // ══════════════════════════════════════════════════════════════════════════════
 // SOAP OPERA SEQUENCE — 6 follow-up emails (Brunson framework)
 // Triggered automatically on email_captured. ET + EN. RU by Lilia.
@@ -846,7 +891,8 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Invalid JSON' });
   }
 
-  const { type, result, language, lp_source, answers = {}, contact, promoCode: clientPromoCode, utm, timestamp } = body;
+  const { type, result, language, lp_source, answers: rawAnswers = {}, contact, promoCode: clientPromoCode, utm, timestamp } = body;
+  const answers = rawAnswers || {};
   const adSource = await utmLabel(utm);
   const ts = new Date(timestamp || Date.now()).toLocaleString('et-EE', { timeZone: 'Europe/Tallinn' });
 
@@ -1138,21 +1184,61 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ ok: true });
 
+  } else if (type === 'qualified_flow3_phone_lead') {
+    // Qualified Kiirtest lead left a phone number before moving to the 19€ booking bridge.
+    const lang = detectLang(lp_source, language);
+    const leadData = leadAnswers(body, answers);
+    const phone = leadPhone(body);
+    const intent = leadIntent(leadData, body.intent);
+    const qualified = isQualifiedFlow3Answers(leadData);
+    blocks = [
+      { type: 'header', text: { type: 'plain_text', text: qualified ? `📞 Flow3 kandidaat jättis telefoni` : `📞 Kiirtest telefon — kontrolli sobivust` } },
+      { type: 'section', text: { type: 'mrkdwn', text: `*Lilia / CS:* inimene liigub broneerima, aga jättis numbri. Kui broneeringut ei ilmu, aita leida sobiv aeg ja vasta küsimustele live-kõnes.` } },
+      { type: 'section', fields: leadFields({ answers: leadData, lang, phone, adSource, intent }) },
+      { type: 'context', elements: [{ type: 'mrkdwn', text: `_${ts}_ · ${qualified ? 'Flow3-qualified by Kiirtest' : 'Not marked hot: answers need review'}` }] },
+    ];
+
+  } else if (['book_now_clicked', 'bridge_19_book_clicked', 'eligible_gate_bridge_clicked'].includes(type)) {
+    // Diagnostic booking intent events. These are not confirmed bookings/conversions.
+    const lang = detectLang(lp_source, language);
+    const leadData = leadAnswers(body, answers);
+    const phone = leadPhone(body);
+    const intent = leadIntent(leadData, body.intent);
+    const eventLabels = {
+      book_now_clicked: 'Kiirtest result booking click',
+      bridge_19_book_clicked: 'Bridge /19 booking click',
+      eligible_gate_bridge_clicked: 'Kiirtest to /19 click',
+    };
+    blocks = [
+      { type: 'header', text: { type: 'plain_text', text: `📅 ${eventLabels[type]}` } },
+      { type: 'section', text: { type: 'mrkdwn', text: `Diagnostiline sündmus: kasutaja vajutas broneerimise suunas. See ei ole veel kinnitatud online broneering.` } },
+      { type: 'section', fields: leadFields({ answers: leadData, lang, phone, adSource, intent, code: body.code }) },
+      { type: 'context', elements: [{ type: 'mrkdwn', text: `_${ts}_` }] },
+    ];
+
   } else if (type === 'hot_lead_lens_user') {
     // Daily lens user — high-value lead, flag for Lilia to call same day
+    if (!isQualifiedFlow3Answers(answers)) {
+      return res.status(200).json({ ok: true, skipped: 'hot_lead_not_flow3_qualified' });
+    }
     const { email } = body;
     const lang = detectLang(lp_source, language);
+    const phone = leadPhone(body);
+    const intent = leadIntent(answers, body.intent);
     blocks = [
-      { type: 'header', text: { type: 'plain_text', text: `🔥 Igapäevane läätsekandja — kuum liid!` } },
+      { type: 'header', text: { type: 'plain_text', text: `🔥 Igapäevane läätsekandja — Flow3 kandidaat` } },
       { type: 'section', text: { type: 'mrkdwn', text: `*Lilia — helista täna!* See inimene kannab läätsesid iga päev (~500€/aastas). Flow3 tasub end ära ~5 aastaga — motivatsioon kõrge.` } },
       { type: 'section', fields: [
+        { type: 'mrkdwn', text: `*Telefon:*\n${phone ? `<tel:${phone}|${phone}>` : '—'}` },
         { type: 'mrkdwn', text: `*E-post:*\n${email || '—'}` },
         { type: 'mrkdwn', text: `*Keel:*\n${lang}` },
         { type: 'mrkdwn', text: `*Reklaamiallikas:*\n${adSource || '—'}` },
         { type: 'mrkdwn', text: `*Sugu:*\n${answers.gender || '—'}` },
         { type: 'mrkdwn', text: `*Vanus:*\n${answers.age || '—'}` },
+        { type: 'mrkdwn', text: `*Nägemine:*\n${answers.vision || '—'}` },
         { type: 'mrkdwn', text: `*Dioptrid:*\n${answers.prescription || '—'}` },
         { type: 'mrkdwn', text: `*Huvi tase:*\n${answers.interest || '—'}` },
+        { type: 'mrkdwn', text: `*Soov / intent:*\n${intent || '—'}` },
       ]},
       { type: 'context', elements: [{ type: 'mrkdwn', text: `_${ts}_` }] },
     ];
@@ -1162,6 +1248,9 @@ export default async function handler(req, res) {
     const { contact, code, from } = body;
     const cName = (contact && contact.name) || '—';
     const cPhone = (contact && contact.phone) || '—';
+    const lang = detectLang(lp_source, language || body.language);
+    const leadData = leadAnswers(body, answers);
+    const intent = leadIntent(leadData, body.intent);
     const sourceLabel = from === 'lilia' ? 'Lilia QR / e-kirjast' : (from === 'kiirtest' ? 'Kiirtest LP' : 'Bridge /19 (otse)');
     blocks = [
       { type: 'header', text: { type: 'plain_text', text: `📞 Tagasihelistamise soov — bridge /19` } },
@@ -1169,8 +1258,14 @@ export default async function handler(req, res) {
       { type: 'section', fields: [
         { type: 'mrkdwn', text: `*Nimi:*\n${cName}` },
         { type: 'mrkdwn', text: `*Telefon:*\n<tel:${cPhone}|${cPhone}>` },
+        { type: 'mrkdwn', text: `*Keel:*\n${lang}` },
         { type: 'mrkdwn', text: `*Allikas:*\n${sourceLabel}` },
+        { type: 'mrkdwn', text: `*Reklaamiallikas:*\n${adSource || '—'}` },
         { type: 'mrkdwn', text: `*Sooduskood:*\n${code || '—'}` },
+        { type: 'mrkdwn', text: `*Vanus:*\n${leadData.age || leadData.age_band || '—'}` },
+        { type: 'mrkdwn', text: `*Nägemine:*\n${leadData.vision || leadData.vision_issue || '—'}` },
+        { type: 'mrkdwn', text: `*Dioptrid:*\n${leadData.prescription || leadData.prescription_sphere || '—'}` },
+        { type: 'mrkdwn', text: `*Soov / intent:*\n${intent || '—'}` },
       ]},
       { type: 'context', elements: [{ type: 'mrkdwn', text: `_${ts}_` }] },
     ];
@@ -1179,16 +1274,20 @@ export default async function handler(req, res) {
     // Email gate skip downsell — left phone number, wants callback
     const { phone } = body;
     const lang = detectLang(lp_source, language);
+    const intent = leadIntent(answers, body.intent);
     blocks = [
       { type: 'header', text: { type: 'plain_text', text: `📞 Tagasihelistamise soov` } },
       { type: 'section', text: { type: 'mrkdwn', text: `*Lilia — helista tagasi E-R 9–18!*\nIsik jättis numbri e-gate downsellil (ei tahtnud e-posti jätta, kuid nõustus tagasihelistamisega).` } },
       { type: 'section', fields: [
         { type: 'mrkdwn', text: `*Telefon:*\n${phone || '—'}` },
         { type: 'mrkdwn', text: `*Keel:*\n${lang}` },
+        { type: 'mrkdwn', text: `*Reklaamiallikas:*\n${adSource || '—'}` },
         { type: 'mrkdwn', text: `*Sugu:*\n${answers.gender || '—'}` },
         { type: 'mrkdwn', text: `*Vanus:*\n${answers.age || '—'}` },
+        { type: 'mrkdwn', text: `*Nägemine:*\n${answers.vision || '—'}` },
         { type: 'mrkdwn', text: `*Dioptrid:*\n${answers.prescription || '—'}` },
         { type: 'mrkdwn', text: `*Huvi:*\n${answers.interest || '—'}` },
+        { type: 'mrkdwn', text: `*Soov / intent:*\n${intent}` },
       ]},
       { type: 'section', text: { type: 'mrkdwn', text: `💡 *Helistamisskript:* "Tere, nägin et tegite meie Flow3 kiirtesti — teie tulemused näevad head välja. Kas sobib rääkida uuringust?"` } },
       { type: 'context', elements: [{ type: 'mrkdwn', text: `_${ts}_` }] },

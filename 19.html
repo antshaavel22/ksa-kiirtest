@@ -389,6 +389,26 @@
       lang: p.get('lang') || (document.documentElement.lang || 'et').toLowerCase(),
     };
   }
+  function getLeadContext() {
+    try { return JSON.parse(sessionStorage.getItem('ksa_flow3_lead_context') || 'null'); } catch(e) { return null; }
+  }
+  function getBridgeAnswers() {
+    var ctx = getLeadContext();
+    if (ctx && ctx.answers) return ctx.answers;
+    return {
+      age: getQueryParam('age') || getQueryParam('age_band') || '',
+      vision: getQueryParam('vision') || getQueryParam('vision_issue') || '',
+      prescription: getQueryParam('prescription') || ''
+    };
+  }
+  function getBridgeIntent() {
+    var ctx = getLeadContext();
+    return (ctx && ctx.intent) || getQueryParam('intent') || 'book_flow3_exam';
+  }
+  function getLeadPhone() {
+    var ctx = getLeadContext();
+    return (ctx && ctx.phone) || null;
+  }
   function buildTrackedUrl(url, extra) {
     var isAbsolute = /^https?:\/\//i.test(url);
     var u = new URL(url, window.location.origin);
@@ -461,9 +481,15 @@
     fetch('/api/track', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
+      keepalive: true,
       body: JSON.stringify({
         type: 'bridge_19_book_clicked',
         code: code,
+        phone: getLeadPhone(),
+        language: (document.documentElement.lang || 'et').toUpperCase(),
+        intent: getBridgeIntent(),
+        lead_context: getLeadContext(),
+        answers: getBridgeAnswers(),
         utm: getTrackingParams(),
         timestamp: new Date().toISOString()
       })
@@ -526,6 +552,9 @@
       // Extra fields the proxy passes to /api/track for Slack visibility
       code: code,
       from: from,
+      intent: getBridgeIntent(),
+      lead_context: getLeadContext(),
+      answers: getBridgeAnswers(),
     };
 
     fetch('/api/intake-flow3', {

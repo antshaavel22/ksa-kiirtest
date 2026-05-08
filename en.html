@@ -220,13 +220,21 @@
           </div>
 
           <p style="margin:0 0 8px;font-size:var(--text-base);font-weight:600;color:var(--color-text);">You qualify for a Flow3 exam</p>
-          <p style="margin:0 0 24px;font-size:var(--text-sm);color:var(--color-text-secondary);line-height:1.55;">Choose a time that suits you in Tallinn or Tartu. The €19 discount is applied automatically.</p>
+          <p style="margin:0 0 20px;font-size:var(--text-sm);color:var(--color-text-secondary);line-height:1.55;">Choose a time that suits you in Tallinn or Tartu. The €19 discount is applied automatically.</p>
 
-          <!-- Single primary CTA → bridge page /19 -->
-          <a id="bridgeBtn" href="/19?from=kiirtest" class="btn btn--primary btn--full btn--gate" style="text-decoration:none;font-size:16px;padding:18px 20px;" onclick="trackBridgeClick()">
-            📅 See booking options → <strong>€19</strong>
-          </a>
-          <p style="margin:10px 0 0;font-size:11px;color:var(--color-text-muted);line-height:1.5;">Opens the booking page with FAQ. You can also request a callback from there.</p>
+          <div class="qualified-phone">
+            <p class="qualified-phone__title">Leave your number before booking</p>
+            <p class="qualified-phone__copy">A KSA specialist can help you find the right time and answer questions live. If you book online right away, the number simply stays as a safety net.</p>
+            <form class="qualified-phone__form" onsubmit="submitQualifiedPhone(event)">
+              <input class="gate-form__input" id="qualifiedPhone" type="tel" placeholder="+372 5XX XXXX" autocomplete="tel" inputmode="tel" required>
+              <button class="btn btn--primary btn--full btn--gate" id="qualifiedPhoneBtn" type="submit" style="font-size:16px;padding:18px 20px;">
+                Continue to booking → <strong>€19</strong>
+              </button>
+            </form>
+            <p class="qualified-phone__error" id="qualifiedPhoneError">Please enter a valid mobile number.</p>
+            <a id="bridgeBtn" href="/19?from=kiirtest" class="qualified-phone__secondary" onclick="trackBridgeClick('without_phone')">Continue without a number</a>
+          </div>
+          <p style="margin:10px 0 0;font-size:11px;color:var(--color-text-muted);line-height:1.5;">The next page opens booking and a short FAQ.</p>
 
           <!-- Three trust checkmarks -->
           <ul style="list-style:none;padding:0;margin:var(--space-5) 0 0;text-align:left;font-size:13px;color:var(--color-text-secondary);line-height:1.6;">
@@ -645,6 +653,52 @@ function buildTrackedUrl(url, extra) {
   // Non-eligible go straight to not_ideal result. Bridge page handles booking + FAQ + callback.
 
   var capturedEmail = '';   // legacy
+  var capturedPhone = '';   // legacy
+  var LEAD_CONTEXT_KEY = 'ksa_flow3_lead_context';
+
+  function normalisePhoneE164(raw) {
+    var p = String(raw || '').replace(/[\s\-()]/g, '');
+    if (/^\+[1-9]\d{6,14}$/.test(p)) return p;
+    if (/^[1-9]\d{6,7}$/.test(p)) return '+372' + p;
+    if (/^00[1-9]\d{5,14}$/.test(p)) return '+' + p.slice(2);
+    return null;
+  }
+
+  function getLeadIntent() {
+    var parts = [];
+    if (answers.interest) parts.push('interest:' + answers.interest);
+    if (answers.painpoint) parts.push('pain:' + answers.painpoint);
+    if (answers.lenses) parts.push('lenses:' + answers.lenses);
+    return parts.join(' | ') || 'book_flow3_exam';
+  }
+
+  function buildLeadContext(phone, via) {
+    return {
+      phone: phone || capturedPhone || null,
+      language: 'EN',
+      result: isGoodCandidate() ? 'good_candidate' : 'not_ideal',
+      intent: getLeadIntent(),
+      via: via || null,
+      answers: answers,
+      utm: getUtmData(),
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  function saveLeadContext(phone, via) {
+    var ctx = buildLeadContext(phone, via);
+    try { sessionStorage.setItem(LEAD_CONTEXT_KEY, JSON.stringify(ctx)); } catch(e) {}
+    return ctx;
+  }
+
+  function postTrack(payload) {
+    return fetch('/api/track', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      keepalive: true,
+      body: JSON.stringify(payload)
+    }).catch(function(){});
+  }
 
   function showSmsGate() {
     quizEl.style.display = 'none';
@@ -678,20 +732,52 @@ function buildTrackedUrl(url, extra) {
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({ event: type, quiz_language: 'EN' });
     if (typeof gtag !== 'undefined') { gtag('event', type, { language: 'EN' }); }
-    fetch('/api/track', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ type: type, language: 'EN', answers: answers, utm: getUtmData(), timestamp: new Date().toISOString() })
-    }).catch(function(){});
+    postTrack({ type: type, language: 'EN', intent: getLeadIntent(), lead_context: buildLeadContext(capturedPhone, type), answers: answers, utm: getUtmData(), timestamp: new Date().toISOString() });
   }
 
-  window.trackBridgeClick = function() {
+  window.trackBridgeClick = function(via) {
+    saveLeadContext(capturedPhone, via || 'bridge_clicked');
     trackGateEvent('eligible_gate_bridge_clicked');
     if (typeof fbq !== 'undefined') { fbq('track', 'Lead'); }
     if (typeof gtag !== 'undefined') {
       // Confirmed bookings should be the primary Google Ads conversion.
       gtag('event', 'generate_lead', { language: 'EN', via: 'bridge_redirect' });
     }
+  };
+
+  window.submitQualifiedPhone = function(e) {
+    e.preventDefault();
+    var input = document.getElementById('qualifiedPhone');
+    var error = document.getElementById('qualifiedPhoneError');
+    var btn = document.getElementById('qualifiedPhoneBtn');
+    var phone = normalisePhoneE164(input.value);
+    if (!phone) {
+      input.style.borderColor = 'var(--color-danger)';
+      error.style.display = 'block';
+      input.focus();
+      return;
+    }
+    input.style.borderColor = '';
+    error.style.display = 'none';
+    capturedPhone = phone;
+    btn.disabled = true;
+    btn.textContent = 'Opening booking...';
+    var ctx = saveLeadContext(phone, 'phone_before_booking');
+    postTrack({
+      type: 'qualified_flow3_phone_lead',
+      language: 'EN',
+      phone: phone,
+      intent: ctx.intent,
+      result: ctx.result,
+      via: ctx.via,
+      lead_context: ctx,
+      answers: answers,
+      utm: getUtmData(),
+      timestamp: ctx.timestamp
+    }).finally(function() {
+      var bridge = document.getElementById('bridgeBtn');
+      window.location.href = bridge ? bridge.href : buildTrackedUrl('/19', { from: 'kiirtest', code: getTodayCode(), lang: 'en' });
+    });
   };
 
   // Skip \u2014 keep the function name `skipEmailGate` for compat with existing button onclick
@@ -728,12 +814,8 @@ function buildTrackedUrl(url, extra) {
 
     if (resultType === 'good_candidate') { showPersonalLine(); }
 
-    if (answers.lenses === 'iga_paev') {
-      fetch('/api/track', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ type: 'hot_lead_lens_user', language: 'EN', email: capturedEmail || null, answers: answers, utm: getUtmData(), timestamp: new Date().toISOString() })
-      }).catch(function(){});
+    if (resultType === 'good_candidate' && answers.lenses === 'iga_paev') {
+      postTrack({ type: 'hot_lead_lens_user', language: 'EN', phone: capturedPhone || null, email: capturedEmail || null, intent: getLeadIntent(), lead_context: buildLeadContext(capturedPhone, 'result_viewed'), answers: answers, utm: getUtmData(), timestamp: new Date().toISOString() });
     }
 
     setTimeout(function() {
@@ -875,11 +957,8 @@ function buildTrackedUrl(url, extra) {
     }
     if (typeof fbq !== 'undefined') { fbq('track', 'Lead'); }
     window.dataLayer.push({ event: 'book_now_clicked', lp_source: 'LP-KiirtestAd-EN-V2' });
-    fetch('/api/track', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ type: 'book_now_clicked', language: 'EN', email: capturedEmail || null, answers: answers, utm: getUtmData(), timestamp: new Date().toISOString() })
-    }).catch(function(){});
+    var ctx = saveLeadContext(capturedPhone, 'result_booking_click');
+    postTrack({ type: 'book_now_clicked', language: 'EN', phone: capturedPhone || null, email: capturedEmail || null, intent: ctx.intent, lead_context: ctx, answers: answers, utm: getUtmData(), timestamp: new Date().toISOString() });
   };
 
   window.trackWhatsApp = function() {

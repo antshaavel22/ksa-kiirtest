@@ -516,10 +516,15 @@ function leadName(body) {
   return body?.name || body?.contact?.name || body?.lead_context?.name || null;
 }
 
-function leadFields({ answers = {}, lang, name, phone, adSource, intent, code, extra = [] }) {
+function leadEmail(body) {
+  return body?.email || body?.contact?.email || body?.lead_context?.email || null;
+}
+
+function leadFields({ answers = {}, lang, name, phone, email, adSource, intent, code, extra = [] }) {
   const fields = [
     { type: 'mrkdwn', text: `*Nimi:*\n${valueOrDash(name)}` },
     { type: 'mrkdwn', text: `*Telefon:*\n${phone ? `<tel:${phone}|${phone}>` : '—'}` },
+    { type: 'mrkdwn', text: `*E-post:*\n${valueOrDash(email)}` },
     { type: 'mrkdwn', text: `*Keel:*\n${valueOrDash(lang)}` },
     { type: 'mrkdwn', text: `*Allikas:*\n${valueOrDash(adSource)}` },
     { type: 'mrkdwn', text: `*Soov / intent:*\n${valueOrDash(intent)}` },
@@ -1195,12 +1200,13 @@ export default async function handler(req, res) {
     const leadData = leadAnswers(body, answers);
     const name = leadName(body);
     const phone = leadPhone(body);
+    const email = leadEmail(body);
     const intent = leadIntent(leadData, body.intent);
     const qualified = isQualifiedFlow3Answers(leadData);
     blocks = [
       { type: 'header', text: { type: 'plain_text', text: qualified ? `📞 Flow3 kandidaat jättis telefoni` : `📞 Kiirtest telefon — kontrolli sobivust` } },
       { type: 'section', text: { type: 'mrkdwn', text: `*Lilia / CS:* inimene liigub broneerima, aga jättis numbri. Kui broneeringut ei ilmu, aita leida sobiv aeg ja vasta küsimustele live-kõnes.` } },
-      { type: 'section', fields: leadFields({ answers: leadData, lang, name, phone, adSource, intent }) },
+      { type: 'section', fields: leadFields({ answers: leadData, lang, name, phone, email, adSource, intent }) },
       { type: 'context', elements: [{ type: 'mrkdwn', text: `_${ts}_ · ${qualified ? 'Flow3-qualified by Kiirtest' : 'Not marked hot: answers need review'}` }] },
     ];
 
@@ -1210,6 +1216,7 @@ export default async function handler(req, res) {
     const leadData = leadAnswers(body, answers);
     const name = leadName(body);
     const phone = leadPhone(body);
+    const email = leadEmail(body);
     const intent = leadIntent(leadData, body.intent);
     const eventLabels = {
       book_now_clicked: 'Kiirtest result booking click',
@@ -1219,7 +1226,7 @@ export default async function handler(req, res) {
     blocks = [
       { type: 'header', text: { type: 'plain_text', text: `📅 ${eventLabels[type]}` } },
       { type: 'section', text: { type: 'mrkdwn', text: `Diagnostiline sündmus: kasutaja vajutas broneerimise suunas. See ei ole veel kinnitatud online broneering.` } },
-      { type: 'section', fields: leadFields({ answers: leadData, lang, name, phone, adSource, intent, code: body.code }) },
+      { type: 'section', fields: leadFields({ answers: leadData, lang, name, phone, email, adSource, intent, code: body.code }) },
       { type: 'context', elements: [{ type: 'mrkdwn', text: `_${ts}_` }] },
     ];
 
@@ -1255,6 +1262,7 @@ export default async function handler(req, res) {
     const { contact, code, from } = body;
     const cName = (contact && contact.name) || '—';
     const cPhone = (contact && contact.phone) || '—';
+    const cEmail = (contact && contact.email) || '—';
     const lang = detectLang(lp_source, language || body.language);
     const leadData = leadAnswers(body, answers);
     const intent = leadIntent(leadData, body.intent);
@@ -1265,6 +1273,7 @@ export default async function handler(req, res) {
       { type: 'section', fields: [
         { type: 'mrkdwn', text: `*Nimi:*\n${cName}` },
         { type: 'mrkdwn', text: `*Telefon:*\n<tel:${cPhone}|${cPhone}>` },
+        { type: 'mrkdwn', text: `*E-post:*\n${cEmail}` },
         { type: 'mrkdwn', text: `*Keel:*\n${lang}` },
         { type: 'mrkdwn', text: `*Allikas:*\n${sourceLabel}` },
         { type: 'mrkdwn', text: `*Reklaamiallikas:*\n${adSource || '—'}` },

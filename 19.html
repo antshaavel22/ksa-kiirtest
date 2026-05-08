@@ -315,6 +315,7 @@
           <div class="callback__form">
             <input class="callback__input" type="text" id="cbName" placeholder="Eesnimi" autocomplete="given-name" required>
             <input class="callback__input" type="tel" id="cbPhone" placeholder="+372 5XX XXXX" autocomplete="tel" required>
+            <input class="callback__input" type="email" id="cbEmail" placeholder="E-post (soovi korral)" autocomplete="email">
           </div>
           <button class="callback__btn" id="cbBtn" type="submit">Helistage mulle tagasi →</button>
         </form>
@@ -517,6 +518,7 @@
     e.preventDefault();
     var name = document.getElementById('cbName').value.trim();
     var rawPhone = document.getElementById('cbPhone').value.trim();
+    var email = document.getElementById('cbEmail').value.trim();
     var phone = normalisePhoneE164(rawPhone);
     if (!name) { document.getElementById('cbName').focus(); return; }
     if (!phone) {
@@ -542,6 +544,7 @@
       contact: {
         name: name,
         phone: phone,
+        email: email || null,
       },
       qualifying: {
         age_band: getQueryParam('age_band') || '18_45',

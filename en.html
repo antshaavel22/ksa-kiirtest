@@ -228,6 +228,7 @@
             <form class="qualified-phone__form" onsubmit="submitQualifiedPhone(event)">
               <input class="gate-form__input" id="qualifiedName" type="text" placeholder="First name" autocomplete="given-name" required>
               <input class="gate-form__input" id="qualifiedPhone" type="tel" placeholder="+372 5XX XXXX" autocomplete="tel" inputmode="tel" required>
+              <input class="gate-form__input" id="qualifiedEmail" type="email" placeholder="Email (optional)" autocomplete="email">
               <button class="btn btn--primary btn--full btn--gate" id="qualifiedPhoneBtn" type="submit" style="font-size:16px;padding:18px 20px;">
                 Continue to booking → <strong>€19</strong>
               </button>
@@ -674,10 +675,11 @@ function buildTrackedUrl(url, extra) {
     return parts.join(' | ') || 'book_flow3_exam';
   }
 
-  function buildLeadContext(phone, via, name) {
+  function buildLeadContext(phone, via, name, email) {
     return {
       name: name || capturedName || null,
       phone: phone || capturedPhone || null,
+      email: email || capturedEmail || null,
       language: 'EN',
       result: isGoodCandidate() ? 'good_candidate' : 'not_ideal',
       intent: getLeadIntent(),
@@ -688,8 +690,8 @@ function buildTrackedUrl(url, extra) {
     };
   }
 
-  function saveLeadContext(phone, via, name) {
-    var ctx = buildLeadContext(phone, via, name);
+  function saveLeadContext(phone, via, name, email) {
+    var ctx = buildLeadContext(phone, via, name, email);
     try { sessionStorage.setItem(LEAD_CONTEXT_KEY, JSON.stringify(ctx)); } catch(e) {}
     return ctx;
   }
@@ -752,10 +754,12 @@ function buildTrackedUrl(url, extra) {
     e.preventDefault();
     var nameInput = document.getElementById('qualifiedName');
     var input = document.getElementById('qualifiedPhone');
+    var emailInput = document.getElementById('qualifiedEmail');
     var error = document.getElementById('qualifiedPhoneError');
     var btn = document.getElementById('qualifiedPhoneBtn');
     var name = nameInput.value.trim();
     var phone = normalisePhoneE164(input.value);
+    var email = emailInput.value.trim();
     if (!name || !phone) {
       nameInput.style.borderColor = !name ? 'var(--color-danger)' : '';
       input.style.borderColor = !phone ? 'var(--color-danger)' : '';
@@ -768,15 +772,17 @@ function buildTrackedUrl(url, extra) {
     error.style.display = 'none';
     capturedName = name;
     capturedPhone = phone;
+    capturedEmail = email;
     btn.disabled = true;
     btn.textContent = 'Opening booking...';
-    var ctx = saveLeadContext(phone, 'phone_before_booking', name);
+    var ctx = saveLeadContext(phone, 'phone_before_booking', name, email);
     postTrack({
       type: 'qualified_flow3_phone_lead',
       language: 'EN',
-      contact: { name: name, phone: phone },
+      contact: { name: name, phone: phone, email: email || null },
       name: name,
       phone: phone,
+      email: email || null,
       intent: ctx.intent,
       result: ctx.result,
       via: ctx.via,

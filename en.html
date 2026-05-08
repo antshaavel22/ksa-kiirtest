@@ -211,36 +211,35 @@
       <div class="sms-gate quiz-card" id="smsGate">
         <div class="quiz-card__body quiz-card__body--centered">
 
-          <!-- Discount header -->
+          <!-- Qualified header before unlock -->
           <div style="background:linear-gradient(135deg,#87BE23 0%,#6aa31a 100%);border-radius:16px;padding:20px 24px;margin-bottom:20px;text-align:center;color:#fff;">
-            <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;opacity:0.85;margin-bottom:6px;">YOUR DISCOUNT TODAY</div>
-            <div style="font-size:56px;font-weight:800;line-height:1;letter-spacing:-2px;margin-bottom:6px;">€50</div>
-            <div style="font-size:14px;opacity:0.95;">Flow3 eye exam: <s style="opacity:0.65;">€69</s> &rarr; <strong>€19</strong></div>
-            <div style="margin-top:12px;font-size:11px;background:rgba(0,0,0,0.2);border-radius:20px;padding:4px 14px;display:inline-block;">⏰ Valid today until midnight</div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;opacity:0.85;margin-bottom:8px;">FIRST FILTER PASSED</div>
+            <div style="font-size:32px;font-weight:800;line-height:1.15;margin-bottom:8px;">A Flow3 exam may be your next step</div>
+            <div style="font-size:14px;opacity:0.95;">Open your personal booking link and keep today's offer available.</div>
           </div>
 
-          <p style="margin:0 0 8px;font-size:var(--text-base);font-weight:600;color:var(--color-text);">You qualify for a Flow3 exam</p>
-          <p style="margin:0 0 20px;font-size:var(--text-sm);color:var(--color-text-secondary);line-height:1.55;">Choose a time that suits you in Tallinn or Tartu. The €19 discount is applied automatically.</p>
+          <p style="margin:0 0 8px;font-size:var(--text-base);font-weight:600;color:var(--color-text);">It looks like you qualify for a Flow3 exam</p>
+          <p style="margin:0 0 20px;font-size:var(--text-sm);color:var(--color-text-secondary);line-height:1.55;">Leave your contact to open today's booking link. If booking is not completed, a KSA specialist can help you choose a suitable time.</p>
 
           <div class="qualified-phone">
-            <p class="qualified-phone__title">Leave your number before booking</p>
-            <p class="qualified-phone__copy">A KSA specialist can help you find the right time and answer questions live. If you book online right away, the number simply stays as a safety net.</p>
+            <p class="qualified-phone__title">Open your booking link</p>
+            <p class="qualified-phone__copy">We only ask for first name and mobile so the link and result are not lost, and so we can help choose a time if needed. We do not ask for ID code, bank details or medical documents here.</p>
             <form class="qualified-phone__form" onsubmit="submitQualifiedPhone(event)">
               <input class="gate-form__input" id="qualifiedName" type="text" placeholder="First name" autocomplete="given-name" required>
               <input class="gate-form__input" id="qualifiedPhone" type="tel" placeholder="+372 5XX XXXX" autocomplete="tel" inputmode="tel" required>
               <input class="gate-form__input" id="qualifiedEmail" type="email" placeholder="Email (optional)" autocomplete="email">
               <button class="btn btn--primary btn--full btn--gate" id="qualifiedPhoneBtn" type="submit" style="font-size:16px;padding:18px 20px;">
-                Continue to booking → <strong>€19</strong>
+                Open my exam link
               </button>
             </form>
             <p class="qualified-phone__error" id="qualifiedPhoneError">Please enter your first name and a valid mobile number.</p>
-            <a id="bridgeBtn" href="/19?from=kiirtest" class="qualified-phone__secondary" onclick="trackBridgeClick('without_phone')">Continue without a number</a>
+            <a id="bridgeBtn" href="#result" class="qualified-phone__secondary" onclick="skipEmailGate(); return false;">See result without opening promo code</a>
           </div>
-          <p style="margin:10px 0 0;font-size:11px;color:var(--color-text-muted);line-height:1.5;">The next page opens booking and a short FAQ.</p>
+          <p style="margin:10px 0 0;font-size:11px;color:var(--color-text-muted);line-height:1.5;">After contact, the next page opens booking and a short FAQ.</p>
 
           <!-- Three trust checkmarks -->
           <ul style="list-style:none;padding:0;margin:var(--space-5) 0 0;text-align:left;font-size:13px;color:var(--color-text-secondary);line-height:1.6;">
-            <li style="margin-bottom:8px;">✓ €19 instead of €69 — valid today</li>
+            <li style="margin-bottom:8px;">✓ Today's discounted link opens after contact</li>
             <li style="margin-bottom:8px;">✓ 75-min exam — doctor confirms Flow3 suitability</li>
             <li>✓ Tallinn and Tartu &middot; we'll call you back if needed</li>
           </ul>
@@ -274,7 +273,7 @@
           </div>
 
           <!-- The insight box -->
-          <div style="background:var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius); padding:var(--space-5) var(--space-6); margin-bottom:var(--space-6); text-align:left;">
+          <div id="resultInsightBox" style="background:var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius); padding:var(--space-5) var(--space-6); margin-bottom:var(--space-6); text-align:left;">
             <p style="font-size:var(--text-xs); font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-text-muted); margin-bottom:var(--space-3);">Think of it this way</p>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--space-2); margin-bottom:var(--space-4);">
               <div style="font-size:var(--text-sm); color:var(--color-text-secondary);">Currently: lenses/month</div>
@@ -288,7 +287,7 @@
           </div>
 
           <!-- Dark price box -->
-          <div class="price-box">
+          <div class="price-box" id="resultPriceBox">
             <div class="price-box__ribbon">TODAY</div>
             <p class="price-box__label">Flow3 eye examination &mdash; Tallinn &amp; Tartu</p>
             <div class="price-box__prices">
@@ -800,7 +799,7 @@ function buildTrackedUrl(url, extra) {
   window.skipEmailGate = function() {
     trackGateEvent('eligible_gate_skipped');
     document.getElementById('smsGate').classList.remove('active');
-    showResult();
+    showResult({ via: 'skipped' });
   };
 
   // \u2500\u2500 Eligibility (locked 2026-04-30 \u2014 feedback_flow3_eligibility.md): 18-45 myope only \u2500\u2500
@@ -812,7 +811,8 @@ function buildTrackedUrl(url, extra) {
     return true;
   }
 
-  function showResult() {
+  function showResult(opts) {
+    opts = opts || {};
     quizEl.style.display = 'none';
     var resultType = isGoodCandidate() ? 'good_candidate' : 'not_ideal';
 
@@ -820,6 +820,13 @@ function buildTrackedUrl(url, extra) {
       document.getElementById('resultGood').classList.add('active');
       document.getElementById('formQuizResult').value = resultType;
       document.getElementById('formQuizAnswers').value = JSON.stringify(answers);
+      var locked = opts.via === 'skipped';
+      var insightBox = document.getElementById('resultInsightBox');
+      var priceBox = document.getElementById('resultPriceBox');
+      var bookBtn = document.getElementById('bookNowBtn');
+      if (insightBox) insightBox.style.display = locked ? 'none' : '';
+      if (priceBox) priceBox.style.display = locked ? 'none' : '';
+      if (bookBtn) bookBtn.style.display = locked ? 'none' : '';
     } else {
       document.getElementById('resultNotIdeal').classList.add('active');
     }
@@ -831,7 +838,7 @@ function buildTrackedUrl(url, extra) {
     if (resultType === 'good_candidate') { showPersonalLine(); }
 
     if (resultType === 'good_candidate' && answers.lenses === 'iga_paev') {
-      postTrack({ type: 'hot_lead_lens_user', language: 'EN', phone: capturedPhone || null, email: capturedEmail || null, intent: getLeadIntent(), lead_context: buildLeadContext(capturedPhone, 'result_viewed'), answers: answers, utm: getUtmData(), timestamp: new Date().toISOString() });
+      if (capturedPhone) postTrack({ type: 'hot_lead_lens_user', language: 'EN', phone: capturedPhone || null, email: capturedEmail || null, intent: getLeadIntent(), lead_context: buildLeadContext(capturedPhone, 'result_viewed'), answers: answers, utm: getUtmData(), timestamp: new Date().toISOString() });
     }
 
     setTimeout(function() {

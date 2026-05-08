@@ -211,36 +211,35 @@
       <div class="sms-gate quiz-card" id="smsGate">
         <div class="quiz-card__body quiz-card__body--centered">
 
-          <!-- Discount header -->
+          <!-- Qualified header before unlock -->
           <div style="background:linear-gradient(135deg,#87BE23 0%,#6aa31a 100%);border-radius:16px;padding:20px 24px;margin-bottom:20px;text-align:center;color:#fff;">
-            <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;opacity:0.85;margin-bottom:6px;">ВАША СКИДКА СЕГОДНЯ</div>
-            <div style="font-size:56px;font-weight:800;line-height:1;letter-spacing:-2px;margin-bottom:6px;">50€</div>
-            <div style="font-size:14px;opacity:0.95;">Обследование Flow3: <s style="opacity:0.65;">69€</s> &rarr; <strong>19€</strong></div>
-            <div style="margin-top:12px;font-size:11px;background:rgba(0,0,0,0.2);border-radius:20px;padding:4px 14px;display:inline-block;">⏰ Действует сегодня до полуночи</div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;opacity:0.85;margin-bottom:8px;">ПЕРВЫЙ ФИЛЬТР ПРОЙДЕН</div>
+            <div style="font-size:32px;font-weight:800;line-height:1.15;margin-bottom:8px;">Обследование Flow3 может быть вашим следующим шагом</div>
+            <div style="font-size:14px;opacity:0.95;">Откройте личную ссылку на запись и сохраните сегодняшнее предложение.</div>
           </div>
 
-          <p style="margin:0 0 8px;font-size:var(--text-base);font-weight:600;color:var(--color-text);">Вы подходите для обследования Flow3</p>
-          <p style="margin:0 0 20px;font-size:var(--text-sm);color:var(--color-text-secondary);line-height:1.55;">Выберите удобное время в Таллинне или Тарту. Скидка 19&nbsp;€ применяется автоматически.</p>
+          <p style="margin:0 0 8px;font-size:var(--text-base);font-weight:600;color:var(--color-text);">Похоже, вам подходит обследование Flow3</p>
+          <p style="margin:0 0 20px;font-size:var(--text-sm);color:var(--color-text-secondary);line-height:1.55;">Оставьте контакт, чтобы открыть сегодняшнюю ссылку на запись. Если запись не получится завершить, специалист KSA поможет выбрать удобное время.</p>
 
           <div class="qualified-phone">
-            <p class="qualified-phone__title">Оставьте номер перед записью</p>
-            <p class="qualified-phone__copy">Специалист KSA при необходимости поможет выбрать время и ответит на вопросы в живом разговоре. Если вы сразу запишетесь онлайн, номер останется как подстраховка.</p>
+            <p class="qualified-phone__title">Открыть ссылку на запись</p>
+            <p class="qualified-phone__copy">Мы просим только имя и мобильный номер, чтобы ссылка и результат сохранились, а мы могли помочь выбрать время. Здесь мы не просим личный код, банковские данные или медицинские документы.</p>
             <form class="qualified-phone__form" onsubmit="submitQualifiedPhone(event)">
               <input class="gate-form__input" id="qualifiedName" type="text" placeholder="Имя" autocomplete="given-name" required>
               <input class="gate-form__input" id="qualifiedPhone" type="tel" placeholder="+372 5XX XXXX" autocomplete="tel" inputmode="tel" required>
               <input class="gate-form__input" id="qualifiedEmail" type="email" placeholder="Э-почта (необязательно)" autocomplete="email">
               <button class="btn btn--primary btn--full btn--gate" id="qualifiedPhoneBtn" type="submit" style="font-size:16px;padding:18px 20px;">
-                Перейти к записи → <strong>19&nbsp;€</strong>
+                Открыть мою ссылку
               </button>
             </form>
             <p class="qualified-phone__error" id="qualifiedPhoneError">Пожалуйста, введите имя и корректный мобильный номер.</p>
-            <a id="bridgeBtn" href="/19?from=kiirtest" class="qualified-phone__secondary" onclick="trackBridgeClick('without_phone')">Продолжить без номера</a>
+            <a id="bridgeBtn" href="#result" class="qualified-phone__secondary" onclick="skipSmsGate(); return false;">Посмотреть результат без промокода</a>
           </div>
-          <p style="margin:10px 0 0;font-size:11px;color:var(--color-text-muted);line-height:1.5;">Следующая страница откроет запись и короткий FAQ.</p>
+          <p style="margin:10px 0 0;font-size:11px;color:var(--color-text-muted);line-height:1.5;">После контакта откроется запись и короткий FAQ.</p>
 
           <!-- Three trust checkmarks -->
           <ul style="list-style:none;padding:0;margin:var(--space-5) 0 0;text-align:left;font-size:13px;color:var(--color-text-secondary);line-height:1.6;">
-            <li style="margin-bottom:8px;">✓ 19&nbsp;€ вместо обычных 69&nbsp;€ — действует сегодня</li>
+            <li style="margin-bottom:8px;">✓ Сегодняшняя ссылка со скидкой открывается после контакта</li>
             <li style="margin-bottom:8px;">✓ 75-мин обследование — врач подтвердит соответствие Flow3</li>
             <li>✓ Таллинн и Тарту &middot; при необходимости перезвоним</li>
           </ul>
@@ -279,7 +278,7 @@
           </div>
 
           <!-- Insight box -->
-          <div style="background:var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius); padding:var(--space-5) var(--space-6); margin-bottom:var(--space-6); text-align:left;">
+          <div id="resultInsightBox" style="background:var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius); padding:var(--space-5) var(--space-6); margin-bottom:var(--space-6); text-align:left;">
             <p style="font-size:var(--text-xs); font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-text-muted); margin-bottom:var(--space-3);">Подумайте так</p>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--space-2); margin-bottom:var(--space-4);">
               <div style="font-size:var(--text-sm); color:var(--color-text-secondary);">Сейчас: линзы / месяц</div>
@@ -293,7 +292,7 @@
           </div>
 
           <!-- Dark price box -->
-          <div class="price-box">
+          <div class="price-box" id="resultPriceBox">
             <div class="price-box__ribbon">СЕГОДНЯ</div>
             <p class="price-box__label">Обследование Flow3 &mdash; Таллинн &amp; Тарту</p>
             <div class="price-box__prices">
@@ -817,6 +816,13 @@ function buildTrackedUrl(url, extra) {
       document.getElementById('resultGood').classList.add('active');
       document.getElementById('formQuizResult').value = resultType;
       document.getElementById('formQuizAnswers').value = JSON.stringify(answers);
+      var locked = opts.via === 'skipped';
+      var insightBox = document.getElementById('resultInsightBox');
+      var priceBox = document.getElementById('resultPriceBox');
+      var bookBtn = document.getElementById('bookNowBtn');
+      if (insightBox) insightBox.style.display = locked ? 'none' : '';
+      if (priceBox) priceBox.style.display = locked ? 'none' : '';
+      if (bookBtn) bookBtn.style.display = locked ? 'none' : '';
     } else {
       document.getElementById('resultNotIdeal').classList.add('active');
     }
@@ -832,7 +838,7 @@ function buildTrackedUrl(url, extra) {
 
     if (resultType === 'good_candidate') { showPersonalLine(); }
 
-    if (resultType === 'good_candidate' && answers.lenses === 'iga_paev') {
+    if (resultType === 'good_candidate' && answers.lenses === 'iga_paev' && capturedPhone) {
       postTrack({ type: 'hot_lead_lens_user', language: 'RU', phone: capturedPhone || null, email: capturedEmail || null, intent: getLeadIntent(), via: opts.via || null, lead_context: buildLeadContext(capturedPhone, opts.via || 'result_viewed'), answers: answers, utm: getUtmData(), timestamp: new Date().toISOString() });
     }
 

@@ -211,36 +211,35 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
       <div class="sms-gate quiz-card" id="smsGate">
         <div class="quiz-card__body quiz-card__body--centered">
 
-          <!-- Discount header -->
+          <!-- Qualified header before unlock -->
           <div style="background:linear-gradient(135deg,#87BE23 0%,#6aa31a 100%);border-radius:16px;padding:20px 24px;margin-bottom:20px;text-align:center;color:#fff;">
-            <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;opacity:0.85;margin-bottom:6px;">SINU TÄNANE SOODUSTUS</div>
-            <div style="font-size:56px;font-weight:800;line-height:1;letter-spacing:-2px;margin-bottom:6px;">50€</div>
-            <div style="font-size:14px;opacity:0.95;">Flow3 silmauuring: <s style="opacity:0.65;">69€</s> &rarr; <strong>19€</strong></div>
-            <div style="margin-top:12px;font-size:11px;background:rgba(0,0,0,0.2);border-radius:20px;padding:4px 14px;display:inline-block;">⏰ Kehtib täna kuni südaööni</div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;opacity:0.85;margin-bottom:8px;">ESIMENE FILTER LÄBITUD</div>
+            <div style="font-size:32px;font-weight:800;line-height:1.15;margin-bottom:8px;">Flow3 uuring võib olla sinu järgmine samm</div>
+            <div style="font-size:14px;opacity:0.95;">Ava isiklik broneerimislink ja hoia tänane soodustus alles.</div>
           </div>
 
-          <p style="margin:0 0 8px;font-size:var(--text-base);font-weight:600;color:var(--color-text);">Sa sobid Flow3 silmauuringule</p>
-          <p style="margin:0 0 20px;font-size:var(--text-sm);color:var(--color-text-secondary);line-height:1.55;">Vali endale sobiv aeg Tallinnas või Tartus. Soodushind 19&nbsp;€ kohaldatakse automaatselt.</p>
+          <p style="margin:0 0 8px;font-size:var(--text-base);font-weight:600;color:var(--color-text);">Tundub, et sobid Flow3 silmauuringule</p>
+          <p style="margin:0 0 20px;font-size:var(--text-sm);color:var(--color-text-secondary);line-height:1.55;">Jäta kontakt, et avada tänane broneerimislink. Kui broneerimine jääb pooleli, saab KSA spetsialist aidata sobiva aja leidmisega.</p>
 
           <div class="qualified-phone">
-            <p class="qualified-phone__title">Jäta number enne broneerimist</p>
-            <p class="qualified-phone__copy">KSA spetsialist saab vajadusel aidata sobiva aja leidmisega ja vastab küsimustele päris vestluses. Kui broneerid kohe ise ära, jääb number lihtsalt turvavõrguks.</p>
+            <p class="qualified-phone__title">Ava oma broneerimislink</p>
+            <p class="qualified-phone__copy">Küsime ainult eesnime ja mobiili, et link ja tulemus alles jääksid ning saaksime vajadusel aja valikuga aidata. Isikukoodi, pangainfot ega meditsiinidokumente me siin ei küsi.</p>
             <form class="qualified-phone__form" onsubmit="submitQualifiedPhone(event)">
               <input class="gate-form__input" id="qualifiedName" type="text" placeholder="Eesnimi" autocomplete="given-name" required>
               <input class="gate-form__input" id="qualifiedPhone" type="tel" placeholder="+372 5XX XXXX" autocomplete="tel" inputmode="tel" required>
               <input class="gate-form__input" id="qualifiedEmail" type="email" placeholder="E-post (soovi korral)" autocomplete="email">
               <button class="btn btn--primary btn--full btn--gate" id="qualifiedPhoneBtn" type="submit" style="font-size:16px;padding:18px 20px;">
-                Jätkan broneerima → <strong>19&nbsp;€</strong>
+                Ava minu uuringulink
               </button>
             </form>
             <p class="qualified-phone__error" id="qualifiedPhoneError">Palun sisesta eesnimi ja korrektne mobiilinumber.</p>
-            <a id="bridgeBtn" href="/19?from=kiirtest" class="qualified-phone__secondary" onclick="trackBridgeClick('without_phone')">Jätkan ilma numbrita</a>
+            <a id="bridgeBtn" href="#result" class="qualified-phone__secondary" onclick="skipSmsGate(); return false;">Vaatan tulemust ilma sooduskoodi avamata</a>
           </div>
-          <p style="margin:10px 0 0;font-size:11px;color:var(--color-text-muted);line-height:1.5;">Järgmine leht avab broneerimise ja lühikese FAQ.</p>
+          <p style="margin:10px 0 0;font-size:11px;color:var(--color-text-muted);line-height:1.5;">Pärast kontakti avame broneerimise ja lühikese FAQ.</p>
 
           <!-- Three trust checkmarks -->
           <ul style="list-style:none;padding:0;margin:var(--space-5) 0 0;text-align:left;font-size:13px;color:var(--color-text-secondary);line-height:1.6;">
-            <li style="margin-bottom:8px;">✓ 19&nbsp;€ tavahinna 69&nbsp;€ asemel — kehtib täna</li>
+            <li style="margin-bottom:8px;">✓ Tänane soodushinnaga link avaneb pärast kontakti</li>
             <li style="margin-bottom:8px;">✓ 75-min uuring — arst kinnitab Flow3 sobivuse</li>
             <li>✓ Tallinn ja Tartu &middot; vajadusel helistame tagasi</li>
           </ul>
@@ -280,7 +279,7 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
           </div>
 
           <!-- The insight box -->
-          <div style="background:var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius); padding:var(--space-5) var(--space-6); margin-bottom:var(--space-6); text-align:left;">
+          <div id="resultInsightBox" style="background:var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius); padding:var(--space-5) var(--space-6); margin-bottom:var(--space-6); text-align:left;">
             <p style="font-size:var(--text-xs); font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-text-muted); margin-bottom:var(--space-3);">Mõtle nii</p>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--space-2); margin-bottom:var(--space-4);">
               <div style="font-size:var(--text-sm); color:var(--color-text-secondary);">Praegu kulutad läätsedele kuus:</div>
@@ -294,7 +293,7 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
           </div>
 
           <!-- Dark price box -->
-          <div class="price-box">
+          <div class="price-box" id="resultPriceBox">
             <div class="price-box__ribbon">TÄNA</div>
             <p class="price-box__label">Flow3 silmauuring — Tallinn &amp; Tartu</p>
             <div class="price-box__prices">
@@ -848,6 +847,13 @@ function buildTrackedUrl(url, extra) {
       document.getElementById('resultGood').classList.add('active');
       document.getElementById('formQuizResult').value = resultType;
       document.getElementById('formQuizAnswers').value = JSON.stringify(answers);
+      var locked = opts.via === 'skipped';
+      var insightBox = document.getElementById('resultInsightBox');
+      var priceBox = document.getElementById('resultPriceBox');
+      var bookBtn = document.getElementById('bookNowBtn');
+      if (insightBox) insightBox.style.display = locked ? 'none' : '';
+      if (priceBox) priceBox.style.display = locked ? 'none' : '';
+      if (bookBtn) bookBtn.style.display = locked ? 'none' : '';
     } else {
       document.getElementById('resultNotIdeal').classList.add('active');
     }
@@ -866,7 +872,7 @@ function buildTrackedUrl(url, extra) {
     if (resultType === 'good_candidate') { showPersonalLine(); }
 
     // Flag daily lens users for Lilia
-    if (resultType === 'good_candidate' && answers.lenses === 'iga_paev') {
+    if (resultType === 'good_candidate' && answers.lenses === 'iga_paev' && capturedPhone) {
       postTrack({ type: 'hot_lead_lens_user', language: 'ET', phone: capturedPhone || null, email: capturedEmail || null, intent: getLeadIntent(), via: opts.via || null, lead_context: buildLeadContext(capturedPhone, opts.via || 'result_viewed'), answers: answers, utm: getUtmData(), timestamp: new Date().toISOString() });
     }
 

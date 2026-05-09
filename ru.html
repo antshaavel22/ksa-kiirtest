@@ -778,7 +778,6 @@ function buildTrackedUrl(url, extra) {
     if (!isGoodCandidate()) { showResult(); return; }
 
     var gate = document.getElementById('smsGate');
-    gate.classList.add('active');
 
     var todayCode = getTodayCode();
     var utm = getUtmData() || {};
@@ -823,6 +822,8 @@ function buildTrackedUrl(url, extra) {
       showResult({ via: 'result_first_no_contact' });
       return;
     }
+
+    gate.classList.add('active');
 
     setTimeout(function() {
       gate.scrollIntoView({ behavior: 'smooth', block: 'center' });

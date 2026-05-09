@@ -804,7 +804,6 @@ function buildTrackedUrl(url, extra) {
     }
 
     var gate = document.getElementById('smsGate');
-    gate.classList.add('active');
 
     // Set bridge button href with today's promo code + UTM passthrough
     var todayCode = getTodayCode();
@@ -850,6 +849,8 @@ function buildTrackedUrl(url, extra) {
       showResult({ via: 'result_first_no_contact' });
       return;
     }
+
+    gate.classList.add('active');
 
     setTimeout(function() {
       gate.scrollIntoView({ behavior: 'smooth', block: 'center' });

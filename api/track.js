@@ -216,7 +216,7 @@ function buildInstallmentGuideEmail(name) {
   <!-- CTA -->
   <tr><td style="background:#ffffff;padding:8px 48px 56px;text-align:center;">
     <p style="font-size:14px;color:#888;margin:0 0 24px;">Esimene samm: broneeri Flow3 silmauuring</p>
-    <a href="https://my.ksa.ee/en/icb-time?serviceId=1" style="display:inline-block;background:#87BE23;color:#0F0F0F;font-size:14px;font-weight:700;text-decoration:none;padding:16px 40px;border-radius:3px;letter-spacing:0.02em;">Broneeri uuring &rarr;</a>
+    <a href="https://my.ksa.ee/et/icb-time?serviceId=1" style="display:inline-block;background:#87BE23;color:#0F0F0F;font-size:14px;font-weight:700;text-decoration:none;padding:16px 40px;border-radius:3px;letter-spacing:0.02em;">Broneeri uuring &rarr;</a>
     <p style="font-size:13px;color:#aaa;margin:24px 0 0;">Küsimused järelmaksu kohta? Meie konsultant võtab sinuga lähiajal ühendust.</p>
   </td></tr>
 
@@ -239,9 +239,9 @@ const EMAIL = {
     introGood: 'Tegid meie Flow3 kiirtesti ja sinu tulemus näitas, et laserprotseduur võiks sulle sobida. Tahtsime veenduda, et said oma sooduskoodi kätte ja et kõik on selge.',
     introConsult: 'Tegid meie Flow3 kiirtesti. Sinu vastuste põhjal sobib sulle nägemisuuring Audit — optometrist ja arst teevad põhjalikud uuringud ja saadavad kirjaliku raporti.',
     cta: 'Broneeri aeg — maksa veebis 19 €',
-    ctaUrl: 'https://my.ksa.ee/en/icb-time?serviceId=1',
+    ctaUrl: 'https://my.ksa.ee/et/icb-time?serviceId=1',
     ctaAudit: 'Broneeri nägemisuuring Audit',
-    ctaAuditUrl: 'https://my.ksa.ee/en/icb-time?serviceId=6',
+    ctaAuditUrl: 'https://my.ksa.ee/et/icb-time?serviceId=6',
     contact: 'Kirjuta mulle: <a href="mailto:lilia@ksa.ee" style="color:#87BE23;">lilia@ksa.ee</a> või helista: <a href="tel:+3726445060" style="color:#87BE23;">+372 644 5060</a>',
     signOff: 'Lilia<br><span style="font-weight:400;color:#888;">Kliendisuhete koordinaator · KSA Silmakeskus</span>',
   },
@@ -250,9 +250,9 @@ const EMAIL = {
     introGood: 'You completed our Flow3 quick test and your result showed that laser eye surgery could be right for you. We wanted to make sure you received your discount code and that everything is clear.',
     introConsult: 'You completed our Flow3 quick test. Based on your answers, we recommend a Vision Audit exam — our optometrist and doctor will do a thorough assessment and send you a written report.',
     cta: 'Book your appointment — pay online €19',
-    ctaUrl: 'https://my.ksa.ee/en/icb-time?serviceId=1',
+    ctaUrl: 'https://my.ksa.ee/et/icb-time?serviceId=1',
     ctaAudit: 'Book Vision Audit exam',
-    ctaAuditUrl: 'https://my.ksa.ee/en/icb-time?serviceId=6',
+    ctaAuditUrl: 'https://my.ksa.ee/et/icb-time?serviceId=6',
     contact: 'Write to me: <a href="mailto:lilia@ksa.ee" style="color:#87BE23;">lilia@ksa.ee</a> or call: <a href="tel:+3726445060" style="color:#87BE23;">+372 644 5060</a>',
     signOff: 'Lilia<br><span style="font-weight:400;color:#888;">Customer Relations Coordinator · KSA Eye Centre</span>',
   },
@@ -261,9 +261,9 @@ const EMAIL = {
     introGood: 'Вы прошли наш экспресс-тест Flow3, и результат показал, что лазерная коррекция зрения может вам подойти. Хотели убедиться, что вы получили свой код скидки и всё понятно.',
     introConsult: 'Вы прошли наш экспресс-тест Flow3. По вашим ответам вам подойдёт обследование Audit — оптометрист и врач проведут детальную диагностику и составят письменное заключение.',
     cta: 'Записаться на приём — онлайн-оплата 19 €',
-    ctaUrl: 'https://my.ksa.ee/en/icb-time?serviceId=1',
+    ctaUrl: 'https://my.ksa.ee/et/icb-time?serviceId=1',
     ctaAudit: 'Записаться на обследование Audit',
-    ctaAuditUrl: 'https://my.ksa.ee/en/icb-time?serviceId=6',
+    ctaAuditUrl: 'https://my.ksa.ee/et/icb-time?serviceId=6',
     contact: 'Напишите мне: <a href="mailto:lilia@ksa.ee" style="color:#87BE23;">lilia@ksa.ee</a> или позвоните: <a href="tel:+3726445060" style="color:#87BE23;">+372 644 5060</a>',
     signOff: 'Lilia<br><span style="font-weight:400;color:#888;">Координатор по работе с клиентами · KSA Silmakeskus</span>',
   },
@@ -621,7 +621,7 @@ const SEQUENCE = {
         sp('Sinu online\'s tehtud kiirtesti tulemus näitas, et sobiksid tulema Flow3 uuringule, kus selguks, kas laserprotseduur oleks sinu silmadele parim lahendus. Kahjuks 30%-le uuringule tulijatest ütleme "EI".') +
         sp('Uuring sooduskoodiga vaid <strong>19€</strong> (tavahind 69€).') +
         ssig('Lilia', 'Kliendisuhete koordinaator · KSA Silmakeskus'),
-        `https://my.ksa.ee/en/icb-time?serviceId=1&promokood=${code}`,
+        `https://my.ksa.ee/et/icb-time?serviceId=1&promokood=${code}`,
         'Uuri kas sa kvalifitseerud Flow3-ks — 19€ →'
       ),
     },
@@ -638,7 +638,7 @@ const SEQUENCE = {
         sp('Flow3 ei sobi kõigile — sellepärast on uuringul käimine vajalik, et teada saada, kas kuulud 70% hulka kellele anname rohelise tule, või oled 30% hulgas, kellele ütleme selge "Ei".') +
         sp('Sinu sooduskood kehtib veel, et saaksid tulla uuringule <strong>19€-ga</strong> 69 asemel.') +
         ssig('Lilia', 'Kliendisuhete koordinaator · KSA Silmakeskus'),
-        `https://my.ksa.ee/en/icb-time?serviceId=1&promokood=${code}`,
+        `https://my.ksa.ee/et/icb-time?serviceId=1&promokood=${code}`,
         'Uuri kas su silmad sobivad Flow3-ks →'
       ),
     },
@@ -651,7 +651,7 @@ const SEQUENCE = {
         sp('Me täna ei tea, kas Flow3 laserprotseduur võiks muuta ka Sinu elu paremaks, sest 30% inimestest, kes tunduvad sobivat, ei sobi meie valikukriteeriumide põhjal. Selleks ongi Flow3 uuring — et teada saada, kas saaksid kaaluda meie laserprotseduuri.') +
         sp('Kui teed esimese sammu ja registreerud uuringule, saame anda endast parima ja välja selgitada, kas sobiksid.') +
         ssig('Dr. Ants Haavel', 'KSA Silmakeskus, juhataja · silmakirurg 30+ aastat'),
-        `https://my.ksa.ee/en/icb-time?serviceId=1&promokood=${code}`,
+        `https://my.ksa.ee/et/icb-time?serviceId=1&promokood=${code}`,
         'Uuri kas sa kvalifitseerud Flow3-ks — 19€ →'
       ),
     },
@@ -664,7 +664,7 @@ const SEQUENCE = {
         sp('<em>"Kohe kui laseriruumist lahkusin, nägin juba palju selgemalt. Nädala pärast tegin täie hooga trenni ja 2 nädala pärast nägin juba 100% — see kõik oli nii imelik. Hea, aga imelik."</em>') +
         sp('Uuring <strong>19€.</strong>') +
         ssig('Lilia', 'Kliendisuhete koordinaator · KSA Silmakeskus'),
-        `https://my.ksa.ee/en/icb-time?serviceId=1&promokood=${code}`,
+        `https://my.ksa.ee/et/icb-time?serviceId=1&promokood=${code}`,
         'Uuri kas sa sobid Flow3-ks — 19€ →'
       ),
     },
@@ -680,7 +680,7 @@ const SEQUENCE = {
         sp('<strong>"Ootan veel."</strong><br>Iga aasta ootamist maksab ~500 eurot. Ootamine ei tee seda odavamaks.') +
         sp('Küsimusi? Kirjuta mulle — <a href="mailto:lilia@ksa.ee" style="color:#87BE23;">lilia@ksa.ee</a>. Uuring <strong>19€.</strong>') +
         ssig('Lilia', 'Kliendisuhete koordinaator · KSA Silmakeskus'),
-        `https://my.ksa.ee/en/icb-time?serviceId=1&promokood=${code}`,
+        `https://my.ksa.ee/et/icb-time?serviceId=1&promokood=${code}`,
         'Uuri kas sinu silmad sobivad — 19€ →'
       ),
     },
@@ -694,7 +694,7 @@ const SEQUENCE = {
         sp('Nüüd on vaid vaja välja selgitada, kas laserprotseduur oleks Sinu silmadele parim valik.') +
         sp('Kui Sul on küsimusi, helista <a href="tel:+3726445060" style="color:#87BE23;">644 5060</a> ja küsi Liliat — või broneeri otse uuring online\'s.') +
         ssig('Lilia', 'Kliendisuhete koordinaator · KSA Silmakeskus'),
-        `https://my.ksa.ee/en/icb-time?serviceId=1&promokood=${code}`,
+        `https://my.ksa.ee/et/icb-time?serviceId=1&promokood=${code}`,
         'Viimane võimalus: uuri kas sa kvalifitseerud — 19€ →'
       ),
     },
@@ -710,7 +710,7 @@ const SEQUENCE = {
         sp('Your online quick test showed you could be a candidate for the Flow3 exam, where we\'d find out whether laser surgery is the best solution for your eyes. Unfortunately, for 30% of people who come for the exam, our answer is "no".') +
         sp('Exam with promo code: <strong>€19</strong> (regular price €69).') +
         ssig('Lilia', 'Customer Relations Coordinator · KSA Eye Centre'),
-        `https://my.ksa.ee/en/icb-time?serviceId=1&promokood=${code}`,
+        `https://my.ksa.ee/et/icb-time?serviceId=1&promokood=${code}`,
         'Find out if you qualify for Flow3 — €19 →'
       ),
     },
@@ -727,7 +727,7 @@ const SEQUENCE = {
         sp('Flow3 isn\'t right for everyone — that\'s exactly why the exam exists: to find out whether you\'re among the 70% who get the green light, or the 30% who get an honest "no".') +
         sp('Your promo code is still valid — come for the exam at <strong>€19</strong> instead of €69.') +
         ssig('Lilia', 'Customer Relations Coordinator · KSA Eye Centre'),
-        `https://my.ksa.ee/en/icb-time?serviceId=1&promokood=${code}`,
+        `https://my.ksa.ee/et/icb-time?serviceId=1&promokood=${code}`,
         'Find out if your eyes qualify for Flow3 →'
       ),
     },
@@ -740,7 +740,7 @@ const SEQUENCE = {
         sp('We don\'t know today whether Flow3 could change your life for the better — because 30% of people who seem suitable don\'t meet our selection criteria. That\'s exactly what the Flow3 exam is for: to find out whether you could consider our laser procedure.') +
         sp('If you take the first step and book the exam, we\'ll do our best to find out whether you\'re suitable.') +
         ssig('Dr. Ants Haavel', 'KSA Eye Centre, CEO · Eye surgeon 30+ years'),
-        `https://my.ksa.ee/en/icb-time?serviceId=1&promokood=${code}`,
+        `https://my.ksa.ee/et/icb-time?serviceId=1&promokood=${code}`,
         'Find out if you qualify for Flow3 — €19 →'
       ),
     },
@@ -753,7 +753,7 @@ const SEQUENCE = {
         sp('<em>"As soon as I left the laser room I could already see much more clearly. A week later I was training at full intensity, and after 2 weeks my vision was 100% — it was all so strange. Good strange."</em>') +
         sp('Exam <strong>€19.</strong>') +
         ssig('Lilia', 'Customer Relations Coordinator · KSA Eye Centre'),
-        `https://my.ksa.ee/en/icb-time?serviceId=1&promokood=${code}`,
+        `https://my.ksa.ee/et/icb-time?serviceId=1&promokood=${code}`,
         'Find out if your eyes qualify for Flow3 →'
       ),
     },
@@ -769,7 +769,7 @@ const SEQUENCE = {
         sp('<strong>"I\'ll wait."</strong><br>Every year of waiting costs ~€500. Waiting doesn\'t make it cheaper.') +
         sp('Questions? Write to me — <a href="mailto:lilia@ksa.ee" style="color:#87BE23;">lilia@ksa.ee</a>. Exam <strong>€19.</strong>') +
         ssig('Lilia', 'Customer Relations Coordinator · KSA Eye Centre'),
-        `https://my.ksa.ee/en/icb-time?serviceId=1&promokood=${code}`,
+        `https://my.ksa.ee/et/icb-time?serviceId=1&promokood=${code}`,
         'Find out if your eyes qualify for Flow3 →'
       ),
     },
@@ -783,7 +783,7 @@ const SEQUENCE = {
         sp('All that remains is to find out whether laser surgery is the best choice for your eyes.') +
         sp('If you have questions, call <a href="tel:+3726445060" style="color:#87BE23;">644 5060</a> and ask for Lilia — or book your exam directly online.') +
         ssig('Lilia', 'Customer Relations Coordinator · KSA Eye Centre'),
-        `https://my.ksa.ee/en/icb-time?serviceId=1&promokood=${code}`,
+        `https://my.ksa.ee/et/icb-time?serviceId=1&promokood=${code}`,
         'Last chance: find out if you qualify — €19 →'
       ),
     },
@@ -798,7 +798,7 @@ const SEQUENCE = {
         sp('Ваш онлайн-тест показал, что вы — подходящий кандидат для обследования Flow3. Оно поможет окончательно выяснить, станет ли лазерная процедура лучшим решением для ваших глаз. К сожалению, 30% пришедших на обследование мы вынуждены сказать «НЕТ».') +
         sp('Обследование по промокоду — всего <strong>19 €</strong> (обычная цена 69 €).') +
         ssig('Лилия', 'Координатор по работе с клиентами · KSA Silmakeskus'),
-        `https://my.ksa.ee/en/icb-time?serviceId=1&promokood=${code}`,
+        `https://my.ksa.ee/et/icb-time?serviceId=1&promokood=${code}`,
         'Узнайте, подходит ли вам Flow3 — 19 € →'
       ),
     },
@@ -815,7 +815,7 @@ const SEQUENCE = {
         sp('Flow3 подходит не всем. Именно поэтому необходимо пройти обследование: так мы узнаем, входите ли вы в те 70%, кому мы даём «зелёный свет», или же вы в числе тех 30%, кому мы скажем чёткое «нет».') +
         sp('Ваш промокод всё ещё действует — пройдите обследование всего за <strong>19 €</strong> вместо 69 €.') +
         ssig('Лилия', 'Координатор по работе с клиентами · KSA Silmakeskus'),
-        `https://my.ksa.ee/en/icb-time?serviceId=1&promokood=${code}`,
+        `https://my.ksa.ee/et/icb-time?serviceId=1&promokood=${code}`,
         'Узнайте, подходят ли ваши глаза для Flow3 →'
       ),
     },
@@ -828,7 +828,7 @@ const SEQUENCE = {
         sp('Сегодня мы ещё не знаем, сможет ли процедура Flow3 изменить к лучшему и вашу жизнь — 30% людей, которые на первый взгляд кажутся подходящими, не проходят наш строгий отбор. Именно для этого и проводится обследование Flow3: чтобы выяснить, подходит ли вам наша лазерная процедура.') +
         sp('Если вы сделаете первый шаг и запишетесь на обследование, мы приложим все усилия, чтобы определить, подходит ли вам этот метод.') +
         ssig('Д-р Антс Хаавель', 'Руководитель клиники · глазной хирург, 30+ лет опыта'),
-        `https://my.ksa.ee/en/icb-time?serviceId=1&promokood=${code}`,
+        `https://my.ksa.ee/et/icb-time?serviceId=1&promokood=${code}`,
         'Узнайте, подходит ли вам Flow3 — 19 € →'
       ),
     },
@@ -841,7 +841,7 @@ const SEQUENCE = {
         sp('<em>«Как только я вышел из лазерного кабинета, я сразу стал видеть гораздо чётче. Через неделю я уже тренировался в полную силу, а через две недели зрение восстановилось на 100% — всё это было так необычно. Классно, но необычно».</em>') +
         sp('Обследование — <strong>19 €</strong>.') +
         ssig('Лилия', 'Координатор по работе с клиентами · KSA Silmakeskus'),
-        `https://my.ksa.ee/en/icb-time?serviceId=1&promokood=${code}`,
+        `https://my.ksa.ee/et/icb-time?serviceId=1&promokood=${code}`,
         'Узнайте, подходят ли ваши глаза для Flow3 →'
       ),
     },
@@ -857,7 +857,7 @@ const SEQUENCE = {
         sp('<strong>«Я ещё подожду».</strong><br>Каждый год ожидания обходится примерно в 500 €. Дешевле от этого процедура не станет.') +
         sp('Есть вопросы? Напишите мне — <a href="mailto:lilia@ksa.ee" style="color:#87BE23;">lilia@ksa.ee</a>. Обследование — <strong>19 €</strong>.') +
         ssig('Лилия', 'Координатор по работе с клиентами · KSA Silmakeskus'),
-        `https://my.ksa.ee/en/icb-time?serviceId=1&promokood=${code}`,
+        `https://my.ksa.ee/et/icb-time?serviceId=1&promokood=${code}`,
         'Узнайте, подходят ли ваши глаза для Flow3 →'
       ),
     },
@@ -871,7 +871,7 @@ const SEQUENCE = {
         sp('Теперь осталось лишь выяснить, является ли лазерная коррекция лучшим решением именно для ваших глаз.') +
         sp('Если у вас есть вопросы, позвоните по номеру <a href="tel:+3726445060" style="color:#87BE23;">644 5060</a>, спросите Лилию — или забронируйте обследование прямо на сайте.') +
         ssig('Лилия', 'Координатор по работе с клиентами · KSA Silmakeskus'),
-        `https://my.ksa.ee/en/icb-time?serviceId=1&promokood=${code}`,
+        `https://my.ksa.ee/et/icb-time?serviceId=1&promokood=${code}`,
         'Последний шанс: узнайте, подходит ли вам Flow3 — 19 € →'
       ),
     },
@@ -1305,7 +1305,7 @@ export default async function handler(req, res) {
     const eventLabels = {
       book_now_clicked: 'Kiirtest result booking click',
       bridge_19_book_clicked: 'Bridge /19 booking click',
-      eligible_gate_bridge_clicked: 'Kiirtest to /19 click',
+      eligible_gate_bridge_clicked: 'Kiirtest booking handoff click',
     };
     blocks = [
       { type: 'header', text: { type: 'plain_text', text: `📅 ${eventLabels[type]}` } },

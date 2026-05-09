@@ -306,7 +306,7 @@
           <span id="promoCodeBtn" style="display:none;">FLOW19</span>
 
           <!-- Primary CTA -->
-          <a href="https://my.ksa.ee/en/icb-time?serviceId=1&promokood=FLOW19" id="bookNowBtn" onclick="if(typeof gtag!=='undefined'){gtag('event','booking_click',{language:'RU',promo:getTodayCode()});} trackBookNow();" target="_blank" rel="noopener noreferrer"
+          <a href="https://my.ksa.ee/et/icb-time?serviceId=1&promokood=FLOW19" id="bookNowBtn" onclick="if(typeof gtag!=='undefined'){gtag('event','booking_click',{language:'RU',promo:getTodayCode()});} trackBookNow();" target="_blank" rel="noopener noreferrer"
              class="btn btn--primary btn--full btn--cta">
             Записаться и оплатить &rarr; <strong>19&nbsp;&euro;</strong>
           </a>
@@ -360,7 +360,7 @@
           <p class="result__text">Судя по вашим ответам, лазерная коррекция Flow3 может быть не самым подходящим вариантом. Мы рекомендуем пройти обследование Audit — оптометрист и врач проведут детальную диагностику и составят письменное заключение.</p>
           <hr class="result-divider">
           <p class="result__subheading">Рекомендуем обследование Audit</p>
-          <a href="https://my.ksa.ee/en/icb-time?serviceId=6" target="_blank" rel="noopener noreferrer" class="btn btn--dark btn--full btn--cta">
+          <a href="https://my.ksa.ee/et/icb-time?serviceId=6" target="_blank" rel="noopener noreferrer" class="btn btn--dark btn--full btn--cta">
             Записаться на обследование Audit
           </a>
           <p class="result-contact">
@@ -461,7 +461,7 @@
       <div class="cta">
         <h2 class="cta__title">Готовы видеть чётко?</h2>
         <div class="cta__buttons">
-          <a href="https://my.ksa.ee/en/icb-time?serviceId=1" id="bookNowBtn2" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--lg">Записаться на обследование &mdash; 19&nbsp;&euro;</a>
+          <a href="https://my.ksa.ee/et/icb-time?serviceId=1" id="bookNowBtn2" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--lg">Записаться на обследование &mdash; 19&nbsp;&euro;</a>
           <a href="https://ksa.ee/vabane-prillidest/" target="_blank" rel="noopener noreferrer" class="btn btn--outline btn--lg">Подробнее</a>
         </div>
         <p class="cta__contact">Звоните: <a href="tel:+3726445060">+372 644 5060</a> | <a href="mailto:info@ksa.ee">info@ksa.ee</a></p>
@@ -792,13 +792,28 @@ function buildTrackedUrl(url, extra) {
       kiirtest_lead_id: kiirtestLeadId,
       ab_variant: getFunnelVariant() || 'control'
     });
+    var directBookingUrl = buildTrackedUrl('https://my.ksa.ee/et/icb-time?serviceId=1', {
+      promokood: todayCode,
+      utm_source: utm.source || 'kiirtest_lp_ru',
+      utm_medium: utm.medium || 'web',
+      utm_campaign: utm.campaign || 'flow3_19',
+      source: utm.entry_source || utm.source || 'kiirtest_lp_ru',
+      funnel: utm.funnel || 'flow3_kiirtest',
+      lang: 'ru',
+      kiirtest_lead_id: kiirtestLeadId,
+      ab_variant: getFunnelVariant() || 'B'
+    });
     var btn = document.getElementById('bridgeBtn');
     if (btn) btn.setAttribute('href', bridgeUrl);
 
     if (isBookingFirstMode()) {
       trackGateEvent('eligible_gate_bridge_clicked');
-      trackMetaCustom('KiirtestBridgeClicked', { funnel_step: 'booking_first_bridge', ab_variant: getFunnelVariant() || 'B' });
-      window.location.href = bridgeUrl;
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'booking_click', { language: 'RU', promo: todayCode, via: 'variant_b_direct_booking' });
+      }
+      trackMetaStandard('InitiateCheckout', { content_name: 'flow3_exam_direct_booking', funnel_step: 'direct_booking', value: 19, currency: 'EUR', ab_variant: getFunnelVariant() || 'B' });
+      trackMetaCustom('Flow3BookingClick', { funnel_step: 'direct_booking', ab_variant: getFunnelVariant() || 'B' });
+      window.location.href = directBookingUrl;
       return;
     }
 
@@ -991,7 +1006,7 @@ function buildTrackedUrl(url, extra) {
       if (el) el.textContent = code;
     });
     // Update booking button URLs with today's promo code (skips slow service-page)
-    var bookingUrl = buildTrackedUrl('https://my.ksa.ee/en/icb-time?serviceId=1', {
+    var bookingUrl = buildTrackedUrl('https://my.ksa.ee/et/icb-time?serviceId=1', {
       promokood: code,
       lang: 'ru',
       funnel: 'flow3_kiirtest',

@@ -472,7 +472,7 @@
     document.getElementById('codeText').textContent = code;
 
     // Build booking URL with code + full tracking passthrough.
-    var bookUrl = buildTrackedUrl('https://my.ksa.ee/en/icb-time?serviceId=1', {
+    var bookUrl = buildTrackedUrl('https://my.ksa.ee/et/icb-time?serviceId=1', {
       promokood: code
     });
     document.getElementById('bookBtn').setAttribute('href', bookUrl);

@@ -306,7 +306,7 @@
           <span id="promoCodeBtn" style="display:none;">FLOW19</span>
 
           <!-- Primary CTA -->
-          <a href="https://booking.ksa.ee/et/icb-time?serviceId=1&promokood=FLOW19" id="bookNowBtn" onclick="if(typeof gtag!=='undefined'){gtag('event','booking_click',{language:'RU',promo:getTodayCode()});} trackBookNow();" target="_blank" rel="noopener noreferrer"
+          <a href="https://online.saloninfra.ee/KSA?booking=new&campaign=kiirtest&services=42499&promokood=FLOW19" id="bookNowBtn" onclick="if(typeof gtag!=='undefined'){gtag('event','booking_click',{language:'RU',promo:getTodayCode()});} trackBookNow();" target="_blank" rel="noopener noreferrer"
              class="btn btn--primary btn--full btn--cta">
             Записаться и оплатить &rarr; <strong>19&nbsp;&euro;</strong>
           </a>
@@ -360,7 +360,7 @@
           <p class="result__text">Судя по вашим ответам, лазерная коррекция Flow3 может быть не самым подходящим вариантом. Мы рекомендуем пройти обследование Audit — оптометрист и врач проведут детальную диагностику и составят письменное заключение.</p>
           <hr class="result-divider">
           <p class="result__subheading">Рекомендуем обследование Audit</p>
-          <a href="https://booking.ksa.ee/et/icb-time?serviceId=6" target="_blank" rel="noopener noreferrer" class="btn btn--dark btn--full btn--cta">
+          <a href="https://my.ksa.ee/en/icb-time?serviceId=6" target="_blank" rel="noopener noreferrer" class="btn btn--dark btn--full btn--cta">
             Записаться на обследование Audit
           </a>
           <p class="result-contact">
@@ -461,7 +461,7 @@
       <div class="cta">
         <h2 class="cta__title">Готовы видеть чётко?</h2>
         <div class="cta__buttons">
-          <a href="https://booking.ksa.ee/et/icb-time?serviceId=1" id="bookNowBtn2" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--lg">Записаться на обследование &mdash; 19&nbsp;&euro;</a>
+          <a href="https://online.saloninfra.ee/KSA?booking=new&campaign=kiirtest&services=42499" id="bookNowBtn2" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--lg">Записаться на обследование &mdash; 19&nbsp;&euro;</a>
           <a href="https://ksa.ee/vabane-prillidest/" target="_blank" rel="noopener noreferrer" class="btn btn--outline btn--lg">Подробнее</a>
         </div>
         <p class="cta__contact">Звоните: <a href="tel:+3726445060">+372 644 5060</a> | <a href="mailto:info@ksa.ee">info@ksa.ee</a></p>
@@ -991,7 +991,7 @@ function buildTrackedUrl(url, extra) {
       if (el) el.textContent = code;
     });
     // Update booking button URLs with today's promo code (skips slow service-page)
-    var bookingUrl = buildTrackedUrl('https://booking.ksa.ee/et/icb-time?serviceId=1', {
+    var bookingUrl = buildTrackedUrl('https://online.saloninfra.ee/KSA?booking=new&campaign=kiirtest&services=42499', {
       promokood: code,
       lang: 'ru',
       funnel: 'flow3_kiirtest',

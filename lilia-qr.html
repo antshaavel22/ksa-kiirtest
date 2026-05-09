@@ -8,8 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js" defer></script>
-  <!-- Static fallback if QR generation CDN is blocked -->
+  <!-- QR is a static PNG (no JS generation) — bulletproof, no CDN dependency -->
   <link rel="preload" href="/lilia-qr-static.png" as="image">
   <style>
     * { box-sizing: border-box; }
@@ -92,17 +91,17 @@
       min-height: 256px;
       min-width: 256px;
     }
-    canvas#qrCanvas,
-    img#qrFallback {
+    img#qrImage {
       display: block;
       margin: 0 auto;
       width: 256px;
       height: 256px;
       background: #fff;
     }
-    img#qrFallback { display: none; }
-    .qr-canvas-wrap.is-fallback canvas#qrCanvas { display: none; }
-    .qr-canvas-wrap.is-fallback img#qrFallback { display: block; }
+    img#qrImage:not([src]),
+    img#qrImage[src=""] {
+      background: #f5f5f5;
+    }
     .code-display {
       font-family: 'SFMono-Regular', Consolas, monospace;
       font-size: 28px;
@@ -220,9 +219,8 @@
   </div>
 
   <div class="qr-card">
-    <div class="qr-canvas-wrap" id="qrWrap">
-      <canvas id="qrCanvas"></canvas>
-      <img id="qrFallback" src="/lilia-qr-static.png" alt="QR kood — skanni telefoniga" />
+    <div class="qr-canvas-wrap">
+      <img id="qrImage" src="/lilia-qr-static.png" alt="QR kood — skanni telefoniga" />
     </div>
     <p class="code-display" id="codeDisplay">FLOW-X</p>
     <p class="code-label">Tänane sooduskood</p>
@@ -267,7 +265,6 @@
   var MONTH_LABELS = ['jaanuar','veebruar','märts','aprill','mai','juuni','juuli','august','september','oktoober','november','detsember'];
 
   var currentOffset = 0;  // 0 = today, 1 = tomorrow, etc.
-  var qrCanvasReady = false;
 
   function getDateForOffset(offset) {
     var d = new Date();
@@ -277,8 +274,8 @@
 
   function buildBookingUrl(code) {
     // Route through the branded bridge page (/19) so leads get the warm welcome
-    // + Flow3 mini-FAQ + callback option BEFORE landing on my.ksa.ee booking.
-    // Bridge page forwards them to my.ksa.ee with the same promo code prefilled.
+    // + Flow3 mini-FAQ + callback option BEFORE landing on online.saloninfra.ee booking.
+    // Bridge page forwards them to online.saloninfra.ee with the same promo code prefilled.
     var base = 'https://kiirtest.ksa.ee/19';
     var params = [
       'code=' + encodeURIComponent(code),
@@ -317,7 +314,6 @@
     var dow = d.getDay();
     var code = DAILY_CODES[dow] || 'FLOW19';
     var url = buildBookingUrl(code);
-    qrCanvasReady = false;
 
     document.getElementById('codeDisplay').textContent = code;
     document.getElementById('urlDisplay').textContent = url;
@@ -327,39 +323,11 @@
     var validity = currentOffset === 0 ? 'kood kehtib täna kuni südaööni' : 'kood kehtib ' + dayName.toLowerCase() + 'al kuni südaööni';
     document.getElementById('metaLine').textContent = dateStr + ' · ' + validity;
 
-    renderQr(url);
-  }
-
-  function renderQr(url, attempt) {
-    attempt = attempt || 0;
-    var wrap = document.getElementById('qrWrap');
-    var canvas = document.getElementById('qrCanvas');
-
-    if (typeof QRCode === 'undefined' || !QRCode.toCanvas) {
-      if (attempt < 12) {
-        setTimeout(function() { renderQr(url, attempt + 1); }, 150);
-      } else {
-        qrCanvasReady = false;
-        wrap.classList.add('is-fallback');
-      }
-      return;
-    }
-
-    QRCode.toCanvas(canvas, url, {
-      width: 256,
-      margin: 1,
-      color: { dark: '#0F0F0F', light: '#FFFFFF' },
-      errorCorrectionLevel: 'M'
-    }, function(err) {
-      if (err) {
-        console.error('QR render error', err);
-        qrCanvasReady = false;
-        wrap.classList.add('is-fallback');
-        return;
-      }
-      qrCanvasReady = true;
-      wrap.classList.remove('is-fallback');
-    });
+    // QR is a static PNG (/lilia-qr-static.png) loaded by the <img> tag itself.
+    // It points to the bridge page WITHOUT a hardcoded daily code — the bridge
+    // auto-detects today's code based on the day of the week. So this same QR
+    // image works every day, forever. The day picker only changes the TEXT shown
+    // on this page (so Lilia knows which code goes in the email's body text).
   }
 
   function showToast(text) {
@@ -399,40 +367,19 @@
     var code = DAILY_CODES[d.getDay()];
     var dateStr = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
     var filename = 'KSA-Flow3-QR-' + dateStr + '-' + code + '.png';
-    var canvas = document.getElementById('qrCanvas');
 
-    if (canvas && qrCanvasReady && !document.getElementById('qrWrap').classList.contains('is-fallback')) {
-      canvas.toBlob(function(blob) {
-        if (!blob) {
-          downloadStaticFallback(filename);
-          return;
-        }
-        triggerBlobDownload(blob, filename);
-        showToast('✓ QR salvestatud: ' + filename);
-      }, 'image/png');
-      return;
-    }
-
-    downloadStaticFallback(filename);
-  }
-
-  function triggerBlobDownload(blob, filename) {
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(function() { URL.revokeObjectURL(url); }, 200);
-  }
-
-  function downloadStaticFallback(filename) {
     // Fetch the static PNG and trigger download with a friendly filename
     fetch('/lilia-qr-static.png')
       .then(function(r) { return r.blob(); })
       .then(function(blob) {
-        triggerBlobDownload(blob, filename);
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function() { URL.revokeObjectURL(url); }, 200);
         showToast('✓ QR salvestatud: ' + filename);
       })
       .catch(function(err) {

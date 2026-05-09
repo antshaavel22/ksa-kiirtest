@@ -288,7 +288,7 @@
 
         <a href="#" id="bookBtn" class="book-cta" target="_blank" rel="noopener noreferrer" onclick="trackBookClick()">
           📅 Broneeri Flow3 silmauuring → 19&nbsp;€
-          <span class="book-cta__sub">Avaneb booking.ksa.ee &middot; soodushind juba peal</span>
+          <span class="book-cta__sub">Avaneb online-broneering &middot; soodushind juba peal</span>
         </a>
 
         <div class="quick-stats">
@@ -472,7 +472,7 @@
     document.getElementById('codeText').textContent = code;
 
     // Build booking URL with code + full tracking passthrough.
-    var bookUrl = buildTrackedUrl('https://booking.ksa.ee/et/icb-time?serviceId=1', {
+    var bookUrl = buildTrackedUrl('https://online.saloninfra.ee/KSA?booking=new&campaign=kiirtest&services=42499', {
       promokood: code
     });
     document.getElementById('bookBtn').setAttribute('href', bookUrl);

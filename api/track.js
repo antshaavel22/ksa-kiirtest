@@ -562,10 +562,11 @@ ${safeRows}
 }
 
 function leadFields({ answers = {}, lang, name, phone, email, adSource, intent, code, extra = [] }) {
-  const fields = [
-    { type: 'mrkdwn', text: `*Nimi:*\n${valueOrDash(name)}` },
-    { type: 'mrkdwn', text: `*Telefon:*\n${phone ? `<tel:${phone}|${phone}>` : '—'}` },
-    { type: 'mrkdwn', text: `*E-post:*\n${valueOrDash(email)}` },
+  const fields = [];
+  if (name) fields.push({ type: 'mrkdwn', text: `*Nimi:*\n${valueOrDash(name)}` });
+  if (phone) fields.push({ type: 'mrkdwn', text: `*Telefon:*\n<tel:${phone}|${phone}>` });
+  if (email) fields.push({ type: 'mrkdwn', text: `*E-post:*\n${valueOrDash(email)}` });
+  fields.push(
     { type: 'mrkdwn', text: `*Keel:*\n${valueOrDash(lang)}` },
     { type: 'mrkdwn', text: `*Allikas:*\n${valueOrDash(adSource)}` },
     { type: 'mrkdwn', text: `*Soov / intent:*\n${valueOrDash(intent)}` },
@@ -573,9 +574,14 @@ function leadFields({ answers = {}, lang, name, phone, email, adSource, intent, 
     { type: 'mrkdwn', text: `*Nägemine:*\n${valueOrDash(answers.vision || answers.vision_issue)}` },
     { type: 'mrkdwn', text: `*Dioptrid:*\n${valueOrDash(answers.prescription || answers.prescription_sphere)}` },
     { type: 'mrkdwn', text: `*Läätsed:*\n${valueOrDash(answers.lenses)}` },
-  ];
-  if (code) fields.push({ type: 'mrkdwn', text: `*Sooduskood:*\n${code}` });
-  return fields.concat(extra);
+  );
+  const meta = [];
+  if (code) meta.push(`*Sooduskood:*\n${code}`);
+  extra.forEach((item) => {
+    if (item && item.text) meta.push(item.text);
+  });
+  if (meta.length) fields.push({ type: 'mrkdwn', text: meta.join('\n') });
+  return fields.slice(0, 10);
 }
 
 // ══════════════════════════════════════════════════════════════════════════════

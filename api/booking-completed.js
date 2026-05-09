@@ -1,16 +1,16 @@
 // api/booking-completed.js
 //
-// Webhook called when a customer completes a Flow3 booking on my.ksa.ee.
+// Webhook called when a customer completes a Flow3 booking on booking.ksa.ee.
 // Cancels all pending email-sequence steps for that customer so they stop
 // receiving "have you booked yet?" follow-ups after they've already booked.
 //
-// USAGE (from my.ksa.ee booking system, after a paid Flow3 booking is confirmed):
+// USAGE (from booking.ksa.ee booking system, after a paid Flow3 booking is confirmed):
 //   POST https://kiirtest.ksa.ee/api/booking-completed
 //   Authorization: Bearer <LP_TRACK_SHARED_TOKEN>
 //   Content-Type: application/json
 //   {
 //     "email": "patient@example.com",
-//     "source": "my.ksa.ee",
+//     "source": "booking.ksa.ee",
 //     "service": "Flow3",
 //     "booking_id": "12345",
 //     "conversion_value": 69,
@@ -260,6 +260,34 @@ async function notifySlack({ email, source, service, cancelled, failed, googleAd
   } catch (_) { /* don't fail the request on slack errors */ }
 }
 
+async function sendBookingLedger({ email, source, service, googleAds, body }) {
+  if (!RESEND_API_KEY) return;
+  const html = `<p><strong>KSA Kiirtest booking ledger</strong></p>
+<table cellpadding="0" cellspacing="0" style="font-size:13px;font-family:Arial,sans-serif;border-collapse:collapse;">
+<tr><td style="color:#888;padding:4px 10px 4px 0;">Event</td><td style="padding:4px 0;"><strong>booking_completed</strong></td></tr>
+<tr><td style="color:#888;padding:4px 10px 4px 0;">E-post</td><td style="padding:4px 0;"><strong>${email || '—'}</strong></td></tr>
+<tr><td style="color:#888;padding:4px 10px 4px 0;">Allikas</td><td style="padding:4px 0;"><strong>${source || '—'}</strong></td></tr>
+<tr><td style="color:#888;padding:4px 10px 4px 0;">Teenus</td><td style="padding:4px 0;"><strong>${service || '—'}</strong></td></tr>
+<tr><td style="color:#888;padding:4px 10px 4px 0;">Booking ID</td><td style="padding:4px 0;"><strong>${body?.booking_id || body?.bookingId || body?.order_id || '—'}</strong></td></tr>
+<tr><td style="color:#888;padding:4px 10px 4px 0;">Google Ads</td><td style="padding:4px 0;"><strong>${googleAds?.skipped ? `skipped: ${googleAds.reason}` : 'uploaded / attempted'}</strong></td></tr>
+</table>`;
+  try {
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: 'Lilia – KSA Silmakeskus <noreply@ksa.ee>',
+        to: ['registreerumised@ksa.ee'],
+        reply_to: 'info@ksa.ee',
+        subject: `✅ Kiirtest booking completed [${source || 'booking.ksa.ee'}]`,
+        html,
+      }),
+    });
+  } catch (err) {
+    console.error('Booking ledger email error:', err);
+  }
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ ok: false, error: 'POST only' });
@@ -309,6 +337,7 @@ export default async function handler(req, res) {
   }
 
   await notifySlack({ email, source, service, cancelled, failed, googleAds });
+  await sendBookingLedger({ email, source, service, googleAds, body });
 
   return res.status(200).json({
     ok: true,

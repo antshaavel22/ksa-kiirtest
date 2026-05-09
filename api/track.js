@@ -524,6 +524,33 @@ function leadVariant(body) {
   return body?.ab_variant || body?.lead_context?.ab_variant || body?.utm?.ab_variant || null;
 }
 
+async function sendInternalEventLedger({ subject, rows = [] }) {
+  if (!RESEND_API_KEY || !subject) return;
+  const safeRows = rows
+    .filter((row) => row && row[0])
+    .map(([label, value]) => `<tr><td style="color:#888;padding:4px 10px 4px 0;">${label}</td><td style="padding:4px 0;"><strong>${value === undefined || value === null || value === '' ? '—' : String(value)}</strong></td></tr>`)
+    .join('');
+  const html = `<p><strong>KSA Kiirtest event ledger</strong></p>
+<table cellpadding="0" cellspacing="0" style="font-size:13px;font-family:Arial,sans-serif;border-collapse:collapse;">
+${safeRows}
+</table>`;
+  try {
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: FROM_EMAIL,
+        to: [INTERNAL_NOTIFY_EMAIL],
+        reply_to: 'info@ksa.ee',
+        subject,
+        html,
+      }),
+    });
+  } catch (err) {
+    console.error('Internal event ledger error:', err);
+  }
+}
+
 function leadFields({ answers = {}, lang, name, phone, email, adSource, intent, code, extra = [] }) {
   const fields = [
     { type: 'mrkdwn', text: `*Nimi:*\n${valueOrDash(name)}` },
@@ -1008,6 +1035,7 @@ export default async function handler(req, res) {
     if (!isQualifiedFlow3Answers(answers)) {
       return res.status(200).json({ ok: true, skipped: 'quiz_not_flow3_qualified' });
     }
+    const variant = leadVariant(body);
     const emoji = result === 'good_candidate' ? '✅' : 'ℹ️';
     const label = result === 'good_candidate' ? 'Sobiv kandidaat' : 'Vajab konsultatsiooni';
     blocks = [
@@ -1023,6 +1051,20 @@ export default async function handler(req, res) {
       ]},
       { type: 'context', elements: [{ type: 'mrkdwn', text: `_${ts}_` }] },
     ];
+    await sendInternalEventLedger({
+      subject: `✅ Kiirtest qualified quiz [${adSource || 'Otse'}]${variant ? ` [${variant}]` : ''}`,
+      rows: [
+        ['Event', 'qualified_quiz'],
+        ['Funnel', variant || 'control'],
+        ['Allikas', adSource || '—'],
+        ['Keel', language || 'ET'],
+        ['Vanus', answers.age || '—'],
+        ['Nägemine', answers.vision || '—'],
+        ['Dioptrid', answers.prescription || '—'],
+        ['Huvi', answers.interest || '—'],
+        ['Aeg', ts],
+      ],
+    });
 
   } else if (type === 'installment_lead') {
     // 0% järelmaks — contact left phone number
@@ -1220,6 +1262,23 @@ export default async function handler(req, res) {
       { type: 'section', fields: leadFields({ answers: leadData, lang, name, phone, email, adSource, intent, extra: variant ? [{ type: 'mrkdwn', text: `*Funnel:*\n${variant}` }] : [] }) },
       { type: 'context', elements: [{ type: 'mrkdwn', text: `_${ts}_ · Flow3-qualified by Kiirtest` }] },
     ];
+    await sendInternalEventLedger({
+      subject: `✅ Kiirtest Flow3 phone lead [${adSource || 'Otse'}]${variant ? ` [${variant}]` : ''}`,
+      rows: [
+        ['Event', 'qualified_phone_lead'],
+        ['Funnel', variant || 'control'],
+        ['Nimi', name || '—'],
+        ['Telefon', phone || '—'],
+        ['E-post', email || '—'],
+        ['Allikas', adSource || '—'],
+        ['Keel', lang],
+        ['Vanus', leadData.age || leadData.age_band || '—'],
+        ['Nägemine', leadData.vision || leadData.vision_issue || '—'],
+        ['Dioptrid', leadData.prescription || leadData.prescription_sphere || '—'],
+        ['Soov', intent || '—'],
+        ['Aeg', ts],
+      ],
+    });
 
   } else if (['book_now_clicked', 'bridge_19_book_clicked', 'eligible_gate_bridge_clicked'].includes(type)) {
     // Diagnostic booking intent events. These are not confirmed bookings/conversions.
@@ -1244,6 +1303,24 @@ export default async function handler(req, res) {
       { type: 'section', fields: leadFields({ answers: leadData, lang, name, phone, email, adSource, intent, code: body.code, extra: variant ? [{ type: 'mrkdwn', text: `*Funnel:*\n${variant}` }] : [] }) },
       { type: 'context', elements: [{ type: 'mrkdwn', text: `_${ts}_` }] },
     ];
+    await sendInternalEventLedger({
+      subject: `📅 Kiirtest booking click [${adSource || 'Otse'}]${variant ? ` [${variant}]` : ''}`,
+      rows: [
+        ['Event', type],
+        ['Funnel', variant || 'control'],
+        ['Nimi', name || '—'],
+        ['Telefon', phone || '—'],
+        ['E-post', email || '—'],
+        ['Allikas', adSource || '—'],
+        ['Keel', lang],
+        ['Vanus', leadData.age || leadData.age_band || '—'],
+        ['Nägemine', leadData.vision || leadData.vision_issue || '—'],
+        ['Dioptrid', leadData.prescription || leadData.prescription_sphere || '—'],
+        ['Soov', intent || '—'],
+        ['Sooduskood', body.code || '—'],
+        ['Aeg', ts],
+      ],
+    });
 
   } else if (type === 'hot_lead_lens_user') {
     // Daily lens user — high-value lead, flag for Lilia to call same day
@@ -1282,6 +1359,7 @@ export default async function handler(req, res) {
     const lang = detectLang(lp_source, language || body.language);
     const leadData = leadAnswers(body, answers);
     const intent = leadIntent(leadData, body.intent);
+    const variant = leadVariant(body);
     const sourceLabel = from === 'lilia' ? 'Lilia QR / e-kirjast' : (from === 'kiirtest' ? 'Kiirtest LP' : 'Bridge /19 (otse)');
     blocks = [
       { type: 'header', text: { type: 'plain_text', text: `📞 Tagasihelistamise soov — bridge /19` } },
@@ -1301,6 +1379,24 @@ export default async function handler(req, res) {
       ]},
       { type: 'context', elements: [{ type: 'mrkdwn', text: `_${ts}_` }] },
     ];
+    await sendInternalEventLedger({
+      subject: `📞 Kiirtest callback request [${adSource || sourceLabel}]${variant ? ` [${variant}]` : ''}`,
+      rows: [
+        ['Event', 'callback_requested'],
+        ['Funnel', variant || 'control'],
+        ['Nimi', cName],
+        ['Telefon', cPhone],
+        ['E-post', cEmail],
+        ['Allikas', sourceLabel],
+        ['Reklaamiallikas', adSource || '—'],
+        ['Keel', lang],
+        ['Vanus', leadData.age || leadData.age_band || '—'],
+        ['Nägemine', leadData.vision || leadData.vision_issue || '—'],
+        ['Dioptrid', leadData.prescription || leadData.prescription_sphere || '—'],
+        ['Soov', intent || '—'],
+        ['Aeg', ts],
+      ],
+    });
 
   } else if (type === 'phone_lead') {
     // Email gate skip downsell — left phone number, wants callback

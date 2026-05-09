@@ -1,6 +1,6 @@
 // api/analytics-report.js
 // Vercel cron: daily 08:00 AM & weekly Friday 09:00 AM Tallinn time
-// Queries Resend for email stats → posts to Slack #kiirtesti-täitmised
+// Queries Resend event ledger → posts to Slack #kiirtesti-täitmised
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const SLACK_WEBHOOK = process.env.SLACK_KIIRTEST_CHANNEL_WEBHOOK_URL ||
@@ -45,19 +45,32 @@ function extractSource(subject) {
   return src;
 }
 
-// Analyze email array for a given date range
+function hasAny(subject, needles) {
+  const s = subject || '';
+  return needles.some((needle) => s.includes(needle));
+}
+
+// Analyze Resend internal event ledger emails for a given date range.
 function analyze(emails, fromDate, toDate) {
   const internal = emails.filter(
     e => e.to?.includes('registreerumised@ksa.ee') && inRange(e, fromDate, toDate)
   );
   // Exclude our own test/audit emails
   const real = internal.filter(
-    e => !e.subject?.includes('audit-test') && !e.to?.some(t => t.includes('audit-test'))
+    e => !e.subject?.includes('audit-test') &&
+      !e.subject?.toLowerCase().includes('smoke') &&
+      !e.subject?.toLowerCase().includes('test abc') &&
+      !e.to?.some(t => t.includes('audit-test'))
   );
 
-  const good     = real.filter(e => e.subject?.includes('✅'));
+  const qualifiedQuiz = real.filter(e => hasAny(e.subject, ['qualified quiz']));
+  const phoneLead = real.filter(e => hasAny(e.subject, ['Flow3 phone lead', 'qualified_phone_lead', '📞 Flow3 kandidaat']));
+  const bookingClick = real.filter(e => hasAny(e.subject, ['booking click']));
+  const bookingCompleted = real.filter(e => hasAny(e.subject, ['booking completed']));
+  const callback = real.filter(e => hasAny(e.subject, ['callback request', 'Tagasihelistamise soov']));
+  const good = real.filter(e => e.subject?.includes('✅') || hasAny(e.subject, ['qualified quiz', 'Flow3 phone lead']));
   const consult  = real.filter(e => !e.subject?.includes('📋') && (e.subject?.includes('ℹ️') || e.subject?.includes('Konsultatsioon')));
-  const contact  = real.filter(e => e.subject?.includes('📋'));
+  const contact  = real.filter(e => e.subject?.includes('📋') || hasAny(e.subject, ['Flow3 phone lead', 'callback request']));
   const install  = emails.filter(e => e.subject?.toLowerCase().includes('järelmaks') && !e.to?.includes('registreerumised@ksa.ee') && inRange(e, fromDate, toDate));
 
   // Source breakdown — count all leads (good + consult + contact) by channel
@@ -69,7 +82,19 @@ function analyze(emails, fromDate, toDate) {
     if (e.subject?.includes('✅')) bySource[src].good++;
   }
 
-  return { total: real.length, good: good.length, consult: consult.length, contact: contact.length, install: install.length, bySource };
+  return {
+    total: real.length,
+    good: good.length,
+    consult: consult.length,
+    contact: contact.length,
+    install: install.length,
+    qualifiedQuiz: qualifiedQuiz.length,
+    phoneLead: phoneLead.length,
+    bookingClick: bookingClick.length,
+    bookingCompleted: bookingCompleted.length,
+    callback: callback.length,
+    bySource
+  };
 }
 
 function progressBar(value, target, width = 10) {
@@ -158,16 +183,17 @@ export default async function handler(req, res) {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `📅 *Periood:* ${periodLabel}\n${targetNote}`,
+        text: `📅 *Periood:* ${periodLabel}\n${targetNote}\n_Märkus: raport loeb nüüdsest Resendi Kiirtest event ledger'i. Enne 2026-05-09 loodud Slack-only sündmused võivad jääda siit välja._`,
       },
     },
     {
       type: 'section',
       fields: [
-        { type: 'mrkdwn', text: `*📧 E-post jäetud (küsimustik täidetud):*\n${stats.total}` },
-        { type: 'mrkdwn', text: `*✅ Sobiv Flow3 kandidaat:*\n${stats.good} (${pct}%)` },
-        { type: 'mrkdwn', text: `*ℹ️ Soovitame konsultatsiooni:*\n${stats.consult}` },
-        { type: 'mrkdwn', text: `*📋 Kontakt jäetud (nimi+tel):*\n${stats.contact}` },
+        { type: 'mrkdwn', text: `*✅ Sobiv kiirtest täidetud:*\n${stats.qualifiedQuiz}` },
+        { type: 'mrkdwn', text: `*📞 Kontakt jäetud (nimi+tel):*\n${stats.phoneLead}` },
+        { type: 'mrkdwn', text: `*📅 Broneerimise klikid:*\n${stats.bookingClick}` },
+        { type: 'mrkdwn', text: `*✅ Kinnitatud broneeringud:*\n${stats.bookingCompleted}` },
+        { type: 'mrkdwn', text: `*☎️ Tagasihelistamise soovid:*\n${stats.callback}` },
         { type: 'mrkdwn', text: `*💳 Järelmaks huvi:*\n${stats.install}` },
         { type: 'mrkdwn', text: `*🎯 Progress (sobivad / eesmärk):*\n${bar} ${stats.good}/${targetTotal}` },
       ],
@@ -184,7 +210,7 @@ export default async function handler(req, res) {
       type: 'context',
       elements: [{
         type: 'mrkdwn',
-        text: `_ℹ️ Andmed: Resend API. Allikamärgend ilmub alates 29.04.2026 saadetud liididel — vanemad on "Otse/Muu"._`,
+        text: `_ℹ️ Andmed: Resend event ledger + legacy internal emails. Slack-only ajalugu ei ole tagasiulatuvalt taastatav ilma Slack export/API logita._`,
       }],
     },
   ];

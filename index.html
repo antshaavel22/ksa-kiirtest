@@ -308,7 +308,7 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
           <span id="promoCodeBtn" style="display:none;">FLOW19</span>
 
           <!-- Primary CTA -->
-          <a id="bookNowBtn" href="https://online.saloninfra.ee/KSA?booking=new&campaign=kiirtest&services=42499&promokood=FLOW19" onclick="if(typeof gtag!=='undefined'){gtag('event','booking_click',{language:'ET',promo:getTodayCode()});} trackBookNow();"
+          <a id="bookNowBtn" href="https://my.ksa.ee/en/icb-time?serviceId=1&promokood=FLOW19" onclick="if(typeof gtag!=='undefined'){gtag('event','booking_click',{language:'ET',promo:getTodayCode()});} trackBookNow();"
             target="_blank" rel="noopener noreferrer"
             class="btn btn--primary btn--full btn--cta">
             Broneerin &amp; tasun kohe &rarr; <strong>19&nbsp;&euro;</strong>
@@ -470,7 +470,7 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
       <div class="cta">
         <h2 class="cta__title">Valmis nägema selgelt?</h2>
         <div class="cta__buttons">
-          <a href="https://online.saloninfra.ee/KSA?booking=new&campaign=kiirtest&services=42499" id="bookNowBtn2" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--lg">Broneeri uuring &mdash; 19&nbsp;&euro;</a>
+          <a href="https://my.ksa.ee/en/icb-time?serviceId=1" id="bookNowBtn2" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--lg">Broneeri uuring &mdash; 19&nbsp;&euro;</a>
           <a href="https://ksa.ee/vabane-prillidest/" target="_blank" rel="noopener noreferrer" class="btn btn--outline btn--lg">Loe lähemalt</a>
         </div>
         <p class="cta__contact">Helista: <a href="tel:+3726445060">+372 644 5060</a> | <a href="mailto:info@ksa.ee">info@ksa.ee</a></p>
@@ -1032,7 +1032,7 @@ function buildTrackedUrl(url, extra) {
       if (el) el.textContent = code;
     });
     // Update booking button URLs with today's promo code (skips slow service-page)
-    var bookingUrl = buildTrackedUrl('https://online.saloninfra.ee/KSA?booking=new&campaign=kiirtest&services=42499', {
+    var bookingUrl = buildTrackedUrl('https://my.ksa.ee/en/icb-time?serviceId=1', {
       promokood: code,
       lang: 'et',
       funnel: 'flow3_kiirtest',

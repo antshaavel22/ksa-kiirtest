@@ -274,8 +274,8 @@
 
   function buildBookingUrl(code) {
     // Route through the branded bridge page (/19) so leads get the warm welcome
-    // + Flow3 mini-FAQ + callback option BEFORE landing on online.saloninfra.ee booking.
-    // Bridge page forwards them to online.saloninfra.ee with the same promo code prefilled.
+    // + Flow3 mini-FAQ + callback option BEFORE landing on my.ksa.ee booking.
+    // Bridge page forwards them to my.ksa.ee with the same promo code prefilled.
     var base = 'https://kiirtest.ksa.ee/19';
     var params = [
       'code=' + encodeURIComponent(code),

@@ -301,7 +301,7 @@
           <span id="promoCodeBtn" style="display:none;">FLOW19</span>
 
           <!-- Primary CTA -->
-          <a href="https://online.saloninfra.ee/KSA?booking=new&campaign=kiirtest&services=42499&promokood=FLOW19" id="bookNowBtn" onclick="if(typeof gtag!=='undefined'){gtag('event','booking_click',{language:'EN',promo:getTodayCode()});} trackBookNow();" target="_blank" rel="noopener noreferrer"
+          <a href="https://my.ksa.ee/en/icb-time?serviceId=1&promokood=FLOW19" id="bookNowBtn" onclick="if(typeof gtag!=='undefined'){gtag('event','booking_click',{language:'EN',promo:getTodayCode()});} trackBookNow();" target="_blank" rel="noopener noreferrer"
              class="btn btn--primary btn--full btn--cta">
             Book &amp; pay now &rarr; <strong>19&nbsp;&euro;</strong>
           </a>
@@ -456,7 +456,7 @@
       <div class="cta">
         <h2 class="cta__title">Ready to see clearly?</h2>
         <div class="cta__buttons">
-          <a href="https://online.saloninfra.ee/KSA?booking=new&campaign=kiirtest&services=42499" id="bookNowBtn2" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--lg">Book examination &mdash; 19&nbsp;&euro;</a>
+          <a href="https://my.ksa.ee/en/icb-time?serviceId=1" id="bookNowBtn2" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--lg">Book examination &mdash; 19&nbsp;&euro;</a>
           <a href="https://ksa.ee/vabane-prillidest/" target="_blank" rel="noopener noreferrer" class="btn btn--outline btn--lg">Learn more</a>
         </div>
         <p class="cta__contact">Call: <a href="tel:+3726445060">+372 644 5060</a> | <a href="mailto:info@ksa.ee">info@ksa.ee</a></p>
@@ -990,7 +990,7 @@ function buildTrackedUrl(url, extra) {
       if (el) el.textContent = code;
     });
     // Update booking button URLs with today's promo code (skips slow service-page)
-    var bookingUrl = buildTrackedUrl('https://online.saloninfra.ee/KSA?booking=new&campaign=kiirtest&services=42499', {
+    var bookingUrl = buildTrackedUrl('https://my.ksa.ee/en/icb-time?serviceId=1', {
       promokood: code,
       lang: 'en',
       funnel: 'flow3_kiirtest',

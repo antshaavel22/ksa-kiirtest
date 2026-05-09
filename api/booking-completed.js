@@ -1,18 +1,23 @@
 // api/booking-completed.js
 //
-// Webhook called when a customer completes a Flow3 booking on booking.ksa.ee.
+// Webhook called when a customer completes a Flow3 booking on my.ksa.ee / booking.ksa.ee.
 // Cancels all pending email-sequence steps for that customer so they stop
 // receiving "have you booked yet?" follow-ups after they've already booked.
 //
-// USAGE (from booking.ksa.ee booking system, after a paid Flow3 booking is confirmed):
+// USAGE (from my.ksa.ee / booking.ksa.ee, after a paid Flow3 booking is confirmed):
 //   POST https://kiirtest.ksa.ee/api/booking-completed
 //   Authorization: Bearer <LP_TRACK_SHARED_TOKEN>
 //   Content-Type: application/json
 //   {
 //     "email": "patient@example.com",
-//     "source": "booking.ksa.ee",
+//     "phone": "+372...",
+//     "name": "Patient",
+//     "source": "my.ksa.ee",
 //     "service": "Flow3",
 //     "booking_id": "12345",
+//     "kiirtest_lead_id": "...",
+//     "ab_variant": "B",
+//     "promo_code": "FLOW-L",
 //     "conversion_value": 69,
 //     "currency": "EUR",
 //     "gclid": "...",
@@ -73,6 +78,10 @@ async function cancelEmail(id) {
     headers: { Authorization: `Bearer ${RESEND_API_KEY}` },
   });
   return r.ok;
+}
+
+function firstValue(...values) {
+  return values.find((value) => value !== undefined && value !== null && String(value).trim() !== '') || null;
 }
 
 function getTracking(body) {
@@ -240,13 +249,35 @@ async function uploadGoogleAdsBooking(body, options = {}) {
   };
 }
 
-async function notifySlack({ email, source, service, cancelled, failed, googleAds }) {
+function contactFromBody(body) {
+  const contact = body?.contact || {};
+  return {
+    name: firstValue(body?.name, body?.patient_name, body?.patientName, contact.name),
+    phone: firstValue(body?.phone, body?.telephone, body?.patient_phone, body?.patientPhone, contact.phone),
+    email: firstValue(body?.email, body?.patient_email, body?.patientEmail, contact.email),
+  };
+}
+
+async function notifySlack({ contact, source, service, cancelled, failed, googleAds, body }) {
+  const bookingId = firstValue(body?.booking_id, body?.bookingId, body?.order_id, body?.orderId);
+  const promo = firstValue(body?.promo_code, body?.promoCode, body?.promokood, body?.code, body?.utm?.promokood);
+  const leadId = firstValue(body?.kiirtest_lead_id, body?.kiirtestLeadId, body?.lead_id, body?.leadId, body?.utm?.kiirtest_lead_id);
+  const variant = firstValue(body?.ab_variant, body?.variant, body?.funnel_variant, body?.utm?.ab_variant);
+  const value = firstValue(body?.conversion_value, body?.value);
+  const currency = body?.currency || 'EUR';
   const lines = [
-    `:no_entry: *Broneering tehtud — e-postide jada peatatud*`,
-    `*E-post:* ${email}`,
+    `:white_check_mark: *Flow3 broneering kinnitatud — Kiirtest*`,
+    contact?.name ? `*Nimi:* ${contact.name}` : null,
+    contact?.phone ? `*Telefon:* ${contact.phone}` : null,
+    contact?.email ? `*E-post:* ${contact.email}` : null,
+    bookingId ? `*Booking ID:* ${bookingId}` : null,
     source ? `*Allikas:* ${source}` : null,
     service ? `*Teenus:* ${service}` : null,
-    `*Tühistatud kirjasid:* ${cancelled}${failed ? ` (ebaõn: ${failed})` : ''}`,
+    variant ? `*Funnel:* ${variant}` : null,
+    leadId ? `*Kiirtest lead ID:* ${leadId}` : null,
+    promo ? `*Sooduskood:* ${promo}` : null,
+    value ? `*Väärtus:* ${value} ${currency}` : null,
+    contact?.email ? `*Tühistatud follow-up kirju:* ${cancelled}${failed ? ` (ebaõnnestus: ${failed})` : ''}` : `*Follow-up kirjad:* ei kontrollitud (e-post puudus payloadis)`,
     googleAds?.skipped ? `*Google Ads:* vahele jäetud (${googleAds.reason})` : null,
     googleAds && !googleAds.skipped ? `*Google Ads:* booking conversion uploaded (${googleAds.clickIdType})${googleAds.partialFailureError ? ' — check partial failure' : ''}` : null,
     `_${new Date().toLocaleString('et-EE', { timeZone: 'Europe/Tallinn' })}_`,
@@ -260,15 +291,24 @@ async function notifySlack({ email, source, service, cancelled, failed, googleAd
   } catch (_) { /* don't fail the request on slack errors */ }
 }
 
-async function sendBookingLedger({ email, source, service, googleAds, body }) {
+async function sendBookingLedger({ contact, source, service, googleAds, body }) {
   if (!RESEND_API_KEY) return;
+  const bookingId = firstValue(body?.booking_id, body?.bookingId, body?.order_id, body?.orderId);
+  const promo = firstValue(body?.promo_code, body?.promoCode, body?.promokood, body?.code, body?.utm?.promokood);
+  const leadId = firstValue(body?.kiirtest_lead_id, body?.kiirtestLeadId, body?.lead_id, body?.leadId, body?.utm?.kiirtest_lead_id);
+  const variant = firstValue(body?.ab_variant, body?.variant, body?.funnel_variant, body?.utm?.ab_variant);
   const html = `<p><strong>KSA Kiirtest booking ledger</strong></p>
 <table cellpadding="0" cellspacing="0" style="font-size:13px;font-family:Arial,sans-serif;border-collapse:collapse;">
 <tr><td style="color:#888;padding:4px 10px 4px 0;">Event</td><td style="padding:4px 0;"><strong>booking_completed</strong></td></tr>
-<tr><td style="color:#888;padding:4px 10px 4px 0;">E-post</td><td style="padding:4px 0;"><strong>${email || '—'}</strong></td></tr>
+<tr><td style="color:#888;padding:4px 10px 4px 0;">Nimi</td><td style="padding:4px 0;"><strong>${contact?.name || '—'}</strong></td></tr>
+<tr><td style="color:#888;padding:4px 10px 4px 0;">Telefon</td><td style="padding:4px 0;"><strong>${contact?.phone || '—'}</strong></td></tr>
+<tr><td style="color:#888;padding:4px 10px 4px 0;">E-post</td><td style="padding:4px 0;"><strong>${contact?.email || '—'}</strong></td></tr>
 <tr><td style="color:#888;padding:4px 10px 4px 0;">Allikas</td><td style="padding:4px 0;"><strong>${source || '—'}</strong></td></tr>
 <tr><td style="color:#888;padding:4px 10px 4px 0;">Teenus</td><td style="padding:4px 0;"><strong>${service || '—'}</strong></td></tr>
-<tr><td style="color:#888;padding:4px 10px 4px 0;">Booking ID</td><td style="padding:4px 0;"><strong>${body?.booking_id || body?.bookingId || body?.order_id || '—'}</strong></td></tr>
+<tr><td style="color:#888;padding:4px 10px 4px 0;">Booking ID</td><td style="padding:4px 0;"><strong>${bookingId || '—'}</strong></td></tr>
+<tr><td style="color:#888;padding:4px 10px 4px 0;">Funnel</td><td style="padding:4px 0;"><strong>${variant || '—'}</strong></td></tr>
+<tr><td style="color:#888;padding:4px 10px 4px 0;">Kiirtest lead ID</td><td style="padding:4px 0;"><strong>${leadId || '—'}</strong></td></tr>
+<tr><td style="color:#888;padding:4px 10px 4px 0;">Sooduskood</td><td style="padding:4px 0;"><strong>${promo || '—'}</strong></td></tr>
 <tr><td style="color:#888;padding:4px 10px 4px 0;">Google Ads</td><td style="padding:4px 0;"><strong>${googleAds?.skipped ? `skipped: ${googleAds.reason}` : 'uploaded / attempted'}</strong></td></tr>
 </table>`;
   try {
@@ -279,7 +319,7 @@ async function sendBookingLedger({ email, source, service, googleAds, body }) {
         from: 'Lilia – KSA Silmakeskus <noreply@ksa.ee>',
         to: ['registreerumised@ksa.ee'],
         reply_to: 'info@ksa.ee',
-        subject: `✅ Kiirtest booking completed [${source || 'booking.ksa.ee'}]`,
+        subject: `✅ Kiirtest booking completed [${source || 'my.ksa.ee'}]${variant ? ` [${variant}]` : ''}`,
         html,
       }),
     });
@@ -302,22 +342,27 @@ export default async function handler(req, res) {
   if (typeof body === 'string') {
     try { body = JSON.parse(body); } catch (_) { body = {}; }
   }
-  const email = (body?.email || '').trim().toLowerCase();
-  const source = body?.source || null;
-  const service = body?.service || null;
-  if (!email || !email.includes('@')) {
-    return res.status(400).json({ ok: false, error: 'email required' });
+  const contact = contactFromBody(body);
+  const email = (contact.email || '').trim().toLowerCase();
+  contact.email = email || null;
+  const source = body?.source || body?.utm?.source || null;
+  const service = body?.service || body?.service_name || body?.serviceName || null;
+  const bookingId = firstValue(body?.booking_id, body?.bookingId, body?.order_id, body?.orderId);
+  if (!contact.email && !contact.phone && !bookingId) {
+    return res.status(400).json({ ok: false, error: 'email, phone, or booking id required' });
   }
 
-  let emails;
-  try {
-    emails = await fetchRecentEmails(3);
-  } catch (err) {
-    console.error('Resend list error:', err);
-    return res.status(502).json({ ok: false, error: 'Resend list failed' });
+  let pending = [];
+  if (contact.email && contact.email.includes('@') && RESEND_API_KEY) {
+    let emails;
+    try {
+      emails = await fetchRecentEmails(3);
+    } catch (err) {
+      console.error('Resend list error:', err);
+      return res.status(502).json({ ok: false, error: 'Resend list failed' });
+    }
+    pending = emails.filter(e => isPendingForRecipient(e, contact.email));
   }
-
-  const pending = emails.filter(e => isPendingForRecipient(e, email));
 
   let cancelled = 0;
   let failed = 0;
@@ -336,12 +381,14 @@ export default async function handler(req, res) {
     googleAds = { skipped: true, reason: 'upload_error', error: err.message };
   }
 
-  await notifySlack({ email, source, service, cancelled, failed, googleAds });
-  await sendBookingLedger({ email, source, service, googleAds, body });
+  await notifySlack({ contact, source, service, cancelled, failed, googleAds, body });
+  await sendBookingLedger({ contact, source, service, googleAds, body });
 
   return res.status(200).json({
     ok: true,
-    email,
+    email: contact.email,
+    phone: contact.phone || null,
+    booking_id: bookingId || null,
     matched: pending.length,
     cancelled,
     failed,

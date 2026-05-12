@@ -534,6 +534,10 @@ function leadVariant(body) {
   return body?.ab_variant || body?.lead_context?.ab_variant || body?.utm?.ab_variant || null;
 }
 
+function hasContactData(...values) {
+  return values.some((value) => value !== undefined && value !== null && String(value).trim() !== '');
+}
+
 async function sendInternalEventLedger({ subject, rows = [] }) {
   if (!RESEND_API_KEY || !subject) return;
   const safeRows = rows
@@ -959,6 +963,9 @@ export default async function handler(req, res) {
   // ── email_captured: patient entered email at gate — send combined KAISA email ─
   if (type === 'email_captured') {
     const { email } = body;
+    if (!hasContactData(email)) {
+      return res.status(200).json({ ok: true, skipped: 'email_capture_without_email' });
+    }
     const lang = detectLang(lp_source, language);
     const promoCode = clientPromoCode || getDailyCode();
     const label = result === 'good_candidate' ? 'Sobiv kandidaat' : 'Vajab konsultatsiooni';
@@ -1048,25 +1055,12 @@ export default async function handler(req, res) {
     }
 
   } else if (type === 'quiz_completed') {
+    // Anonymous quiz completions are useful for analytics, but they are not
+    // actionable for Lilia/CS. Keep them out of #kiirtesti-täitmised.
     if (!isQualifiedFlow3Answers(answers)) {
       return res.status(200).json({ ok: true, skipped: 'quiz_not_flow3_qualified' });
     }
     const variant = leadVariant(body);
-    const emoji = result === 'good_candidate' ? '✅' : 'ℹ️';
-    const label = result === 'good_candidate' ? 'Sobiv kandidaat' : 'Vajab konsultatsiooni';
-    blocks = [
-      { type: 'header', text: { type: 'plain_text', text: `${emoji} Kiirtest täidetud` } },
-      { type: 'section', fields: [
-        { type: 'mrkdwn', text: `*Tulemus:*\n${label}` },
-        { type: 'mrkdwn', text: `*Keel:*\n${language || 'ET'}` },
-        { type: 'mrkdwn', text: `*Sugu:*\n${answers.gender || '—'}` },
-        { type: 'mrkdwn', text: `*Vanus:*\n${answers.age || '—'}` },
-        { type: 'mrkdwn', text: `*Nägemine:*\n${answers.vision || '—'}` },
-        { type: 'mrkdwn', text: `*Dioptrid:*\n${answers.prescription || '—'}` },
-        { type: 'mrkdwn', text: `*Huvi tase:*\n${answers.interest || '—'}` },
-      ]},
-      { type: 'context', elements: [{ type: 'mrkdwn', text: `_${ts}_` }] },
-    ];
     await sendInternalEventLedger({
       subject: `✅ Kiirtest qualified quiz [${adSource || 'Otse'}]${variant ? ` [${variant}]` : ''}`,
       rows: [
@@ -1081,10 +1075,14 @@ export default async function handler(req, res) {
         ['Aeg', ts],
       ],
     });
+    return res.status(200).json({ ok: true, skipped: 'anonymous_quiz_completion_not_sent_to_slack' });
 
   } else if (type === 'installment_lead') {
     // 0% järelmaks — contact left phone number
     const { name, phone, email } = contact || {};
+    if (!hasContactData(phone, email)) {
+      return res.status(200).json({ ok: true, skipped: 'installment_without_contact' });
+    }
     const lang = detectLang(lp_source, language);
     const label = result === 'good_candidate' ? 'Sobiv kandidaat' : 'Vajab konsultatsiooni';
 
@@ -1141,6 +1139,9 @@ export default async function handler(req, res) {
     // Email already sent at email_captured stage — Slack CRM notification only
     const label = result === 'good_candidate' ? 'Sobiv kandidaat' : 'Vajab konsultatsiooni';
     const { name, phone, email } = contact || {};
+    if (!hasContactData(phone, email)) {
+      return res.status(200).json({ ok: true, skipped: 'form_contact_without_contact' });
+    }
     const lang = detectLang(lp_source, language);
     const promoCode = clientPromoCode || getDailyCode();
 
@@ -1269,6 +1270,9 @@ export default async function handler(req, res) {
     const intent = leadIntent(leadData, body.intent);
     const variant = leadVariant(body);
     const qualified = isQualifiedFlow3Answers(leadData);
+    if (!hasContactData(phone, email)) {
+      return res.status(200).json({ ok: true, skipped: 'phone_lead_without_contact' });
+    }
     if (!qualified) {
       return res.status(200).json({ ok: true, skipped: 'phone_lead_not_flow3_qualified' });
     }
@@ -1347,6 +1351,9 @@ export default async function handler(req, res) {
     const { email } = body;
     const lang = detectLang(lp_source, language);
     const phone = leadPhone(body);
+    if (!hasContactData(phone, email)) {
+      return res.status(200).json({ ok: true, skipped: 'hot_lead_without_contact' });
+    }
     const intent = leadIntent(leadData, body.intent);
     blocks = [
       { type: 'header', text: { type: 'plain_text', text: `🔥 Igapäevane läätsekandja — Flow3 kandidaat` } },
@@ -1370,8 +1377,13 @@ export default async function handler(req, res) {
     // Bridge page (/19) — lead asked Lilia to call back. Highest-priority Slack ping.
     const { contact, code, from } = body;
     const cName = (contact && contact.name) || '—';
-    const cPhone = (contact && contact.phone) || '—';
-    const cEmail = (contact && contact.email) || '—';
+    const rawPhone = contact && contact.phone;
+    const rawEmail = contact && contact.email;
+    if (!hasContactData(rawPhone, rawEmail)) {
+      return res.status(200).json({ ok: true, skipped: 'callback_without_contact' });
+    }
+    const cPhone = rawPhone || '—';
+    const cEmail = rawEmail || '—';
     const lang = detectLang(lp_source, language || body.language);
     const leadData = leadAnswers(body, answers);
     const intent = leadIntent(leadData, body.intent);
@@ -1417,6 +1429,9 @@ export default async function handler(req, res) {
   } else if (type === 'phone_lead') {
     // Email gate skip downsell — left phone number, wants callback
     const { phone } = body;
+    if (!hasContactData(phone)) {
+      return res.status(200).json({ ok: true, skipped: 'phone_lead_without_phone' });
+    }
     const lang = detectLang(lp_source, language);
     const intent = leadIntent(answers, body.intent);
     blocks = [

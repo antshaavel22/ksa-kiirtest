@@ -205,6 +205,10 @@
     .help ol { margin: 0; padding-left: 18px; }
     .help li { margin-bottom: 4px; }
   </style>
+  <!-- Favicon (KSA brand mark — matches blog.ksa.ee) -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/icon.png">
+  <link rel="apple-touch-icon" sizes="32x32" href="/icon.png">
 </head>
 <body>
 
@@ -222,7 +226,7 @@
     <div class="qr-canvas-wrap">
       <img id="qrImage" src="/lilia-qr-static.png" alt="QR kood — skanni telefoniga" />
     </div>
-    <p class="code-display" id="codeDisplay">FLOW-X</p>
+    <p class="code-display" id="codeDisplay">FLOW19</p>
     <p class="code-label">Tänane sooduskood</p>
   </div>
 
@@ -250,15 +254,15 @@
 <div class="copied-toast" id="toast">✓ Kopeeritud lõikepuhvrisse</div>
 
 <script>
-  // Daily promo codes — same rotation as kiirtest LP (Erply codes regenerated each Monday)
+  // Active promo code — Mai confirmed FLOW19 in booking CRM.
   var DAILY_CODES = {
-    0: 'FLOW-P',  // Pühapäev
-    1: 'FLOW-E',  // Esmaspäev
-    2: 'FLOW-T',  // Teisipäev
-    3: 'FLOW-K',  // Kolmapäev
-    4: 'FLOW-N',  // Neljapäev
-    5: 'FLOW-R',  // Reede
-    6: 'FLOW-L',  // Laupäev
+    0: 'FLOW19',  // Pühapäev
+    1: 'FLOW19',  // Esmaspäev
+    2: 'FLOW19',  // Teisipäev
+    3: 'FLOW19',  // Kolmapäev
+    4: 'FLOW19',  // Neljapäev
+    5: 'FLOW19',  // Reede
+    6: 'FLOW19',  // Laupäev
   };
   var DAY_LABELS_SHORT = ['P', 'E', 'T', 'K', 'N', 'R', 'L'];
   var DAY_LABELS_FULL = ['Pühapäev', 'Esmaspäev', 'Teisipäev', 'Kolmapäev', 'Neljapäev', 'Reede', 'Laupäev'];
@@ -274,8 +278,8 @@
 
   function buildBookingUrl(code) {
     // Route through the branded bridge page (/19) so leads get the warm welcome
-    // + Flow3 mini-FAQ + callback option BEFORE landing on my.ksa.ee booking.
-    // Bridge page forwards them to my.ksa.ee with the same promo code prefilled.
+    // + Flow3 mini-FAQ + callback option BEFORE landing on booking.ksa.ee.
+    // Bridge page forwards them to booking.ksa.ee with the same promo code prefilled.
     var base = 'https://kiirtest.ksa.ee/19';
     var params = [
       'code=' + encodeURIComponent(code),

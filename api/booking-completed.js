@@ -1,10 +1,10 @@
 // api/booking-completed.js
 //
-// Webhook called when a customer completes a Flow3 booking on my.ksa.ee / booking.ksa.ee.
+// Webhook called when a customer completes a Flow3 booking on booking.ksa.ee.
 // Cancels all pending email-sequence steps for that customer so they stop
 // receiving "have you booked yet?" follow-ups after they've already booked.
 //
-// USAGE (from my.ksa.ee / booking.ksa.ee, after a paid Flow3 booking is confirmed):
+// USAGE (from booking.ksa.ee, after a paid Flow3 booking is confirmed):
 //   POST https://kiirtest.ksa.ee/api/booking-completed
 //   Authorization: Bearer <LP_TRACK_SHARED_TOKEN>
 //   Content-Type: application/json
@@ -12,12 +12,12 @@
 //     "email": "patient@example.com",
 //     "phone": "+372...",
 //     "name": "Patient",
-//     "source": "my.ksa.ee",
+//     "source": "booking.ksa.ee",
 //     "service": "Flow3",
 //     "booking_id": "12345",
 //     "kiirtest_lead_id": "...",
 //     "ab_variant": "B",
-//     "promo_code": "FLOW-L",
+//     "promo_code": "FLOW19",
 //     "conversion_value": 69,
 //     "currency": "EUR",
 //     "gclid": "...",
@@ -319,7 +319,7 @@ async function sendBookingLedger({ contact, source, service, googleAds, body }) 
         from: 'Lilia – KSA Silmakeskus <noreply@ksa.ee>',
         to: ['registreerumised@ksa.ee'],
         reply_to: 'info@ksa.ee',
-        subject: `✅ Kiirtest booking completed [${source || 'my.ksa.ee'}]${variant ? ` [${variant}]` : ''}`,
+        subject: `✅ Kiirtest booking completed [${source || 'booking.ksa.ee'}]${variant ? ` [${variant}]` : ''}`,
         html,
       }),
     });

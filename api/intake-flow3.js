@@ -11,14 +11,14 @@
 // FLOW:
 //   browser → POST /api/intake-flow3 (no auth needed for the callback form)
 //          → server adds X-KSA-API-Key header
-//          → forwards to https://my.ksa.ee/api/v1/tickets/intake/flow3
+//          → forwards to the CRM Flow3 intake endpoint
 //          → also fires a Slack ping via /api/track (best effort)
 //          → returns Mai's ticket envelope to browser
 //
 // MAI'S SPEC: see project_ksa_kiirtest_v3.md memory file (locked 2026-05-05).
 
-// CRM endpoint — Mai's CRM lives at crm.ksa.ee (my.ksa.ee still routes to legacy
-// Erply). URL clarified by Mai 2026-05-05 11:51. Override via env var if needed.
+// CRM endpoint — Mai's CRM lives at crm.ksa.ee. URL clarified by Mai
+// 2026-05-05 11:51. Override via env var if needed.
 const KSA_TICKETS_ENDPOINT = process.env.KSA_TICKETS_ENDPOINT
   || 'https://crm.ksa.ee/api/v1/tickets/intake/flow3';
 const KSA_TICKETS_API_KEY = process.env.KSA_TICKETS_API_KEY || '';

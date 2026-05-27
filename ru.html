@@ -47,6 +47,10 @@
   src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
   /></noscript>
   <!-- End Meta Pixel Code -->
+  <!-- Favicon (KSA brand mark — matches blog.ksa.ee) -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/icon.png">
+  <link rel="apple-touch-icon" sizes="32x32" href="/icon.png">
 </head>
 <body>
 
@@ -306,7 +310,7 @@
           <span id="promoCodeBtn" style="display:none;">FLOW19</span>
 
           <!-- Primary CTA -->
-          <a href="https://my.ksa.ee/et/icb-time?serviceId=1&promokood=FLOW19" id="bookNowBtn" onclick="if(typeof gtag!=='undefined'){gtag('event','booking_click',{language:'RU',promo:getTodayCode()});} trackBookNow();" target="_blank" rel="noopener noreferrer"
+          <a href="https://booking.ksa.ee/?lang=ru&promokood=FLOW19" id="bookNowBtn" onclick="if(typeof gtag!=='undefined'){gtag('event','booking_click',{language:'RU',promo:getTodayCode()});} trackBookNow();" target="_blank" rel="noopener noreferrer"
              class="btn btn--primary btn--full btn--cta">
             Записаться и оплатить &rarr; <strong>19&nbsp;&euro;</strong>
           </a>
@@ -360,7 +364,7 @@
           <p class="result__text">Судя по вашим ответам, лазерная коррекция Flow3 может быть не самым подходящим вариантом. Мы рекомендуем пройти обследование Audit — оптометрист и врач проведут детальную диагностику и составят письменное заключение.</p>
           <hr class="result-divider">
           <p class="result__subheading">Рекомендуем обследование Audit</p>
-          <a href="https://my.ksa.ee/et/icb-time?serviceId=6" target="_blank" rel="noopener noreferrer" class="btn btn--dark btn--full btn--cta">
+          <a href="https://booking.ksa.ee/?lang=ru&funnel=audit" target="_blank" rel="noopener noreferrer" class="btn btn--dark btn--full btn--cta">
             Записаться на обследование Audit
           </a>
           <p class="result-contact">
@@ -461,7 +465,7 @@
       <div class="cta">
         <h2 class="cta__title">Готовы видеть чётко?</h2>
         <div class="cta__buttons">
-          <a href="https://my.ksa.ee/et/icb-time?serviceId=1" id="bookNowBtn2" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--lg">Записаться на обследование &mdash; 19&nbsp;&euro;</a>
+          <a href="https://booking.ksa.ee/?lang=ru&promokood=FLOW19" id="bookNowBtn2" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--lg">Записаться на обследование &mdash; 19&nbsp;&euro;</a>
           <a href="https://ksa.ee/vabane-prillidest/" target="_blank" rel="noopener noreferrer" class="btn btn--outline btn--lg">Подробнее</a>
         </div>
         <p class="cta__contact">Звоните: <a href="tel:+3726445060">+372 644 5060</a> | <a href="mailto:info@ksa.ee">info@ksa.ee</a></p>
@@ -554,11 +558,13 @@ function buildTrackedUrl(url, extra) {
     wbraid: utm.wbraid || '',
     fbclid: utm.fbclid || '',
     source: utm.entry_source || utm.source || '',
-    funnel: utm.funnel || 'flow3_kiirtest',
     slug: utm.slug || '',
     lang: utm.lang || 'ru',
     ab_variant: getFunnelVariant() || ''
   }, extra || {});
+  if (u.hostname === 'booking.ksa.ee' && params.promokood) {
+    delete params.funnel;
+  }
   Object.keys(params).forEach(function(key) {
     var value = params[key];
     if (value !== undefined && value !== null && value !== '') {
@@ -791,13 +797,12 @@ function buildTrackedUrl(url, extra) {
       kiirtest_lead_id: kiirtestLeadId,
       ab_variant: getFunnelVariant() || 'control'
     });
-    var directBookingUrl = buildTrackedUrl('https://my.ksa.ee/et/icb-time?serviceId=1', {
+    var directBookingUrl = buildTrackedUrl('https://booking.ksa.ee/?lang=ru&promokood=FLOW19', {
       promokood: todayCode,
       utm_source: utm.source || 'kiirtest_lp_ru',
       utm_medium: utm.medium || 'web',
       utm_campaign: utm.campaign || 'flow3_19',
       source: utm.entry_source || utm.source || 'kiirtest_lp_ru',
-      funnel: utm.funnel || 'flow3_kiirtest',
       lang: 'ru',
       kiirtest_lead_id: kiirtestLeadId,
       ab_variant: getFunnelVariant() || 'B'
@@ -983,15 +988,15 @@ function buildTrackedUrl(url, extra) {
     }).catch(function(){});
   }
 
-  // ===== DAILY PROMO CODE + COUNTDOWN =====
+  // ===== ACTIVE PROMO CODE + COUNTDOWN =====
   var DAILY_CODES = {
-    0: 'FLOW-P',
-    1: 'FLOW-E',
-    2: 'FLOW-T',
-    3: 'FLOW-K',
-    4: 'FLOW-N',
-    5: 'FLOW-R',
-    6: 'FLOW-L',
+    0: 'FLOW19',
+    1: 'FLOW19',
+    2: 'FLOW19',
+    3: 'FLOW19',
+    4: 'FLOW19',
+    5: 'FLOW19',
+    6: 'FLOW19',
   };
 
   function getTodayCode() {
@@ -1007,10 +1012,9 @@ function buildTrackedUrl(url, extra) {
       if (el) el.textContent = code;
     });
     // Update booking button URLs with today's promo code (skips slow service-page)
-    var bookingUrl = buildTrackedUrl('https://my.ksa.ee/et/icb-time?serviceId=1', {
+    var bookingUrl = buildTrackedUrl('https://booking.ksa.ee/?lang=ru&promokood=FLOW19', {
       promokood: code,
       lang: 'ru',
-      funnel: 'flow3_kiirtest',
       kiirtest_lead_id: kiirtestLeadId
     });
     var btns = ['bookNowBtn', 'bookNowBtn2'];

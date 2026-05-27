@@ -254,6 +254,10 @@
     .bridge-footer a { color: var(--color-text-secondary); text-decoration: none; }
     .bridge-footer a:hover { color: var(--color-accent); }
   </style>
+  <!-- Favicon (KSA brand mark — matches blog.ksa.ee) -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/icon.png">
+  <link rel="apple-touch-icon" sizes="32x32" href="/icon.png">
 </head>
 <body>
 
@@ -284,11 +288,11 @@
           <span class="price-badge__current">19&nbsp;€</span>
           <span class="price-badge__old">69&nbsp;€</span>
         </div>
-        <p class="promo-line">Sinu sooduskood: <strong id="codeText">FLOW-T</strong> &middot; kehtib täna kuni südaööni</p>
+        <p class="promo-line">Sinu sooduskood: <strong id="codeText">FLOW19</strong> &middot; kehtib täna kuni südaööni</p>
 
         <a href="#" id="bookBtn" class="book-cta" target="_blank" rel="noopener noreferrer" onclick="trackBookClick()">
           📅 Broneeri Flow3 silmauuring → 19&nbsp;€
-          <span class="book-cta__sub">Avaneb my.ksa.ee &middot; soodushind juba peal</span>
+          <span class="book-cta__sub">Avaneb booking.ksa.ee &middot; soodushind juba peal</span>
         </a>
 
         <div class="quick-stats">
@@ -359,10 +363,10 @@
 </main>
 
 <script>
-  // ── Daily promo code rotation (matches kiirtest LP + lilia-qr) ──
+  // ── Active promo code (matches kiirtest LP + lilia-qr) ──
   var DAILY_CODES = {
-    0: 'FLOW-P', 1: 'FLOW-E', 2: 'FLOW-T', 3: 'FLOW-K',
-    4: 'FLOW-N', 5: 'FLOW-R', 6: 'FLOW-L'
+    0: 'FLOW19', 1: 'FLOW19', 2: 'FLOW19', 3: 'FLOW19',
+    4: 'FLOW19', 5: 'FLOW19', 6: 'FLOW19'
   };
   function getTodayCode() {
     return DAILY_CODES[new Date().getDay()] || 'FLOW19';
@@ -457,6 +461,9 @@
       lang: t.lang || 'et',
       ab_variant: t.ab_variant || ''
     }, extra || {});
+    if (u.hostname === 'booking.ksa.ee' && params.promokood) {
+      delete params.funnel;
+    }
     Object.keys(params).forEach(function(key) {
       var value = params[key];
       if (value !== undefined && value !== null && value !== '') {
@@ -472,7 +479,7 @@
     document.getElementById('codeText').textContent = code;
 
     // Build booking URL with code + full tracking passthrough.
-    var bookUrl = buildTrackedUrl('https://my.ksa.ee/et/icb-time?serviceId=1', {
+    var bookUrl = buildTrackedUrl('https://booking.ksa.ee/?lang=et', {
       promokood: code
     });
     document.getElementById('bookBtn').setAttribute('href', bookUrl);

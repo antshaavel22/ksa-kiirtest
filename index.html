@@ -47,6 +47,10 @@ fbq('track', 'PageView');
 src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
+  <!-- Favicon (KSA brand mark — matches blog.ksa.ee) -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/icon.png">
+  <link rel="apple-touch-icon" sizes="32x32" href="/icon.png">
 </head>
 <body>
 
@@ -308,7 +312,7 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
           <span id="promoCodeBtn" style="display:none;">FLOW19</span>
 
           <!-- Primary CTA -->
-          <a id="bookNowBtn" href="https://my.ksa.ee/et/icb-time?serviceId=1&promokood=FLOW19" onclick="if(typeof gtag!=='undefined'){gtag('event','booking_click',{language:'ET',promo:getTodayCode()});} trackBookNow();"
+          <a id="bookNowBtn" href="https://booking.ksa.ee/?lang=et&promokood=FLOW19" onclick="if(typeof gtag!=='undefined'){gtag('event','booking_click',{language:'ET',promo:getTodayCode()});} trackBookNow();"
             target="_blank" rel="noopener noreferrer"
             class="btn btn--primary btn--full btn--cta">
             Broneerin &amp; tasun kohe &rarr; <strong>19&nbsp;&euro;</strong>
@@ -369,7 +373,7 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
           <p class="result__text">Sinu vastuste põhjal võib laserkirurgia asemel sobida mõni teine lahendus. Soovitame tulla nägemise Audit silmauuringule, mille käigus optometrist ja arst teevad põhjalikud uuringud ning saadavad hiljem kirjaliku raporti.</p>
           <hr class="result-divider">
           <p class="result__subheading">Soovitame nägemisuuring Audit</p>
-          <a href="https://my.ksa.ee/et/icb-time?serviceId=6" target="_blank" rel="noopener noreferrer" class="btn btn--dark btn--full btn--cta">
+          <a href="https://booking.ksa.ee/?lang=et&funnel=audit" target="_blank" rel="noopener noreferrer" class="btn btn--dark btn--full btn--cta">
             Broneeri nägemisuuring Audit
           </a>
           <p class="result-contact">
@@ -470,7 +474,7 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
       <div class="cta">
         <h2 class="cta__title">Valmis nägema selgelt?</h2>
         <div class="cta__buttons">
-          <a href="https://my.ksa.ee/et/icb-time?serviceId=1" id="bookNowBtn2" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--lg">Broneeri uuring &mdash; 19&nbsp;&euro;</a>
+          <a href="https://booking.ksa.ee/?lang=et&promokood=FLOW19" id="bookNowBtn2" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--lg">Broneeri uuring &mdash; 19&nbsp;&euro;</a>
           <a href="https://ksa.ee/vabane-prillidest/" target="_blank" rel="noopener noreferrer" class="btn btn--outline btn--lg">Loe lähemalt</a>
         </div>
         <p class="cta__contact">Helista: <a href="tel:+3726445060">+372 644 5060</a> | <a href="mailto:info@ksa.ee">info@ksa.ee</a></p>
@@ -564,11 +568,13 @@ function buildTrackedUrl(url, extra) {
     wbraid: utm.wbraid || '',
     fbclid: utm.fbclid || '',
     source: utm.entry_source || utm.source || '',
-    funnel: utm.funnel || 'flow3_kiirtest',
     slug: utm.slug || '',
     lang: utm.lang || 'et',
     ab_variant: getFunnelVariant() || ''
   }, extra || {});
+  if (u.hostname === 'booking.ksa.ee' && params.promokood) {
+    delete params.funnel;
+  }
   Object.keys(params).forEach(function(key) {
     var value = params[key];
     if (value !== undefined && value !== null && value !== '') {
@@ -818,13 +824,12 @@ function buildTrackedUrl(url, extra) {
       kiirtest_lead_id: kiirtestLeadId,
       ab_variant: getFunnelVariant() || 'control'
     });
-    var directBookingUrl = buildTrackedUrl('https://my.ksa.ee/et/icb-time?serviceId=1', {
+    var directBookingUrl = buildTrackedUrl('https://booking.ksa.ee/?lang=et&promokood=FLOW19', {
       promokood: todayCode,
       utm_source: utm.source || 'kiirtest_lp_et',
       utm_medium: utm.medium || 'web',
       utm_campaign: utm.campaign || 'flow3_19',
       source: utm.entry_source || utm.source || 'kiirtest_lp_et',
-      funnel: utm.funnel || 'flow3_kiirtest',
       lang: 'et',
       kiirtest_lead_id: kiirtestLeadId,
       ab_variant: getFunnelVariant() || 'B'
@@ -1023,16 +1028,16 @@ function buildTrackedUrl(url, extra) {
     }).catch(function(){});
   }
 
-  // ===== DAILY PROMO CODE + COUNTDOWN =====
-  // CS creates these 5 codes in Erply every Monday morning, deactivates previous week's
+  // ===== ACTIVE PROMO CODE + COUNTDOWN =====
+  // Mai confirmed FLOW19 in booking CRM; keep the same live code across weekdays.
   var DAILY_CODES = {
-    0: 'FLOW-P',  // Pühapäev (Sunday)
-    1: 'FLOW-E',  // Esmaspäev (Monday)
-    2: 'FLOW-T',  // Teisipäev (Tuesday)
-    3: 'FLOW-K',  // Kolmapäev (Wednesday)
-    4: 'FLOW-N',  // Neljapäev (Thursday)
-    5: 'FLOW-R',  // Reede (Friday)
-    6: 'FLOW-L',  // Laupäev (Saturday)
+    0: 'FLOW19',  // Pühapäev (Sunday)
+    1: 'FLOW19',  // Esmaspäev (Monday)
+    2: 'FLOW19',  // Teisipäev (Tuesday)
+    3: 'FLOW19',  // Kolmapäev (Wednesday)
+    4: 'FLOW19',  // Neljapäev (Thursday)
+    5: 'FLOW19',  // Reede (Friday)
+    6: 'FLOW19',  // Laupäev (Saturday)
   };
 
   function getTodayCode() {
@@ -1048,10 +1053,9 @@ function buildTrackedUrl(url, extra) {
       if (el) el.textContent = code;
     });
     // Update booking button URLs with today's promo code (skips slow service-page)
-    var bookingUrl = buildTrackedUrl('https://my.ksa.ee/et/icb-time?serviceId=1', {
+    var bookingUrl = buildTrackedUrl('https://booking.ksa.ee/?lang=et&promokood=FLOW19', {
       promokood: code,
       lang: 'et',
-      funnel: 'flow3_kiirtest',
       kiirtest_lead_id: kiirtestLeadId
     });
     var btns = ['bookNowBtn', 'bookNowBtn2'];

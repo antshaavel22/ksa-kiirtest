@@ -534,6 +534,10 @@
       .urgency-label { text-align: center; }
     }
   </style>
+  <!-- Favicon (KSA brand mark — matches blog.ksa.ee) -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/icon.png">
+  <link rel="apple-touch-icon" sizes="32x32" href="/icon.png">
 </head>
 <body>
   <!-- GTM noscript -->
@@ -589,7 +593,7 @@
       </div>
 
       <!-- Primary CTA -->
-      <a href="https://my.ksa.ee/et/icb-time?serviceId=1" class="btn-cta" id="bookBtn">
+      <a href="https://booking.ksa.ee/?lang=et&promokood=FLOW19" class="btn-cta" id="bookBtn">
         Broneeri 19€ uuring &rarr; aktiveeri boonus
       </a>
       <p class="btn-sub">Veebis 19&euro; &nbsp;&middot;&nbsp; Kliinikus 39&euro; &nbsp;&middot;&nbsp; Tallinn &amp; Tartu</p>
@@ -642,13 +646,13 @@
   <div class="toast" id="toast">Kood kopeeritud ✓</div>
 
   <script>
-    // Daily promo code
-    var DAILY_CODES = {0:'FLOW-P',1:'FLOW-E',2:'FLOW-T',3:'FLOW-K',4:'FLOW-N',5:'FLOW-R',6:'FLOW-L'};
+    // Active promo code
+    var DAILY_CODES = {0:'FLOW19',1:'FLOW19',2:'FLOW19',3:'FLOW19',4:'FLOW19',5:'FLOW19',6:'FLOW19'};
     var code = DAILY_CODES[new Date().getDay()] || 'FLOW19';
     document.getElementById('promoCode').textContent = code;
     document.getElementById('promoCode2').textContent = code;
     document.getElementById('bookBtn').href =
-      'https://my.ksa.ee/et/icb-time?serviceId=1&promokood=' + code;
+      'https://booking.ksa.ee/?lang=et&promokood=' + code;
 
     // Copy to clipboard
     function copyCode() {

@@ -104,6 +104,140 @@ function getDailyCode() {
   return 'FLOW19';
 }
 
+// ── KAISA-436: Mai CRM intake ────────────────────────────────────────────────
+// Booking-intent events (book_now_clicked, bridge_19_book_clicked,
+// eligible_gate_bridge_clicked) POST a ticket to crm.ksa.ee so Lilia sees
+// kiirtest leads in her queue. Server dedupes same contact within 30 min →
+// returns 200 {merged:true}. Failover: any non-2xx logs + Slack-alarms but
+// the existing Slack + email + auto-responder path stays untouched.
+const KSA_CRM_ENDPOINT = process.env.KSA_CRM_ENDPOINT || 'https://crm.ksa.ee/api/v1/tickets/intake/flow3';
+const KSA_TICKETS_API_KEY = process.env.KSA_TICKETS_API_KEY;
+
+function isE164(phone) {
+  return typeof phone === 'string' && /^\+[1-9]\d{7,14}$/.test(phone.trim());
+}
+
+function mapAgeBand(quizAge) {
+  const a = String(quizAge || '').toLowerCase();
+  if (['18-25', '26-35', '36-45', '18_45'].includes(a)) return '18_45';
+  if (['46-55', '56-65', '65+', 'over_45', 'üle 45', 'старше 45'].some(s => a.includes(s.toLowerCase()))) return 'over_45';
+  if (a.includes('alla 18') || a.includes('under_18') || a.includes('до 18') || a.includes('under 18')) return 'under_18';
+  return null;
+}
+
+function mapVisionIssue(quizVision) {
+  const v = String(quizVision || '').toLowerCase();
+  if (v === 'miinus' || v === 'myopia' || v.includes('minus') || v.includes('myop') || v.includes('близо')) return 'myopia';
+  if (v === 'pluss' || v === 'hyperopia' || v.includes('plus') || v.includes('hyper') || v.includes('даль')) return 'hyperopia';
+  if (v.includes('presby') || v.includes('vana') || v.includes('пресби')) return 'presbyopia';
+  if (v) return 'other';
+  return 'unknown';
+}
+
+function deriveGroupHint(ageBand, visionIssue) {
+  if (ageBand === 'under_18') return 'children_exam';
+  if (ageBand === 'over_45') return 'audit_over_45';
+  if (visionIssue === 'myopia') return 'flow3_eligible_myope';
+  if (visionIssue === 'hyperopia') return 'audit_hyperope';
+  return 'unclassified';
+}
+
+function detectAdSource(utmSource, utmMedium) {
+  const s = String(utmSource || '').toLowerCase();
+  const m = String(utmMedium || '').toLowerCase();
+  if (m === 'cpc' || m === 'paid' || s === 'google' || s === 'facebook' || s === 'meta' || s === 'instagram') return 'paid';
+  if (s === 'blog' || s.includes('blog.ksa')) return 'blog';
+  if (s) return 'organic';
+  return 'direct';
+}
+
+async function postToCRM(payload, ctx = '') {
+  if (!KSA_TICKETS_API_KEY) {
+    console.error('KAISA-436: KSA_TICKETS_API_KEY missing — skipping CRM POST');
+    return false;
+  }
+  // Validate required field — phone in E.164. If missing, skip silently:
+  // the lead is still preserved in Slack + email; CRM ticket is best-effort.
+  if (!isE164(payload?.contact?.phone)) {
+    console.warn(`KAISA-436[${ctx}]: phone missing or not E.164, skip CRM POST`, payload?.contact?.phone || '—');
+    return false;
+  }
+  try {
+    const res = await fetch(KSA_CRM_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'X-KSA-API-Key': KSA_TICKETS_API_KEY,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const text = await res.text().catch(() => '');
+      console.error(`KAISA-436[${ctx}]: CRM POST ${res.status}`, text.slice(0, 400));
+      // Best-effort Slack alarm; do not throw — Slack+email path already ran
+      try {
+        if (SLACK_WEBHOOK) {
+          await fetch(SLACK_WEBHOOK, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              text: `:warning: KAISA-436 ${ctx} CRM POST failed (HTTP ${res.status}) — lead preserved in Slack/email`,
+            }),
+          });
+        }
+      } catch {}
+      return false;
+    }
+    return true;
+  } catch (e) {
+    console.error(`KAISA-436[${ctx}]: CRM POST exception`, String(e));
+    try {
+      if (SLACK_WEBHOOK) {
+        await fetch(SLACK_WEBHOOK, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text: `:warning: KAISA-436 ${ctx} CRM POST exception: ${String(e).slice(0, 200)}`,
+          }),
+        });
+      }
+    } catch {}
+    return false;
+  }
+}
+
+function buildCRMPayload({ body, leadData, lang, name, phone, email, adSource, code, eventType }) {
+  const ageBand = mapAgeBand(leadData.age || leadData.age_band) || '18_45';
+  const visionIssue = mapVisionIssue(leadData.vision || leadData.vision_issue);
+  const groupHint = deriveGroupHint(ageBand, visionIssue);
+  return {
+    source: 'kiirtest',
+    lang: (lang || 'et').toLowerCase(),
+    intent: eventType === 'callback_requested' ? 'callback' : 'book_now',
+    contact: {
+      name: name || null,
+      phone: phone || null,
+      email: email || null,
+    },
+    qualifying: {
+      age_band: ageBand,
+      vision_issue: visionIssue,
+    },
+    group_hint: groupHint,
+    quiz_meta: {
+      discount_code: code || body?.code || null,
+      quiz_answers: leadData || {},
+      ad_source: detectAdSource(body?.utm?.source, body?.utm?.medium),
+      event_type: eventType,
+    },
+    utm: {
+      source: body?.utm?.source || null,
+      medium: body?.utm?.medium || null,
+      campaign: body?.utm?.campaign || null,
+    },
+  };
+}
+
 // ── 0% Installment consumer guide email ──────────────────────────────────────
 function buildInstallmentGuideEmail(name) {
   const greeting = name ? `Tere, ${name}!` : 'Tere!';
@@ -1331,6 +1465,13 @@ export default async function handler(req, res) {
       ],
     });
 
+    // KAISA-436: also POST to Mai's CRM so Lilia sees this lead in her queue.
+    // Best-effort; Slack + email ledger above stay untouched if CRM hiccups.
+    await postToCRM(
+      buildCRMPayload({ body, leadData, lang, name, phone, email, adSource, code: body.code, eventType: type }),
+      type,
+    );
+
   } else if (type === 'hot_lead_lens_user') {
     // Daily lens user — high-value lead, flag for Lilia to call same day
     const leadData = leadAnswers(body, answers);
@@ -1361,6 +1502,13 @@ export default async function handler(req, res) {
       ]},
       { type: 'context', elements: [{ type: 'mrkdwn', text: `_${ts}_` }] },
     ];
+
+    // KAISA-436: hot lens-user lead → CRM ticket (server dedupes if same contact)
+    const hotName = leadName(body);
+    await postToCRM(
+      buildCRMPayload({ body, leadData, lang, name: hotName, phone, email, adSource, code: body.code, eventType: type }),
+      type,
+    );
 
   } else if (type === 'callback_requested') {
     // Bridge page (/19) — lead asked Lilia to call back. Highest-priority Slack ping.

@@ -82,6 +82,26 @@ function analyze(emails, fromDate, toDate) {
     if (e.subject?.includes('✅')) bySource[src].good++;
   }
 
+  // DEBUG (temporary, 2026-06-06): classify each real email so we can identify
+  // ✅-events that aren't matched by qualifiedQuiz / phoneLead string filters.
+  // Remove once top-block counters cover all v3 event types.
+  const classifySubject = (s) => {
+    const tags = [];
+    if (hasAny(s, ['qualified quiz'])) tags.push('quiz');
+    if (hasAny(s, ['Flow3 phone lead', 'qualified_phone_lead', '📞 Flow3 kandidaat'])) tags.push('phone');
+    if (hasAny(s, ['booking click'])) tags.push('bclick');
+    if (hasAny(s, ['booking completed'])) tags.push('bdone');
+    if (hasAny(s, ['callback request', 'Tagasihelistamise soov'])) tags.push('cb');
+    const isGood = s?.includes('✅') || tags.includes('quiz') || tags.includes('phone');
+    const isGhost = s?.includes('✅') && tags.length === 0;
+    return { tags, isGood, isGhost };
+  };
+  const debugSubjects = real.map(e => {
+    const c = classifySubject(e.subject || '');
+    return { subject: e.subject || '(no subject)', ...c };
+  });
+  console.log('[kiirtest-report] real subjects:', JSON.stringify(debugSubjects, null, 2));
+
   return {
     total: real.length,
     good: good.length,
@@ -93,7 +113,8 @@ function analyze(emails, fromDate, toDate) {
     bookingClick: bookingClick.length,
     bookingCompleted: bookingCompleted.length,
     callback: callback.length,
-    bySource
+    bySource,
+    debugSubjects
   };
 }
 
@@ -205,6 +226,22 @@ export default async function handler(req, res) {
     ...(isWeekly && perDayText ? [{
       type: 'section',
       text: { type: 'mrkdwn', text: `*📅 Päevade lõikes:*\n\`\`\`${perDayText}\`\`\`` },
+    }] : []),
+    // DEBUG (temporary, 2026-06-06): list every real subject with its match-tags.
+    // Goal: identify ✅-events not covered by top-block counters (GHOST rows).
+    // Remove this block once top-block counters cover all v3 event types.
+    ...((stats.debugSubjects && stats.debugSubjects.length > 0) ? [{
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: `*🔍 Debug — subjektid + tag'id (eemaldatakse pärast auditit):*\n\`\`\`${
+          stats.debugSubjects.map(d => {
+            const flag = d.isGhost ? 'GHOST' : (d.tags.join(',') || '-');
+            const tick = d.isGood ? '✅' : '  ';
+            return `${tick} [${flag}] ${d.subject}`;
+          }).join('\n')
+        }\`\`\``,
+      },
     }] : []),
     {
       type: 'context',

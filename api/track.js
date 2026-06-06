@@ -235,6 +235,17 @@ function buildCRMPayload({ body, leadData, lang, name, phone, email, adSource, c
       medium: body?.utm?.medium || null,
       campaign: body?.utm?.campaign || null,
     },
+    // KAISA-436b (Google Ads): forward click IDs so bookings can be imported back to Ads (gclid match).
+    // Frontend captures these into utm (index.html). CRM must accept + store gclid on the ticket.
+    click_ids: (() => {
+      const u = body?.utm || {};
+      const ids = {};
+      if (u.gclid)  ids.gclid  = u.gclid;
+      if (u.gbraid) ids.gbraid = u.gbraid;
+      if (u.wbraid) ids.wbraid = u.wbraid;
+      if (u.fbclid) ids.fbclid = u.fbclid;
+      return Object.keys(ids).length ? ids : null;
+    })(),
   };
 }
 

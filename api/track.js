@@ -674,6 +674,21 @@ function hasContactData(...values) {
 
 async function sendInternalEventLedger({ subject, rows = [] }) {
   if (!RESEND_API_KEY || !subject) return;
+  // Lilia request 2026-06-08: don't email registreerumised@ksa.ee for ledger
+  // entries that carry no actionable contact info (anonymous quiz completions,
+  // booking-click diagnostics with empty phone/email). They just take attention.
+  // Heuristic: keep the ledger if either Phone or E-post row carries a value
+  // that isn't a dash. Slack ping still fires independently of this email.
+  const hasActionableContact = rows.some(([label, value]) => {
+    if (!label) return false;
+    const isContactRow = /^(Telefon|Phone|E-post|E-mail|Email)$/i.test(String(label).trim());
+    const v = value === undefined || value === null ? '' : String(value).trim();
+    return isContactRow && v !== '' && v !== '—';
+  });
+  if (!hasActionableContact) {
+    console.log('Skip internal ledger email (no actionable contact):', subject);
+    return;
+  }
   const safeRows = rows
     .filter((row) => row && row[0])
     .map(([label, value]) => `<tr><td style="color:#888;padding:4px 10px 4px 0;">${label}</td><td style="padding:4px 0;"><strong>${value === undefined || value === null || value === '' ? '—' : String(value)}</strong></td></tr>`)

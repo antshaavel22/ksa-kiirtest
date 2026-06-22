@@ -1619,15 +1619,91 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true, skipped: true });
   }
 
+  // ── Defensive block sanitizer (fixes the 2026-06-17 invalid_blocks bug) ───
+  // Slack rejects the whole payload (HTTP 400 invalid_blocks) when ANY field
+  // violates: empty text, fields > 10 per section, text > 3000 chars,
+  // missing required keys. We rebuild the blocks defensively so a real lead
+  // never gets silently dropped on an edge-case payload.
+  const sanitizeBlocks = (raw) => {
+    if (!Array.isArray(raw)) return [];
+    const out = [];
+    for (const b of raw) {
+      if (!b || typeof b !== 'object' || !b.type) continue;
+
+      if (b.type === 'header') {
+        const t = String(b.text?.text || '').slice(0, 150).trim() || '—';
+        out.push({ type: 'header', text: { type: 'plain_text', text: t } });
+        continue;
+      }
+
+      if (b.type === 'divider') {
+        out.push({ type: 'divider' });
+        continue;
+      }
+
+      if (b.type === 'context') {
+        const elements = Array.isArray(b.elements) ? b.elements : [];
+        const safe = elements
+          .filter((e) => e && e.type === 'mrkdwn' && typeof e.text === 'string')
+          .map((e) => ({ type: 'mrkdwn', text: e.text.slice(0, 2000) || '—' }));
+        if (safe.length) out.push({ type: 'context', elements: safe.slice(0, 10) });
+        continue;
+      }
+
+      if (b.type === 'section') {
+        const block = { type: 'section' };
+        if (b.text?.type && typeof b.text?.text === 'string') {
+          const t = b.text.text.slice(0, 3000).trim();
+          if (t) block.text = { type: b.text.type, text: t };
+        }
+        if (Array.isArray(b.fields)) {
+          const safeFields = b.fields
+            .filter((f) => f && f.type === 'mrkdwn' && typeof f.text === 'string')
+            .map((f) => ({ type: 'mrkdwn', text: (f.text.slice(0, 2000).trim() || '—') }))
+            .slice(0, 10);
+          if (safeFields.length) block.fields = safeFields;
+        }
+        // Must have either text or fields, else Slack rejects.
+        if (block.text || block.fields) out.push(block);
+        continue;
+      }
+
+      // Unknown block type → keep as-is, Slack will validate.
+      out.push(b);
+    }
+    return out;
+  };
+
   // ── Send Slack notification ─────────────────────────────────────────────────
   const sendToSlack = async (webhookUrl) => {
     try {
+      const safeBlocks = sanitizeBlocks(blocks);
+      if (!safeBlocks.length) {
+        console.error('Slack: empty blocks after sanitize — falling back to plain text', { type });
+        await fetch(webhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: `:warning: KSA Kiirtest lead (${type}) — block payload was empty, check Vercel logs` }),
+        });
+        return;
+      }
       const slackRes = await fetch(webhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ blocks }),
+        body: JSON.stringify({ blocks: safeBlocks }),
       });
-      if (!slackRes.ok) console.error('Slack error:', slackRes.status, await slackRes.text());
+      if (!slackRes.ok) {
+        const errText = await slackRes.text();
+        console.error('Slack error:', slackRes.status, errText);
+        // Last-ditch: post plain-text alert so the lead notification never disappears.
+        if (/invalid_blocks/i.test(errText)) {
+          await fetch(webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: `:warning: KSA Kiirtest lead (${type}) — Slack rejected the rich block payload (invalid_blocks). Check Vercel logs for full data.` }),
+          }).catch(() => {});
+        }
+      }
     } catch (err) {
       console.error('Slack fetch error:', err);
     }

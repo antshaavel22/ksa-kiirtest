@@ -1106,6 +1106,30 @@ export default async function handler(req, res) {
   const adSource = await utmLabel(utm);
   const ts = new Date(timestamp || Date.now()).toLocaleString('et-EE', { timeZone: 'Europe/Tallinn' });
 
+  // ── Diagnostics / test event suppression ─────────────────────────────────────
+  // Ants 2026-06-23: Slack #kiirtesti-täitmised + registreerumised@ksa.ee feeds
+  // should stay clean. Drop any payload that looks like an internal smoke /
+  // diagnostic / test ping — these come from our own daily 07:00/19:00 cron and
+  // ad-hoc curl smoke tests. Real leads never carry these markers.
+  const isTestPayload = (function () {
+    const norm = (v) => String(v || '').toLowerCase().trim();
+    const email = norm(body?.email || body?.contact?.email || body?.lead_context?.email);
+    const name = String(body?.name || body?.contact?.name || body?.lead_context?.name || '');
+    const code = norm(body?.code);
+    const promo = norm(clientPromoCode);
+    const utmSrc = norm(utm?.source);
+    if (email === 'diagnostics-test@ksa.ee') return true;
+    if (/^test\+|\+test@|@example\.(com|ee)$|smoke[-_]?test/i.test(email)) return true;
+    if (code === 'flow-test' || promo === 'flow-test') return true;
+    if (/^\s*TEST\s/.test(name)) return true;                    // Mai's KAISA-436 convention
+    if (/^(smoke[-_]?test|diagnostics?|cron[-_]?test)/i.test(utmSrc)) return true;
+    return false;
+  })();
+  if (isTestPayload) {
+    console.log('Drop test/diagnostic event (no Slack, no email):', { type, email: body?.email || body?.contact?.email });
+    return res.status(200).json({ ok: true, skipped: 'test_or_diagnostic_event' });
+  }
+
   // ── Slack blocks ────────────────────────────────────────────────────────────
   let blocks = [];
 

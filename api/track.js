@@ -568,7 +568,7 @@ function buildEmailHtml(lang, name, promoCode, result, answers) {
   <tr><td style="background:#F5F5F3;padding:22px 28px 18px 28px;border-bottom:1px solid #DEDCD7;">
     <table cellpadding="0" cellspacing="0" border="0" width="100%"><tr>
       <td><span style="font-family:Arial,sans-serif;font-size:18px;font-weight:700;color:#87BE23;letter-spacing:-0.5px;">KSA</span><span style="font-family:Arial,sans-serif;font-size:12px;font-weight:400;color:#888;margin-left:5px;">Silmakeskus</span></td>
-      <td align="right"><span style="font-family:Arial,sans-serif;font-size:11px;font-weight:600;color:#888;">Lilia</span></td>
+      <td align="right" style="padding-left:24px;white-space:nowrap;"><span style="font-family:Arial,sans-serif;font-size:11px;font-weight:600;color:#888;">Lilia</span></td>
     </tr></table>
   </td></tr>
 

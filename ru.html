@@ -376,15 +376,15 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
   const LANG = 'RU';
   const DRAW_MONTH = '2026-07';
   const BOOKING = {
-    flow3: { slug: 'flow3', code: 'FLOW19', price: '19 €', old: '69 €' },
-    audit: { slug: 'audit', code: '',       price: '' },   // ← code/price from Mai by 10:00
-    kids:  { slug: '',      code: '',       price: '' }     // ← slug/code/price from Mai by 10:00
+    flow3: { slug: 'flow3', code: 'BLOG39',   price: '39 €',  old: '69 €' },
+    audit: { slug: 'audit', code: 'BLOG139',  price: '139 €', old: '149 €' },
+    kids:  { slug: 'kids',  code: 'BLOGKIDS', price: '79 €' }
   };
   function bookingUrl(route) {
     const b = BOOKING[route] || BOOKING.flow3;
     let u = `https://booking.ksa.ee/?service=${encodeURIComponent(b.slug || 'flow3')}&lang=ru`;
     if (b.code) u += `&promokood=${encodeURIComponent(b.code)}`;
-    u += '&source=kiirtest';
+    u += '&source=kiirtest&funnel=' + route;
     return u;
   }
 

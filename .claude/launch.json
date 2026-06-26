@@ -2,10 +2,10 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "ksa-kiirtest",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "3010"],
-      "port": 3010
+      "name": "kiirtest",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "public", "-p", "5050", "-L"],
+      "port": 5050
     }
   ]
 }

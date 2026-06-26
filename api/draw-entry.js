@@ -103,7 +103,7 @@ module.exports = async (req, res) => {
         gdpr_consent: true,
         marketing_consent: true,
         referral_code: 'KT-' + randomUUID(),  // NOT NULL + UNIQUE in newsletter_entries
-        prize_choice: '',                      // NOT NULL (no prize preference from kiirtest)
+        prize_choice: 'giftcard',              // NOT NULL + CHECK (sunglasses|contacts|drops|giftcard); kiirtest has no preference → giftcard
       }),
     });
     return res.status(200).json({ ok: ins.ok, created: ins.ok, mode: 'inserted', status: ins.status });

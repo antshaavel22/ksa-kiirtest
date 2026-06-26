@@ -26,6 +26,8 @@ function isEmail(e) {
   return typeof e === 'string' && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e.trim());
 }
 
+const { randomUUID } = require('crypto');
+
 async function sb(path, opts = {}) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
     ...opts,
@@ -100,8 +102,8 @@ module.exports = async (req, res) => {
         extra_entries: 1,
         gdpr_consent: true,
         marketing_consent: true,
-        referral_code: null,
-        prize_choice: null,
+        referral_code: 'KT-' + randomUUID(),  // NOT NULL + UNIQUE in newsletter_entries
+        prize_choice: '',                      // NOT NULL (no prize preference from kiirtest)
       }),
     });
     return res.status(200).json({ ok: ins.ok, created: ins.ok, mode: 'inserted', status: ins.status });

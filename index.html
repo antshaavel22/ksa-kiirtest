@@ -1,35 +1,31 @@
 <!DOCTYPE html>
 <html lang="et">
 <head>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({"gtm.start":
+new Date().getTime(),event:"gtm.js"});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
+"https://www.googletagmanager.com/gtm.js?id="+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,"script","dataLayer","GTM-KCZVRJ8");</script>
+<!-- End Google Tag Manager -->
+<!-- Google Ads tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18030087653"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag("js", new Date());
+gtag("config", "AW-18030087653");
+  gtag("config", "G-7R7T8GF37J");
+</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kiirtest — Soovid vabaneda prillidest! Kas silmade laserkirurgia sobib sulle? | KSA Silmakeskus</title>
-  <meta name="description" content="Vasta 5 küsimusele ja saa kohene vastus, kas Flow3 laserprotseduur sobib sulle. Tasuta kiirtest KSA Silmakeskuselt.">
-  <meta name="robots" content="index, follow">
+  <meta name="description" content="KSA Silmakeskuse nägemistest — paari minutiga selgub, milline nägemisuuring teile kõige rohkem sobiks.">
+  <title>Nägemistest — KSA Silmakeskus</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./base.css">
-  <link rel="stylesheet" href="./style.css">
-
-  <!-- QR code generator (used for desktop SMS gate fallback) -->
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js" defer></script>
-
-  <!-- Google Tag Manager -->
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({"gtm.start":
-  new Date().getTime(),event:"gtm.js"});var f=d.getElementsByTagName(s)[0],
-  j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
-  "https://www.googletagmanager.com/gtm.js?id="+i+dl;f.parentNode.insertBefore(j,f);
-  })(window,document,"script","dataLayer","GTM-KCZVRJ8");</script>
-  <!-- Google Ads tag -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18030087653"></script>
-  <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag("js", new Date());
-  gtag("config", "AW-18030087653");
-  gtag("config", "G-7R7T8GF37J");
-  </script>
+  <link rel="stylesheet" href="kiirtest-v3.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2387be23'/%3E%3Ctext x='6' y='23' font-family='sans-serif' font-weight='700' font-size='16' fill='white'%3Eksa%3C/text%3E%3C/svg%3E">
 <!-- Meta Pixel Code -->
 <script>
 !function(f,b,e,v,n,t,s)
@@ -47,1217 +43,670 @@ fbq('track', 'PageView');
 src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
-  <!-- Favicon (KSA brand mark — matches blog.ksa.ee) -->
-  <link rel="icon" type="image/x-icon" href="/favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="/icon.png">
-  <link rel="apple-touch-icon" sizes="32x32" href="/icon.png">
+
+<!-- V3 quiz styles (free-text, multi-select, result paths) -->
+<style>
+  .step-textarea, .step-textinput {
+    width: 100%; box-sizing: border-box; font-family: inherit;
+    font-size: var(--text-base, 1rem); color: var(--color-text, #1a1a1a);
+    border: 1.5px solid var(--color-border, #e2e2e0); border-radius: 10px;
+    padding: 14px 16px; background: #fff; resize: vertical; line-height: 1.5;
+  }
+  .step-textarea { min-height: 92px; }
+  .step-textarea:focus, .step-textinput:focus {
+    outline: none; border-color: var(--color-accent, #87be23);
+    box-shadow: 0 0 0 3px rgba(135,190,35,0.12);
+  }
+  .opt-btn.opt-check { position: relative; }
+  .opt-btn.opt-check.selected::after {
+    content: ''; position: absolute; right: 14px; top: 50%; width: 18px; height: 18px;
+    transform: translateY(-50%);
+    background: var(--color-accent, #87be23);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z'/%3E%3C/svg%3E") center/contain no-repeat;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z'/%3E%3C/svg%3E") center/contain no-repeat;
+  }
+  .result-paths { display: grid; gap: 14px; margin-top: var(--space-6, 24px); }
+  .path-card {
+    border: 1.5px solid var(--color-border, #e2e2e0); border-radius: 14px;
+    padding: 20px; text-align: left; background: #fff;
+  }
+  .path-card--primary { border-color: var(--color-accent, #87be23); background: rgba(135,190,35,0.05); }
+  .path-card h4 { margin: 0 0 6px; font-size: var(--text-lg, 1.1rem); font-weight: 600; }
+  .path-card p { margin: 0 0 14px; font-size: var(--text-sm, .9rem); color: var(--color-text-secondary, #555); line-height: 1.5; }
+  .path-price { font-weight: 600; }
+  .path-price .old { font-weight: 400; color: var(--color-text-muted, #999); text-decoration: line-through; margin-left: 6px; font-size: .9em; }
+  .callback-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .callback-row .step-textinput { flex: 1; min-width: 160px; }
+  .draw-badge {
+    margin-top: 16px; padding: 12px 16px; border-radius: 10px;
+    background: rgba(135,190,35,0.1); font-size: var(--text-sm, .9rem);
+    color: var(--color-text, #1a1a1a); text-align: center; font-weight: 500;
+  }
+  .email-gate { text-align: center; }
+  .email-gate .gate-icon { margin: 0 auto var(--space-3, 12px); width: 44px; height: 44px; }
+</style>
 </head>
 <body>
-
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KCZVRJ8" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 
-<!-- ========== HEADER ========== -->
-<header class="site-header">
-  <div class="site-header__inner">
-    <a href="https://ksa.ee" class="site-logo" target="_blank" rel="noopener noreferrer">
-      <span class="site-logo__mark">KSA</span>
-      <span class="site-logo__name">Silmakeskus</span>
+<!-- ── Header ─────────────────────────────────── -->
+<header class="header">
+  <div class="header__inner">
+    <a href="https://ksa.ee" class="header__logo" aria-label="KSA Silmakeskus koduleht">
+      <svg height="38" viewBox="0 0 180 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <text x="0" y="36" font-family="'Geist', -apple-system, sans-serif" font-size="38" font-weight="600" letter-spacing="-1" fill="#87be23">ksa</text>
+        <text x="2" y="47" font-family="'Geist', -apple-system, sans-serif" font-size="8.5" font-weight="500" letter-spacing="3.5" fill="#87be23">SILMAKESKUS</text>
+      </svg>
     </a>
+    <div class="header__actions">
+      <nav class="lang-switch" aria-label="Keelevalik">
+        <a href="index.html" class="active" aria-current="page">ET</a>
+        <span class="sep">|</span>
+        <a href="ru.html">RU</a>
+        <span class="sep">|</span>
+        <a href="en.html">EN</a>
+      </nav>
+    </div>
   </div>
 </header>
 
-<main>
+<!-- ── Progress bar ───────────────────────────── -->
+<div class="progress-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="10" aria-label="Testi edenemisriba">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
 
-  <!-- ========== HERO ========== -->
-  <section class="hero">
-    <div class="container container--narrow">
-      <span class="badge">TASUTA KIIRTEST &bull; 90 SEKUNDIT</span>
-      <h1 class="hero__title">Kas silmade laserkirurgia sobib sulle?</h1>
-      <p class="hero__subtitle">Vasta 7 küsimusele. Saad isikliku vastuse — ja tänase eripakkumise.</p>
+<!-- ── Quiz ───────────────────────────────────── -->
+<main class="quiz-page">
+  <div class="quiz-container">
+
+    <!-- Step indicator -->
+    <div class="step-indicator" id="stepIndicator" aria-live="polite">
+      Samm <strong>1</strong> / 8
     </div>
 
-    <!-- Hero image full-width -->
-    <div class="hero-photo">
-      <img src="./happy-patient.jpg" alt="KSA Silmakeskus — õnnelik patsient pärast laserprotseduuri" class="hero-photo__img" loading="eager">
+    <!-- Slides wrapper -->
+    <div class="quiz-slides" id="quizSlides">
+
+      <!-- ── Step 0: Who is this for ── -->
+      <div class="quiz-step active" id="step-0" data-step="0">
+        <h1 class="step-question">Kelle jaoks te testi teete?</h1>
+        <div class="option-grid" role="group" aria-label="Kelle jaoks">
+          <button class="opt-btn" data-value="Endale" onclick="selectOption(this, 0)">Endale</button>
+          <button class="opt-btn" data-value="Oma lapsele" onclick="selectOption(this, 0)">Oma lapsele</button>
+          <button class="opt-btn" data-value="Sõbrale või lähedasele" onclick="selectOption(this, 0)">Sõbrale või lähedasele</button>
+        </div>
+        <div class="quiz-nav">
+          <span></span>
+          <button class="btn-next" id="next-0" disabled onclick="goNext(0)">Edasi
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 1: Gender ── -->
+      <div class="quiz-step" id="step-1" data-step="1">
+        <h2 class="step-question">Olen…</h2>
+        <div class="option-grid option-grid--two" role="group" aria-label="Sugu">
+          <button class="opt-btn" data-value="Naine" onclick="selectOption(this, 1)">
+            <span class="opt-icon">♀</span><span>Naine</span>
+          </button>
+          <button class="opt-btn" data-value="Mees" onclick="selectOption(this, 1)">
+            <span class="opt-icon">♂</span><span>Mees</span>
+          </button>
+        </div>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goBack(1)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Tagasi</button>
+          <button class="btn-next" id="next-1" disabled onclick="goNext(1)">Edasi
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 2: Age ── -->
+      <div class="quiz-step" id="step-2" data-step="2">
+        <h2 class="step-question">Teie vanus</h2>
+        <div class="option-grid" role="group" aria-label="Vanus">
+          <button class="opt-btn" data-value="Alla 18" onclick="selectOption(this, 2)">Alla 18</button>
+          <button class="opt-btn" data-value="18-25" onclick="selectOption(this, 2)">18–25</button>
+          <button class="opt-btn" data-value="26-35" onclick="selectOption(this, 2)">26–35</button>
+          <button class="opt-btn" data-value="36-45" onclick="selectOption(this, 2)">36–45</button>
+          <button class="opt-btn" data-value="46-55" onclick="selectOption(this, 2)">46–55</button>
+          <button class="opt-btn" data-value="56+" onclick="selectOption(this, 2)">56+</button>
+        </div>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goBack(2)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Tagasi</button>
+          <button class="btn-next" id="next-2" disabled onclick="goNext(2)">Edasi
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 3: Glasses type ── -->
+      <div class="quiz-step" id="step-3" data-step="3">
+        <h2 class="step-question">Milliseid prille te kannate?</h2>
+        <div class="option-grid" role="group" aria-label="Prillide tüüp">
+          <button class="opt-btn" data-value="Miinusprillid" onclick="selectOption(this, 3)">Miinusprille (lühinägevus)</button>
+          <button class="opt-btn" data-value="Plussprillid" onclick="selectOption(this, 3)">Plussprille (kaugnägevus)</button>
+          <button class="opt-btn" data-value="Lugemisprillid" onclick="selectOption(this, 3)">Lugemisprille</button>
+          <button class="opt-btn" data-value="Ei kanna prille" onclick="selectOption(this, 3)">Ei kanna prille</button>
+          <button class="opt-btn" data-value="Ei tea" onclick="selectOption(this, 3)">Ei tea</button>
+        </div>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goBack(3)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Tagasi</button>
+          <button class="btn-next" id="next-3" disabled onclick="goNext(3)">Edasi
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 4: Prescription strength (dynamic by glasses type) ── -->
+      <div class="quiz-step" id="step-4" data-step="4">
+        <h2 class="step-question" id="q4-title">Prillide tugevus</h2>
+        <p class="step-subtitle">Ligikaudne väärtus piisab</p>
+        <div class="option-grid" id="q4-options" role="group" aria-label="Prillide tugevus"></div>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goBack(4)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Tagasi</button>
+          <button class="btn-next" id="next-4" disabled onclick="goNext(4)">Edasi
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 5: Contact lenses ── -->
+      <div class="quiz-step" id="step-5" data-step="5">
+        <h2 class="step-question">Kas kannate kontaktläätsesid?</h2>
+        <div class="option-grid" role="group" aria-label="Kontaktläätsed">
+          <button class="opt-btn" data-value="Jah, iga päev" onclick="selectOption(this, 5)">Jah, iga päev</button>
+          <button class="opt-btn" data-value="Mõnikord" onclick="selectOption(this, 5)">Mõnikord</button>
+          <button class="opt-btn" data-value="Ei kanna" onclick="selectOption(this, 5)">Ei kanna</button>
+        </div>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goBack(5)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Tagasi</button>
+          <button class="btn-next" id="next-5" disabled onclick="goNext(5)">Edasi
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 6: Refraction stability ── -->
+      <div class="quiz-step" id="step-6" data-step="6">
+        <h2 class="step-question">Kas nägemine on viimase aasta jooksul olnud stabiilne?</h2>
+        <div class="option-grid" role="group" aria-label="Nägemise stabiilsus">
+          <button class="opt-btn" data-value="Jah, stabiilne" onclick="selectOption(this, 6)">Jah, stabiilne</button>
+          <button class="opt-btn" data-value="Ei, on muutunud" onclick="selectOption(this, 6)">Ei, on muutunud</button>
+          <button class="opt-btn" data-value="Ei tea" onclick="selectOption(this, 6)">Ei tea</button>
+        </div>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goBack(6)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Tagasi</button>
+          <button class="btn-next" id="next-6" disabled onclick="goNext(6)">Edasi
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 7: Free-text bother ── -->
+      <div class="quiz-step" id="step-7" data-step="7">
+        <h2 class="step-question">Mis teid häirib praegu kõige rohkem oma nägemise juures?</h2>
+        <p class="step-subtitle">Kirjeldage oma sõnadega (vabatahtlik)</p>
+        <textarea class="step-textarea" id="bother-input" placeholder="Nt. udune nägemine õhtul, läätsede tüütus, peavalud arvuti taga…" oninput="onBotherInput()"></textarea>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goBack(7)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Tagasi</button>
+          <button class="btn-next" id="next-7" onclick="goNext(7)">Edasi
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 8: Complaints (multi-select + free text) ── -->
+      <div class="quiz-step" id="step-8" data-step="8">
+        <h2 class="step-question">Kaebused seoses nägemisega</h2>
+        <p class="step-subtitle">Valige kõik sobivad</p>
+        <div class="option-grid" id="complaints-grid" role="group" aria-label="Kaebused">
+          <button class="opt-btn opt-check" data-value="Silmade kuivus" onclick="toggleComplaint(this)">Silmade kuivus</button>
+          <button class="opt-btn opt-check" data-value="Peavalud" onclick="toggleComplaint(this)">Peavalud</button>
+          <button class="opt-btn opt-check" data-value="Silmade allergia" onclick="toggleComplaint(this)">Silmade allergia</button>
+          <button class="opt-btn opt-check" data-value="Halvem nägemine öösel" onclick="toggleComplaint(this)">Halvem nägemine öösel</button>
+          <button class="opt-btn opt-check" data-value="Topeltnägemine" onclick="toggleComplaint(this)">Topeltnägemine</button>
+          <button class="opt-btn opt-check" data-value="Kaebused puuduvad" onclick="toggleComplaint(this)">Kaebused puuduvad</button>
+        </div>
+        <textarea class="step-textarea" id="complaints-other" placeholder="Muu (kirjeldage)…" style="margin-top:12px;"></textarea>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goBack(8)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Tagasi</button>
+          <button class="btn-next" id="next-8" onclick="goNext(8)">Edasi
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 9: Correction interest ── -->
+      <div class="quiz-step" id="step-9" data-step="9">
+        <h2 class="step-question">Kas olete mõelnud kunagi nägemise korrigeerimisele?</h2>
+        <div class="option-grid" role="group" aria-label="Huvi tase">
+          <button class="opt-btn" data-value="Jah, aktiivselt" onclick="selectOption(this, 9)">Jah, aktiivselt</button>
+          <button class="opt-btn" data-value="Olen mõelnud" onclick="selectOption(this, 9)">Olen mõelnud</button>
+          <button class="opt-btn" data-value="Alles uurin maad" onclick="selectOption(this, 9)">Alles uurin maad</button>
+          <button class="opt-btn" data-value="Ei ole" onclick="selectOption(this, 9)">Ei ole</button>
+        </div>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goBack(9)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Tagasi</button>
+          <button class="btn-next" id="next-9" disabled onclick="goNext(9)">Vaata tulemust
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 10: Extra clinical signs (info only — no routing impact) ── -->
+      <div class="quiz-step" id="step-10" data-step="10">
+        <h2 class="step-question">Kas teil esineb mõni sümptom järgnevatest?</h2>
+        <div class="option-grid" id="symptoms-grid" role="group" aria-label="Lisamärgid">
+          <button class="opt-btn opt-check" data-value="Hommikune silmade punetus" onclick="toggleSymptom(this)">Hommikune silmade punetus</button>
+          <button class="opt-btn opt-check" data-value="Halod või valguse sädelus öösel" onclick="toggleSymptom(this)">Halod või valguse sädelus öösel</button>
+          <button class="opt-btn opt-check" data-value="Hõljuvad mustad täpid nägemisväljas" onclick="toggleSymptom(this)">Hõljuvad mustad täpid nägemisväljas</button>
+          <button class="opt-btn opt-check" data-value="Ei ole märganud" onclick="toggleSymptom(this)">Ei esine</button>
+        </div>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goBack(10)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Tagasi</button>
+          <button class="btn-next" id="next-10" onclick="goNext(10)">Edasi
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Result step: email gate → reveal ── -->
+      <div class="quiz-step" id="step-result" data-step="result">
+
+        <!-- Email gate (shown first) -->
+        <div class="email-gate" id="emailGate">
+          <div class="gate-icon" aria-hidden="true">
+            <svg width="44" height="44" viewBox="0 0 44 44" fill="none"><rect x="6" y="11" width="32" height="22" rx="3" stroke="#87be23" stroke-width="2"/><path d="M7 13l15 11 15-11" stroke="#87be23" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h2 class="result-title">Teie tulemus on valmis</h2>
+          <p class="result-text">Sisestage e-post, et näha oma tulemust.</p>
+          <form class="quiz-form" id="gateForm" novalidate style="max-width:380px;margin:var(--space-5,20px) auto 0;">
+            <div class="form-field">
+              <input type="text" name="name" id="gate-name" placeholder="Eesnimi (vabatahtlik)" autocomplete="given-name">
+            </div>
+            <div class="form-field">
+              <input type="email" name="email" id="gate-email" placeholder="E-post" autocomplete="email" required>
+            </div>
+            <button type="submit" class="btn-submit" id="gateBtn">
+              <span class="btn-label">Näita tulemust</span>
+              <div class="spinner"></div>
+            </button>
+            <p class="form-privacy">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1L2 3v3c0 2.5 1.8 4.7 4 5 2.2-.3 4-2.5 4-5V3L6 1z" stroke="#9a9a9a" stroke-width="1" fill="none"/><path d="M4 6l1.5 1.5L8 4.5" stroke="#9a9a9a" stroke-width="1" stroke-linecap="round"/></svg>
+              Teie andmed on kaitstud, me ei jaga teie andmeid kolmandate isikutega.
+            </p>
+          </form>
+        </div>
+
+        <!-- Result reveal (hidden until email submitted) -->
+        <div class="result-screen" id="resultReveal" style="display:none;" aria-live="polite"></div>
+
+        <!-- Back / restart -->
+        <div style="margin-top: var(--space-8,32px); text-align:center;">
+          <button class="btn-back" onclick="restartQuiz()" style="margin: 0 auto;">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Alusta uuesti
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /quiz-slides -->
+  </div><!-- /quiz-container -->
+
+  <!-- ── Stats bar ─────────────────────────────── -->
+  <div class="stats-bar" role="region" aria-label="KSA statistika">
+    <div class="stats-inner">
+      <div class="stat-item"><div class="stat-number">55 000+</div><div class="stat-label">laserprotseduuri</div></div>
+      <div class="stat-item"><div class="stat-number">300 000+</div><div class="stat-label">silmauuringut</div></div>
+      <div class="stat-item"><div class="stat-number">7-aastane</div><div class="stat-label">garantii</div></div>
+      <div class="stat-item"><div class="stat-number">Schwind'i</div><div class="stat-label">tehnoloogia</div></div>
     </div>
-
-    <!-- Stats strip -->
-    <div class="hero-stats">
-      <div class="container">
-        <div class="stats-strip">
-          <div class="stats-strip__item">
-            <span class="stats-strip__number">55&nbsp;000+</span>
-            <span class="stats-strip__label">protseduuri</span>
-          </div>
-          <div class="stats-strip__divider"></div>
-          <div class="stats-strip__item">
-            <span class="stats-strip__number">300&nbsp;000+</span>
-            <span class="stats-strip__label">uuringut</span>
-          </div>
-          <div class="stats-strip__divider"></div>
-          <div class="stats-strip__item">
-            <span class="stats-strip__number">7a</span>
-            <span class="stats-strip__label">garantii</span>
-          </div>
-          <div class="stats-strip__divider"></div>
-          <div class="stats-strip__item">
-            <span class="stats-strip__number">0</span>
-            <span class="stats-strip__label">ektaasiat</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== QUIZ AREA ========== -->
-  <section class="quiz-section">
-    <div class="container container--narrow">
-
-      <!-- QUIZ CARD -->
-      <div class="quiz-card" id="quiz">
-        <!-- Progress bar at very top -->
-        <div class="quiz-card__progress">
-          <div class="quiz-card__progress-bar" id="progressBar"></div>
-        </div>
-
-        <div class="quiz-card__body">
-          <div class="quiz-card__meta">
-            <button class="quiz__nav-back hidden" id="backBtn" onclick="goBack()">&#8592; Tagasi</button>
-            <span class="quiz-card__step" id="stepIndicator">1 / 5</span>
-          </div>
-
-          <!-- Step 1: Gender -->
-          <div class="quiz__step active" data-step="1">
-            <h2 class="quiz__question">Ma olen...</h2>
-            <div class="quiz__options quiz__options--two">
-              <button class="quiz__option quiz__option--gender" data-key="gender" data-value="naine" onclick="selectOption(this)">
-                <span class="quiz__option-icon">&#9792;</span>
-                Naine
-              </button>
-              <button class="quiz__option quiz__option--gender" data-key="gender" data-value="mees" onclick="selectOption(this)">
-                <span class="quiz__option-icon">&#9794;</span>
-                Mees
-              </button>
-            </div>
-          </div>
-
-          <!-- Step 2: Age -->
-          <div class="quiz__step" data-step="2">
-            <h2 class="quiz__question">Minu vanus</h2>
-            <div class="quiz__options">
-              <button class="quiz__option" data-key="age" data-value="18-25" onclick="selectOption(this)">18–25</button>
-              <button class="quiz__option" data-key="age" data-value="26-35" onclick="selectOption(this)">26–35</button>
-              <button class="quiz__option" data-key="age" data-value="36-45" onclick="selectOption(this)">36–45</button>
-              <button class="quiz__option" data-key="age" data-value="46-55" onclick="selectOption(this)">46–55</button>
-              <button class="quiz__option" data-key="age" data-value="56+" onclick="selectOption(this)">56+</button>
-            </div>
-          </div>
-
-          <!-- Step 3: Vision type -->
-          <div class="quiz__step" data-step="3">
-            <h2 class="quiz__question">Minu nägemisega...</h2>
-            <div class="quiz__options">
-              <button class="quiz__option" data-key="vision" data-value="miinus" onclick="selectOption(this)">Kannan miinusprille</button>
-              <button class="quiz__option" data-key="vision" data-value="pluss" onclick="selectOption(this)">Kannan plussprille</button>
-              <button class="quiz__option" data-key="vision" data-value="muu" onclick="selectOption(this)">Muu nägemisravi</button>
-            </div>
-          </div>
-
-          <!-- Step 4: Prescription (only for miinus) -->
-          <div class="quiz__step" data-step="4">
-            <h2 class="quiz__question">Minu prillide tugevus</h2>
-            <div class="quiz__options">
-              <button class="quiz__option" data-key="prescription" data-value="-0.5 kuni -3" onclick="selectOption(this)">&minus;0,5 kuni &minus;3</button>
-              <button class="quiz__option" data-key="prescription" data-value="-3 kuni -6" onclick="selectOption(this)">&minus;3 kuni &minus;6</button>
-              <button class="quiz__option" data-key="prescription" data-value="-6 kuni -9" onclick="selectOption(this)">&minus;6 kuni &minus;9</button>
-              <button class="quiz__option" data-key="prescription" data-value="rohkem kui -9" onclick="selectOption(this)">Rohkem kui &minus;9</button>
-              <button class="quiz__option" data-key="prescription" data-value="ei tea" onclick="selectOption(this)">Ei tea</button>
-            </div>
-          </div>
-
-          <!-- Step 5: Interest -->
-          <div class="quiz__step" data-step="5">
-            <h2 class="quiz__question">Kas oled mõelnud laserprotseduurile?</h2>
-            <div class="quiz__options">
-              <button class="quiz__option" data-key="interest" data-value="aktiivne" onclick="selectOption(this)">Jah, uurin aktiivselt</button>
-              <button class="quiz__option" data-key="interest" data-value="moelnud" onclick="selectOption(this)">Olen mõelnud</button>
-              <button class="quiz__option" data-key="interest" data-value="uurin" onclick="selectOption(this)">Alles uurin</button>
-            </div>
-          </div>
-
-          <!-- Step 6: Pain point -->
-          <div class="quiz__step" data-step="6">
-            <h2 class="quiz__question">Mis häirib sind prillide juures kõige rohkem?</h2>
-            <div class="quiz__options">
-              <button class="quiz__option" data-key="painpoint" data-value="sport" onclick="selectOption(this)">🏊 Sport ja ujumine prillidega</button>
-              <button class="quiz__option" data-key="painpoint" data-value="laatsed" onclick="selectOption(this)">💸 Kontaktläätsede pidev kulu</button>
-              <button class="quiz__option" data-key="painpoint" data-value="hommik" onclick="selectOption(this)">😴 Hommikul udune nägemine</button>
-              <button class="quiz__option" data-key="painpoint" data-value="reisimine" onclick="selectOption(this)">✈️ Reisimine ja seiklused</button>
-              <button class="quiz__option" data-key="painpoint" data-value="vihm" onclick="selectOption(this)">🌧️ Udused prillid vihmaga</button>
-            </div>
-          </div>
-
-          <!-- Step 7: Contact lenses -->
-          <div class="quiz__step" data-step="7">
-            <h2 class="quiz__question">Kas kannad kontaktläätsesid?</h2>
-            <div class="quiz__options">
-              <button class="quiz__option" data-key="lenses" data-value="iga_paev" onclick="selectOption(this)">Jah, iga päev</button>
-              <button class="quiz__option" data-key="lenses" data-value="moistkord" onclick="selectOption(this)">Mõnikord</button>
-              <button class="quiz__option" data-key="lenses" data-value="ei" onclick="selectOption(this)">Ei, ainult prillid</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ELIGIBLE GATE (Option Z — locked 2026-05-05, replaces broken Pattern C) -->
-      <!-- For 18-45 myopes only. Routes to bridge page /19 with today's promo code prefilled. -->
-      <div class="sms-gate quiz-card" id="smsGate">
-        <div class="quiz-card__body quiz-card__body--centered">
-
-          <!-- Qualified header before unlock -->
-          <div style="background:linear-gradient(135deg,#87BE23 0%,#6aa31a 100%);border-radius:16px;padding:20px 24px;margin-bottom:20px;text-align:center;color:#fff;">
-            <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;opacity:0.85;margin-bottom:8px;">ESIMENE FILTER LÄBITUD</div>
-            <div style="font-size:32px;font-weight:800;line-height:1.15;margin-bottom:8px;">Flow3 uuring võib olla sinu järgmine samm</div>
-            <div style="font-size:14px;opacity:0.95;">Ava isiklik broneerimislink ja hoia tänane soodustus alles.</div>
-          </div>
-
-          <p style="margin:0 0 8px;font-size:var(--text-base);font-weight:600;color:var(--color-text);">Tundub, et sobid Flow3 silmauuringule</p>
-          <p style="margin:0 0 20px;font-size:var(--text-sm);color:var(--color-text-secondary);line-height:1.55;">Jäta kontakt, et avada tänane broneerimislink. Kui broneerimine jääb pooleli, saab KSA spetsialist aidata sobiva aja leidmisega.</p>
-
-          <div class="qualified-phone">
-            <p class="qualified-phone__title">Ava oma broneerimislink</p>
-            <p class="qualified-phone__copy">Küsime ainult eesnime ja mobiili, et link ja tulemus alles jääksid ning saaksime vajadusel aja valikuga aidata. Isikukoodi, pangainfot ega meditsiinidokumente me siin ei küsi.</p>
-            <form class="qualified-phone__form" onsubmit="submitQualifiedPhone(event)">
-              <input class="gate-form__input" id="qualifiedName" type="text" placeholder="Eesnimi" autocomplete="given-name" required>
-              <input class="gate-form__input" id="qualifiedPhone" type="tel" placeholder="+372 5XX XXXX" autocomplete="tel" inputmode="tel" required>
-              <input class="gate-form__input" id="qualifiedEmail" type="email" placeholder="E-post (soovi korral)" autocomplete="email">
-              <button class="btn btn--primary btn--full btn--gate" id="qualifiedPhoneBtn" type="submit" style="font-size:16px;padding:18px 20px;">
-                Ava minu uuringulink
-              </button>
-            </form>
-            <p class="qualified-phone__error" id="qualifiedPhoneError">Palun sisesta eesnimi ja korrektne mobiilinumber.</p>
-            <a id="bridgeBtn" href="#result" class="qualified-phone__secondary" onclick="skipSmsGate(); return false;">Vaatan tulemust ilma sooduskoodi avamata</a>
-          </div>
-          <p style="margin:10px 0 0;font-size:11px;color:var(--color-text-muted);line-height:1.5;">Pärast kontakti avame broneerimise ja lühikese FAQ.</p>
-
-          <!-- Three trust checkmarks -->
-          <ul style="list-style:none;padding:0;margin:var(--space-5) 0 0;text-align:left;font-size:13px;color:var(--color-text-secondary);line-height:1.6;">
-            <li style="margin-bottom:8px;">✓ Tänane soodushinnaga link avaneb pärast kontakti</li>
-            <li style="margin-bottom:8px;">✓ 75-min uuring — arst kinnitab Flow3 sobivuse</li>
-            <li>✓ Tallinn ja Tartu &middot; vajadusel helistame tagasi</li>
-          </ul>
-
-          <!-- Skip → see full result page below -->
-          <button class="email-gate__skip" onclick="skipSmsGate()" style="margin-top:var(--space-4);background:transparent;border:none;color:var(--color-text-muted);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;">Jätkan ilma broneerimata — vaata tulemust</button>
-        </div>
-      </div>
-
-      <!-- RESULT: Good Candidate -->
-      <div class="result quiz-card" id="resultGood">
-        <div class="quiz-card__body quiz-card__body--centered">
-
-          <!-- Animated checkmark -->
-          <div class="result-check">
-            <svg class="result-check__svg" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="26" cy="26" r="25" stroke="currentColor" stroke-width="2"/>
-              <path d="M15 26l8 8 14-14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-
-          <span class="result-badge result-badge--good">SUUREP&Auml;RANE UUDIS</span>
-          <h2 class="result__title">Sobid 70 %-lise tõenäosusega Flow3 laserprotseduuriks!</h2>
-          <p class="result__text">Sinu vanus ja nägemine vastavad meie kriteeriumidele. Uuringu käigus hindame sinu silmi täpsemalt.</p>
-          <p style="font-size:12px;color:var(--color-text-muted);font-style:italic;margin:var(--space-2) 0 0;line-height:1.5;">See on esmane hinnang sinu vastuste põhjal. Lõpliku sobivuse kinnitab arst Flow3 silmauuringul.</p>
-          <p class="result__personal" id="resultPersonal" style="font-size:var(--text-sm); color:var(--color-accent); font-weight:500; margin-top:var(--space-3); display:none;"></p>
-
-          <hr class="result-divider">
-
-          <!-- SMS confirm notice -->
-          <div id="smsConfirmNotice" class="email-confirm-notice" style="display:none;">
-            📲 Vaata oma SMS-e — saatsime sulle 19€ broneerimislingi.
-          </div>
-          <!-- Phone-form fallback confirmation -->
-          <div id="phoneConfirmNotice" class="email-confirm-notice" style="display:none;">
-            📲 SMS on teel sinu telefonile — kontrolli kuni 1 min jooksul.
-          </div>
-
-          <!-- The insight box -->
-          <div id="resultInsightBox" style="background:var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius); padding:var(--space-5) var(--space-6); margin-bottom:var(--space-6); text-align:left;">
-            <p style="font-size:var(--text-xs); font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-text-muted); margin-bottom:var(--space-3);">Mõtle nii</p>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--space-2); margin-bottom:var(--space-4);">
-              <div style="font-size:var(--text-sm); color:var(--color-text-secondary);">Praegu kulutad läätsedele kuus:</div>
-              <div style="font-size:var(--text-sm); font-weight:500; color:var(--color-text); text-align:right;">~45 €</div>
-              <div style="font-size:var(--text-sm); color:var(--color-text-secondary);">Flow3 kuumakse</div>
-              <div style="font-size:var(--text-sm); font-weight:500; color:var(--color-text); text-align:right;">63 €</div>
-              <div style="font-size:var(--text-sm); color:var(--color-text-secondary); padding-top:var(--space-2); border-top:1px solid var(--color-border);">Vahe kuus:</div>
-              <div style="font-size:var(--text-sm); font-weight:600; color:var(--color-accent); text-align:right; padding-top:var(--space-2); border-top:1px solid var(--color-border);">+18 € ehk <span style="font-weight:400; color:var(--color-text-secondary);">paar kohvi</span></div>
-            </div>
-            <p style="font-size:var(--text-sm); color:var(--color-text-secondary); line-height:1.6; margin:0;">Kui tänane uuring on sulle 19&nbsp;€ ja see sind jalust ei niida, siis tegelikult saad Flow3 kuumakset juba praegu lubada. Ilma säästmiseta. Ilma palgatõusuta. Ilma loterii võiduta. Sul on see raha juba täna olemas.</p>
-          </div>
-
-          <!-- Dark price box -->
-          <div class="price-box" id="resultPriceBox">
-            <div class="price-box__ribbon">TÄNA</div>
-            <p class="price-box__label">Flow3 silmauuring — Tallinn &amp; Tartu</p>
-            <div class="price-box__prices">
-              <span class="price-box__current">19&euro;</span>
-              <span class="price-box__old">69&euro;</span>
-            </div>
-            <p style="font-size:var(--text-xs);color:#87BE23;font-weight:600;margin:0 0 8px;">Maksa veebis kohe &bull; Kliinikus tasumisel 39&euro;</p>
-            <p class="price-box__countdown">&#9201; Pakkumine kehtib veel <span id="countdown">--:--:--</span></p>
-          </div>
-          <!-- Hidden elements kept for JS (applyDailyCode targets these) -->
-          <span id="promoCode" style="display:none;">FLOW19</span>
-          <span id="promoCodeBtn" style="display:none;">FLOW19</span>
-
-          <!-- Primary CTA -->
-          <a id="bookNowBtn" href="https://booking.ksa.ee/?lang=et&promokood=FLOW19" onclick="if(typeof gtag!=='undefined'){gtag('event','booking_click',{language:'ET',promo:getTodayCode()});} trackBookNow();"
-            target="_blank" rel="noopener noreferrer"
-            class="btn btn--primary btn--full btn--cta">
-            Broneerin &amp; tasun kohe &rarr; <strong>19&nbsp;&euro;</strong>
-          </a>
-
-          <!-- SMS offer nudge -->
-          <p class="code-reminder" id="smsOfferNudge" style="display:none;">📲 Vaata oma SMS-e — link saadetud.</p>
-
-          <hr class="result-divider">
-
-          <!-- 0% Installment -->
-          <div style="width:100%;text-align:left;">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:var(--space-2);">
-              <span style="font-size:22px;">💳</span>
-              <div>
-                <p style="font-size:var(--text-base);font-weight:700;color:var(--color-text);margin:0;line-height:1.3;">Flow3 <span style="color:var(--color-accent);">0% intressiga</span> järelmaksuga</p>
-                <p style="font-size:var(--text-xs);color:var(--color-text-secondary);margin:2px 0 0;">~63&nbsp;€/kuus · Inbank · LHV · meie ajame läbirääkimised</p>
-              </div>
-            </div>
-            <p style="font-size:var(--text-xs);color:var(--color-text-secondary);line-height:1.6;margin:0 0 var(--space-3);">Huvitatud? Jäta oma telefon — meie konsultant võtab ühendust ja aitab sind 0% järelmaksule kvalifitseeruda.</p>
-            <div id="installmentForm">
-              <div style="display:flex;gap:var(--space-2);margin-bottom:var(--space-2);">
-                <input type="text" id="installName" placeholder="Eesnimi" autocomplete="given-name"
-                  style="flex:1;padding:12px var(--space-4);border:1.5px solid #C5E07A;border-radius:var(--radius-sm);font-size:var(--text-sm);font-family:inherit;outline:none;background:#fff;transition:border-color var(--t-fast);"
-                  onfocus="this.style.borderColor='var(--color-accent)'" onblur="this.style.borderColor='#C5E07A'">
-                <input type="tel" id="installPhone" placeholder="+372 5XX XXXX" autocomplete="tel"
-                  style="flex:1;padding:12px var(--space-4);border:1.5px solid #C5E07A;border-radius:var(--radius-sm);font-size:var(--text-sm);font-family:inherit;outline:none;background:#fff;transition:border-color var(--t-fast);"
-                  onfocus="this.style.borderColor='var(--color-accent)'" onblur="this.style.borderColor='#C5E07A'">
-              </div>
-              <button onclick="submitInstallment()" type="button"
-                style="width:100%;padding:13px;background:var(--color-accent);color:#0F0F0F;border:none;border-radius:var(--radius-sm);font-size:var(--text-sm);font-weight:700;cursor:pointer;font-family:inherit;transition:opacity var(--t-fast);"
-                onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
-                Tahan 0% järelmaksu — võtke minuga ühendust →
-              </button>
-            </div>
-            <div id="installmentDone" style="display:none;text-align:center;padding:var(--space-4) 0;font-size:var(--text-sm);color:var(--color-accent);font-weight:600;">
-              ✓ Saadetud! Võtame ühendust 1 tööpäeva jooksul.
-            </div>
-          </div>
-
-          <p class="result-contact">
-            <a href="tel:+3726445060">+372 644 5060</a> &middot; <a href="mailto:info@ksa.ee">info@ksa.ee</a>
-          </p>
-
-          <!-- Hidden tracking fields -->
-          <input type="hidden" id="formQuizResult">
-          <input type="hidden" id="formQuizAnswers">
-          <input type="hidden" id="formCapturedEmail">
-        </div>
-      </div>
-
-      <!-- RESULT: Not Ideal -->
-      <div class="result quiz-card" id="resultNotIdeal">
-        <div class="quiz-card__body quiz-card__body--centered">
-          <div class="result-info-icon">&#8505;</div>
-          <span class="result-badge result-badge--info">ISIKLIK SOOVITUS</span>
-          <h2 class="result__title">Flow3 ei pruugi olla sinu silmadele parim valik, aga abi leiame.</h2>
-          <p class="result__text">Sinu vastuste põhjal võib laserkirurgia asemel sobida mõni teine lahendus. Soovitame tulla nägemise Audit silmauuringule, mille käigus optometrist ja arst teevad põhjalikud uuringud ning saadavad hiljem kirjaliku raporti.</p>
-          <hr class="result-divider">
-          <p class="result__subheading">Soovitame nägemisuuring Audit</p>
-          <a href="https://booking.ksa.ee/?lang=et&funnel=audit" target="_blank" rel="noopener noreferrer" class="btn btn--dark btn--full btn--cta">
-            Broneeri nägemisuuring Audit
-          </a>
-          <p class="result-contact">
-            <a href="tel:+3726445060">+372 644 5060</a> &middot; <a href="mailto:info@ksa.ee">info@ksa.ee</a>
-          </p>
-        </div>
-      </div>
-
-      <!-- Legacy form (kept for JS fallback — hidden) -->
-      <form id="contactForm" style="display:none;" onsubmit="submitForm(event)">
-        <input type="hidden" name="access_key" value="f56ae819-28ae-4b51-9177-120a7fe65863">
-        <input type="hidden" name="subject" value="Kiirtest kontaktivorm">
-        <input type="hidden" name="from_name" value="KSA Kiirtest LP">
-        <input id="fname" name="fname" type="text">
-        <input id="phone" name="phone" type="tel">
-        <div class="form__error" id="fnameError" style="display:none;"></div>
-        <div class="form__error" id="phoneError" style="display:none;"></div>
-        <button type="submit" id="submitBtn">Helista mulle tasuta &rarr;</button>
-      </form>
-      <div id="thankYou" style="display:none;"></div>
-
-    </div>
-  </section>
-
-  <!-- ========== WHY FLOW3 ========== -->
-  <section class="section reveal">
-    <div class="container">
-      <div class="section-label">MIKS FLOW3</div>
-      <h2 class="section-title">Ainus täielikult lõikevaba laserprotseduur Eestis</h2>
-      <div class="benefits">
-        <div class="benefit-card">
-          <div class="benefit-card__icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-          </div>
-          <h3 class="benefit-card__title">Täielikult puutevaba</h3>
-          <p class="benefit-card__text">Laser ei puutu sinu silma. Kogu protseduur on kontaktivaba.</p>
-        </div>
-        <div class="benefit-card">
-          <div class="benefit-card__icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-          </div>
-          <h3 class="benefit-card__title">Kiireim taastumine</h3>
-          <p class="benefit-card__text">Tagasi jõusaali ja basseini juba 7 päevaga.</p>
-        </div>
-        <div class="benefit-card">
-          <div class="benefit-card__icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          </div>
-          <h3 class="benefit-card__title">Kuni 7 aastat garantiid</h3>
-          <p class="benefit-card__text">Pikim garantii Baltikumis ja Põhjamaades.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== TEAM ========== -->
-  <section class="section section--surface reveal">
-    <div class="container">
-      <div class="surgeon-cards">
-        <div class="surgeon-card">
-          <img class="surgeon-card__photo" src="https://ksa.ee/wp-content/uploads/2025/07/drhaavel.jpg" alt="Dr. Ants Haavel" loading="lazy" width="96" height="96">
-          <div class="surgeon-card__content">
-            <blockquote class="surgeon-card__quote">"Tulemused on suurepärased, kui Flow3 protseduuri kandidaatide valik on süsteemne ja põhjalik."</blockquote>
-            <p class="surgeon-card__name">Dr. Ants Haavel</p>
-            <p class="surgeon-card__role">Laserkirurg · KSA asutaja</p>
-          </div>
-        </div>
-        <div class="surgeon-card">
-          <img class="surgeon-card__photo" src="https://ksa.ee/wp-content/uploads/2025/07/drtillmann.jpg" alt="Dr. Karl-Erik Tillmann" loading="lazy" width="96" height="96">
-          <div class="surgeon-card__content">
-            <blockquote class="surgeon-card__quote">"Flow3 null ektaasia juhtumit 21 aasta jooksul ei ole juhus, see on süsteem, mida täna pakub vaid KSA."</blockquote>
-            <p class="surgeon-card__name">Dr. Karl-Erik Tillmann</p>
-            <p class="surgeon-card__role">Laserkirurg</p>
-          </div>
-        </div>
-      </div>
-      <p class="team__tagline">21 aastat kogemust. 26 meie 27-st töötajast on valinud oma silmadele Flow laserprotseduuri.</p>
-      <div style="text-align:center; margin-top:var(--space-5);">
-        <a href="https://ksa.ee/tiim/" style="font-size:var(--text-sm); font-weight:600; color:var(--color-accent); text-decoration:none; border-bottom:1.5px solid var(--color-accent); padding-bottom:1px;">Tutvu meie tiimiga &rarr;</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== TESTIMONIAL ========== -->
-  <section class="section reveal">
-    <div class="container">
-      <div class="testimonial">
-        <div class="testimonial__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-        <blockquote class="testimonial__quote">&ldquo;Tundsin end nagu kosmoselaeval. 10 minutit ja kõik oli tehtud. Järgmisel päeval nägin juba selgelt.&rdquo;</blockquote>
-        <cite class="testimonial__author">&mdash; Stefan Airapetjan, superstarist meelelahutaja</cite>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== FINAL CTA ========== -->
-  <section class="section section--dark reveal">
-    <div class="container">
-      <div class="cta">
-        <h2 class="cta__title">Valmis nägema selgelt?</h2>
-        <div class="cta__buttons">
-          <a href="https://booking.ksa.ee/?lang=et&promokood=FLOW19" id="bookNowBtn2" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--lg">Broneeri uuring &mdash; 19&nbsp;&euro;</a>
-          <a href="https://ksa.ee/vabane-prillidest/" target="_blank" rel="noopener noreferrer" class="btn btn--outline btn--lg">Loe lähemalt</a>
-        </div>
-        <p class="cta__contact">Helista: <a href="tel:+3726445060">+372 644 5060</a> | <a href="mailto:info@ksa.ee">info@ksa.ee</a></p>
-      </div>
-    </div>
-  </section>
+  </div>
 
 </main>
 
-<!-- ========== FOOTER ========== -->
-<footer class="footer">
-  <div class="container">
-    <div class="footer__inner">
-      <span class="footer__text">KSA Silmakeskus OÜ &copy; 2026 | Tallinn: J. Vilmsi 5 | Tartu: Kvartali keskus, Riia mnt. 2</span>
-      <div class="footer__langs">
-        <a href="./index.html" class="footer__lang active">ET</a>
-        <a href="./ru.html" class="footer__lang">RU</a>
-        <a href="./en.html" class="footer__lang">EN</a>
-      </div>
-    </div>
-  </div>
-</footer>
-
 <script>
-// ===== UTM / AD SOURCE CAPTURE =====
-(function captureUtm() {
-  if (sessionStorage.getItem('ksa_utm')) return;
-  var p = new URLSearchParams(window.location.search);
-  var data = {
-    source:   p.get('utm_source')   || '',
-    medium:   p.get('utm_medium')   || '',
-    campaign: p.get('utm_campaign') || '',
-    content:  p.get('utm_content')  || '',
-    term:     p.get('utm_term')     || '',
-    gclid:    p.get('gclid')        || '',
-    gbraid:   p.get('gbraid')       || '',
-    wbraid:   p.get('wbraid')       || '',
-    fbclid:   p.get('fbclid')       || '',
-    entry_source: p.get('source')    || '',
-    funnel:   p.get('funnel')       || 'flow3_kiirtest',
-    slug:     p.get('slug')         || '',
-    lang:     p.get('lang')         || 'et',
-    referrer: document.referrer     || '',
+  // ══════════════════════════════════════════════════════════════
+  //  CONFIG — morning swap point for Audit/Kids codes (from Mai)
+  // ══════════════════════════════════════════════════════════════
+  const LANG = 'ET';
+  const DRAW_MONTH = '2026-07';            // July draw the 2× feeds into
+  const BOOKING = {
+    flow3: { slug: 'flow3', code: 'FLOW19', price: '19 €', old: '69 €' },
+    audit: { slug: 'audit', code: '',       price: '' },   // ← code/price from Mai by 10:00
+    kids:  { slug: '',      code: '',       price: '' }     // ← slug/code/price from Mai by 10:00
   };
-  // Always save — if all empty, marks as direct (avoids '—' in Slack reports)
-  if (!Object.values(data).some(function(v){ return v; })) {
-    data.source = 'direct';
+  function bookingUrl(route) {
+    const b = BOOKING[route] || BOOKING.flow3;
+    let u = `https://booking.ksa.ee/?service=${encodeURIComponent(b.slug || 'flow3')}&lang=et`;
+    if (b.code) u += `&promokood=${encodeURIComponent(b.code)}`;
+    u += '&source=kiirtest';
+    return u;
   }
-  sessionStorage.setItem('ksa_utm', JSON.stringify(data));
-})();
-function getUtmData() {
-  try { return JSON.parse(sessionStorage.getItem('ksa_utm') || 'null'); } catch(e) { return null; }
-}
-function getFunnelVariant() {
-  var p = new URLSearchParams(window.location.search);
-  var forced = (p.get('funnel_variant') || p.get('ab_variant') || '').toUpperCase();
-  if (forced === 'A' || forced === 'B' || forced === 'C') return forced;
-  if (p.get('booking_first') === '1' || p.get('direct_booking') === '1') return 'B';
-  if (p.get('no_contact') === '1' || p.get('result_first') === '1') return 'C';
-  if (p.get('ab_funnel') !== '1' && p.get('funnel_test') !== '1') return null;
-  try {
-    var key = 'ksa_kiirtest_ab_variant';
-    var saved = localStorage.getItem(key);
-    if (saved === 'A' || saved === 'B' || saved === 'C') return saved;
-    var variants = p.get('abc_funnel') === '1' ? ['A', 'B', 'C'] : ['A', 'B'];
-    var next = variants[Math.floor(Math.random() * variants.length)];
-    localStorage.setItem(key, next);
-    return next;
-  } catch(e) {
-    return Math.random() < 0.5 ? 'A' : 'B';
-  }
-}
-function isBookingFirstMode() {
-  return getFunnelVariant() === 'B';
-}
-function isResultFirstMode() {
-  return getFunnelVariant() === 'C';
-}
-function buildTrackedUrl(url, extra) {
-  var isAbsolute = /^https?:\/\//i.test(url);
-  var u = new URL(url, window.location.origin);
-  var utm = getUtmData() || {};
-  var params = Object.assign({
-    utm_source: utm.source || '',
-    utm_medium: utm.medium || '',
-    utm_campaign: utm.campaign || '',
-    utm_content: utm.content || '',
-    utm_term: utm.term || '',
-    gclid: utm.gclid || '',
-    gbraid: utm.gbraid || '',
-    wbraid: utm.wbraid || '',
-    fbclid: utm.fbclid || '',
-    source: utm.entry_source || utm.source || '',
-    slug: utm.slug || '',
-    lang: utm.lang || 'et',
-    ab_variant: getFunnelVariant() || ''
-  }, extra || {});
-  if (u.hostname === 'booking.ksa.ee' && params.promokood) {
-    delete params.funnel;
-  }
-  Object.keys(params).forEach(function(key) {
-    var value = params[key];
-    if (value !== undefined && value !== null && value !== '') {
-      u.searchParams.set(key, value);
-    }
-  });
-  return isAbsolute ? u.href : (u.pathname + u.search + u.hash);
-}
-</script>
 
-<script>
-(function() {
-  'use strict';
+  // ── State ────────────────────────────────────────
+  const answers = {
+    forWhom: '', gender: '', age: '', vision: '', prescription: '',
+    lenses: '', stability: '', bother: '', complaints: [], complaintsOther: '',
+    extraSymptoms: [], interest: '', email: '', name: '', resultType: '', route: '', prescCode: ''
+  };
+  // [code, label] — code is canonical (drives routing), label is display (translatable)
+  const STRENGTH = {
+    Miinusprillid:  [['minus_1','−0,5 kuni −3'],['minus_2','−3 kuni −6'],['minus_3','−6 kuni −9'],['minus_high','üle −9'],['minus_unknown','Ei tea']],
+    Plussprillid:   [['plus_1','+0,5 kuni +3'],['plus_2','+3 kuni +6'],['plus_high','üle +6'],['plus_unknown','Ei tea']],
+    Lugemisprillid: [['read_1','+0,75 kuni +1,5'],['read_2','+1,75 kuni +2,5'],['read_3','+2,75 ja rohkem'],['read_unknown','Ei tea']]
+  };
+  const TOTAL_DISPLAY = 8; // questions shown in indicator (step 4 is conditional)
 
-  // ===== QUIZ STATE =====
-  var currentStep = 1;
-  var totalSteps = 7;
-  var answers = {};
-  var quizEl = document.getElementById('quiz');
-  var progressBar = document.getElementById('progressBar');
-  var stepIndicator = document.getElementById('stepIndicator');
-  var backBtn = document.getElementById('backBtn');
-
-  // Determine actual steps (skip step 4 if not miinus)
+  // ── Step sequence (4 = strength, only when glasses worn) ──
+  function hasStrength() { return !!STRENGTH[answers.vision]; }
   function getStepSequence() {
-    if (answers.vision === 'miinus') {
-      return [1, 2, 3, 4, 5, 6, 7];
-    }
-    return [1, 2, 3, 5, 6, 7];
+    const base = [0,1,2,3];
+    if (hasStrength()) base.push(4);
+    return base.concat([5,6,7,8,10,9]); // 10 = extra clinical signs (info), placed before interest
+  }
+  function getNextStep(current) {
+    const seq = getStepSequence();
+    const idx = seq.indexOf(current);
+    if (idx === -1 || idx >= seq.length - 1) return 'result';
+    return seq[idx + 1];
+  }
+  function getPrevStep(current) {
+    const seq = getStepSequence();
+    if (current === 'result') return seq[seq.length - 1];
+    const idx = seq.indexOf(current);
+    if (idx <= 0) return 1;
+    return seq[idx - 1];
   }
 
-  // Personalized result line based on pain point + lenses
-  // Personalised lines — real Estonian market data (Läätsemaailm.ee, Eagle Vision, Norman-Optika)
-  // Typical contact lens wearer spends 300–450€/year; contacts + glasses ~600€/year
-  var PAIN_LINES = {
-    sport:     'Flow3 patsient naaseb basseini ja jõusaali juba 7 päevaga — ning säästab läätsedelt ja prillilt 600€ aastas.',
-    laatsed:   'Eestis kulutab 1-päevaste läätsede kandja keskmiselt 500–600€ aastas. Flow3 tasub end ära juba 5 aastaga — ülejäänud 25 aasta jooksul säästate üle 12 000€.',
-    hommik:    'Selge nägemine kohe hommikul, ilma prille otsimata – ja kuni 600 € väiksemad kulud aastas võrreldes läätsede ja prillide kombinatsiooniga.',
-    reisimine: 'Reisimine ilma läätsede ja prillideta. Ja 5 aasta pärast oled kogu Flow3 kulutuse läätsedelt tagasi teeninud.',
-    vihm:      'Flow3 tasub end ära keskmiselt 5 aastaga. Seejärel säästad iga aasta 400–600€, mis täna kulud läätsedele ja prillile.'
-  };
-
-  function showPersonalLine() {
-    var el = document.getElementById('resultPersonal');
-    if (!el) return;
-    var line = PAIN_LINES[answers.painpoint] || '';
-    if (answers.lenses === 'iga_paev') {
-      // Daily lens users spend ~500€+/year on lenses alone → very fast payback
-      line = 'Ühepäevläätsede kandja kulutab Eestis keskmiselt 500–560€ aastas ainult läätsedele. Flow3 tasub end ära juba ~5 aastaga.';
-    } else if (answers.lenses === 'moistkord' && !line) {
-      line = 'Läätsede, prillide ja kontrollkäikude kogukuluga 400–600€ aastas tasub Flow3 end ära keskmiselt 5–7 aastaga.';
-    }
-    if (line) { el.textContent = '→ ' + line; el.style.display = 'block'; }
+  // ── Progress ──────────────────────────────────────
+  function updateProgress(step) {
+    const seq = getStepSequence();
+    const pos = step === 'result' ? seq.length + 1 : seq.indexOf(step) + 1;
+    const denom = seq.length + 1;
+    const pct = Math.round((pos / denom) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.querySelector('[aria-valuenow]').setAttribute('aria-valuenow', pct);
+    const ind = document.getElementById('stepIndicator');
+    if (step === 'result') ind.innerHTML = 'Tulemus';
+    else ind.innerHTML = `Samm <strong>${seq.indexOf(step)+1}</strong> / ${seq.length}`;
   }
 
-  function getCurrentStepIndex() {
-    var seq = getStepSequence();
-    return seq.indexOf(currentStep);
-  }
-
-  function getTotalVisibleSteps() {
-    return getStepSequence().length;
-  }
-
-  function updateProgress() {
-    var idx = getCurrentStepIndex();
-    var total = getTotalVisibleSteps();
-    var pct = ((idx) / total) * 100;
-    progressBar.style.width = pct + '%';
-    stepIndicator.textContent = (idx + 1) + ' / ' + total;
-    backBtn.classList.toggle('hidden', idx === 0);
-  }
-
-  function showStep(step) {
-    var steps = quizEl.querySelectorAll('.quiz__step');
-    steps.forEach(function(s) {
-      s.classList.remove('active');
-    });
-    var target = quizEl.querySelector('.quiz__step[data-step="' + step + '"]');
-    if (target) {
-      target.classList.add('active');
-    }
-    currentStep = step;
-    updateProgress();
-  }
-
-  window.selectOption = function(btn) {
-    var key = btn.getAttribute('data-key');
-    var value = btn.getAttribute('data-value');
-    answers[key] = value;
-
-    // GA4: track quiz start + each step
-    if (typeof gtag !== 'undefined') {
-      if (Object.keys(answers).length === 1) {
-        gtag('event', 'quiz_started', { language: 'ET' });
-      }
-      gtag('event', 'quiz_step', { step_number: currentStep, question: key, answer: value, language: 'ET' });
-    }
-
-    // Visual feedback
-    var siblings = btn.parentElement.querySelectorAll('.quiz__option');
-    siblings.forEach(function(s) { s.classList.remove('selected'); });
+  // ── Single-select ──────────────────────────────────
+  function selectOption(btn, step) {
+    const grid = btn.closest('.option-grid');
+    grid.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
+    const val = btn.dataset.value;
+    if (step === 0) answers.forWhom = val;
+    if (step === 1) answers.gender = val;
+    if (step === 2) answers.age = val;
+    if (step === 3) { answers.vision = val; answers.prescription = ''; buildStrengthStep(); }
+    if (step === 4) { answers.prescription = btn.dataset.label || val; answers.prescCode = val; }
+    if (step === 5) answers.lenses = val;
+    if (step === 6) answers.stability = val;
+    if (step === 9) answers.interest = val;
+    const nextBtn = document.getElementById(`next-${step}`);
+    if (nextBtn) nextBtn.disabled = false;
+  }
 
-    // Auto-advance after delay
-    setTimeout(function() {
-      var seq = getStepSequence();
-      var idx = getCurrentStepIndex();
-      if (idx < seq.length - 1) {
-        showStep(seq[idx + 1]);
-      } else {
-        showSmsGate();
-      }
-    }, 300);
-  };
+  // ── Step 4 dynamic options ──────────────────────────
+  function buildStrengthStep() {
+    const opts = STRENGTH[answers.vision];
+    const wrap = document.getElementById('q4-options');
+    const title = document.getElementById('q4-title');
+    if (!opts) { wrap.innerHTML = ''; return; }
+    title.textContent = answers.vision === 'Lugemisprillid' ? 'Lugemisprillide tugevus' : 'Prillide tugevus';
+    wrap.innerHTML = opts.map(([v,l]) => `<button class="opt-btn" data-value="${v}" data-label="${l}" onclick="selectOption(this, 4)">${l}</button>`).join('');
+    document.getElementById('next-4').disabled = true;
+  }
 
-  window.goBack = function() {
-    var seq = getStepSequence();
-    var idx = getCurrentStepIndex();
-    if (idx > 0) {
-      showStep(seq[idx - 1]);
+  // ── Multi-select complaints ─────────────────────────
+  function toggleComplaint(btn) {
+    const none = 'Kaebused puuduvad';
+    const val = btn.dataset.value;
+    const grid = document.getElementById('complaints-grid');
+    if (val === none) {
+      grid.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    } else {
+      grid.querySelector(`[data-value="${none}"]`).classList.remove('selected');
+      btn.classList.toggle('selected');
+    }
+    answers.complaints = [...grid.querySelectorAll('.opt-btn.selected')].map(b => b.dataset.value);
+  }
+
+  function toggleSymptom(btn) {
+    const none = 'Ei ole märganud';
+    const val = btn.dataset.value;
+    const grid = document.getElementById('symptoms-grid');
+    if (val === none) {
+      grid.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    } else {
+      grid.querySelector(`[data-value="${none}"]`).classList.remove('selected');
+      btn.classList.toggle('selected');
+    }
+    answers.extraSymptoms = [...grid.querySelectorAll('.opt-btn.selected')].map(b => b.dataset.value);
+  }
+
+  function onBotherInput() { answers.bother = document.getElementById('bother-input').value.trim(); }
+
+  // ── Navigation ──────────────────────────────────────
+  function goNext(fromStep) {
+    if (fromStep === 8) {
+      answers.complaintsOther = document.getElementById('complaints-other').value.trim();
+    }
+    transitionTo(fromStep, getNextStep(fromStep));
+  }
+  function goBack(fromStep) { transitionTo(fromStep, getPrevStep(fromStep), true); }
+
+  function restartQuiz() {
+    Object.keys(answers).forEach(k => { answers[k] = Array.isArray(answers[k]) ? [] : ''; });
+    document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('.btn-next').forEach(b => { if (!['next-7','next-8','next-10'].includes(b.id)) b.disabled = true; });
+    document.getElementById('bother-input').value = '';
+    document.getElementById('complaints-other').value = '';
+    document.getElementById('emailGate').style.display = '';
+    document.getElementById('gateForm').reset();
+    document.getElementById('resultReveal').style.display = 'none';
+    document.getElementById('resultReveal').innerHTML = '';
+    transitionTo('result', 0, true);
+  }
+
+  function transitionTo(fromStep, toStep, reverse = false) {
+    const fromEl = document.getElementById(`step-${fromStep}`);
+    const toEl = document.getElementById(`step-${toStep}`);
+    if (!fromEl || !toEl) return;
+    fromEl.classList.remove('active'); toEl.classList.add('active');
+    fromEl.style.transform = reverse ? 'translateX(40px)' : 'translateX(-40px)';
+    fromEl.style.opacity = '0'; fromEl.style.pointerEvents = 'none'; fromEl.style.position = 'absolute';
+    toEl.style.position = 'relative';
+    toEl.style.transform = reverse ? 'translateX(-40px)' : 'translateX(40px)';
+    toEl.style.opacity = '0'; toEl.style.pointerEvents = 'none';
+    toEl.offsetHeight;
+    requestAnimationFrame(() => {
+      toEl.style.transition = 'opacity 220ms cubic-bezier(0.25,0.46,0.45,0.94), transform 220ms cubic-bezier(0.25,0.46,0.45,0.94)';
+      toEl.style.transform = 'translateX(0)'; toEl.style.opacity = '1'; toEl.style.pointerEvents = 'all';
+      setTimeout(() => {
+        fromEl.style.cssText = ''; fromEl.style.position = 'absolute'; fromEl.style.opacity = '0';
+        fromEl.style.transform = 'translateX(40px)'; fromEl.style.pointerEvents = 'none';
+      }, 230);
+    });
+    if (toStep === 'result') { window.scrollTo({top:0, behavior:'smooth'}); }
+    updateProgress(toStep);
+  }
+
+  // ── Routing ─────────────────────────────────────────
+  function computeRoute() {
+    const young = ['18-25','26-35','36-45'].includes(answers.age);
+    const minor = answers.age === 'Alla 18';
+    const isMyope = answers.vision === 'Miinusprillid';
+    const tooHigh = answers.prescCode === 'minus_high';
+    if (minor) return 'kids';
+    if (young && isMyope && !tooHigh) return 'flow3';
+    return 'audit';
+  }
+
+  const RESULTS = {
+    flow3: {
+      label: 'Lühinägelikud silmad',
+      title: 'Te oleksite tõenäoliselt sobiv Flow3 kandidaat.',
+      text: 'Teie vanus ja nägemisretsept vastavad Flow3 laserprotseduuri tingimustele. Uuringul hindame täpselt teie silmade sobivust ja anname kirjaliku hinnangu.',
+      cta: 'Broneerige Flow3 silmauuring', good: true
+    },
+    audit: {
+      label: 'Isiklik soovitus',
+      title: 'Teile sobib kõige paremini põhjalik Audit-silmauuring.',
+      text: 'Teie vastuste põhjal soovitame nägemise Audit-uuringut, mille käigus optometrist ja arst teevad põhjalikud uuringud ning koostavad kirjaliku kokkuvõtva raporti koos uuringute koopiaga.',
+      cta: 'Broneerige Audit-silmauuring', good: false
+    },
+    kids: {
+      label: 'Laste nägemiskontroll',
+      title: 'Soovitame laste põhjalikku nägemiskontrolli.',
+      text: 'Laste nägemine areneb kiiresti ja varajane kontroll on oluline. Meie spetsialistid teevad lapsele põhjaliku ja sõbraliku nägemiskontrolli.',
+      cta: 'Broneeri laste silmauuring', good: false
     }
   };
 
-  // ===== ELIGIBLE GATE (Option Z) — locked 2026-05-05 =====
-  // Eligible candidates (18-45 myopes) see a "Broneeri 19€" CTA → bridge page /19.
-  // Non-eligible go straight to the not_ideal result (Audit / Children's exam).
-  // The bridge page handles booking + FAQ + callback request.
+  // ── Email gate submit → reveal result + fire leads + 2× draw ──
+  document.getElementById('gateForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const email = document.getElementById('gate-email').value.trim();
+    const name  = document.getElementById('gate-name').value.trim();
+    if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      document.getElementById('gate-email').focus(); return;
+    }
+    answers.email = email; answers.name = name;
+    answers.route = computeRoute();
+    answers.resultType = answers.route === 'flow3' ? 'good_candidate' : answers.route;
 
-  var capturedEmail = '';   // legacy — unused but kept to avoid breaking tracking refs
-  var capturedPhone = '';   // legacy
-  var capturedName = '';
-  var LEAD_CONTEXT_KEY = 'ksa_flow3_lead_context';
-  var KIIRTEST_LEAD_ID_KEY = 'ksa_kiirtest_lead_id';
-  var kiirtestLeadId = getOrCreateKiirtestLeadId();
+    const btn = document.getElementById('gateBtn');
+    btn.disabled = true; btn.classList.add('loading');
 
-  function getOrCreateKiirtestLeadId() {
+    // 1) Lead → /api/track (email_captured: Slack + CRM + Resend)
     try {
-      var existing = sessionStorage.getItem(KIIRTEST_LEAD_ID_KEY);
-      if (existing) return existing;
-      var next = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('kt_' + Date.now() + '_' + Math.random().toString(36).slice(2));
-      sessionStorage.setItem(KIIRTEST_LEAD_ID_KEY, next);
-      return next;
-    } catch(e) {
-      return 'kt_' + Date.now() + '_' + Math.random().toString(36).slice(2);
-    }
-  }
-
-  function normalisePhoneE164(raw) {
-    var p = String(raw || '').replace(/[\s\-()]/g, '');
-    if (/^\+[1-9]\d{6,14}$/.test(p)) return p;
-    if (/^[1-9]\d{6,7}$/.test(p)) return '+372' + p;
-    if (/^00[1-9]\d{5,14}$/.test(p)) return '+' + p.slice(2);
-    return null;
-  }
-
-  function getLeadIntent() {
-    var parts = [];
-    if (answers.interest) parts.push('interest:' + answers.interest);
-    if (answers.painpoint) parts.push('pain:' + answers.painpoint);
-    if (answers.lenses) parts.push('lenses:' + answers.lenses);
-    return parts.join(' | ') || 'book_flow3_exam';
-  }
-
-  function buildLeadContext(phone, via, name, email) {
-    return {
-      name: name || capturedName || null,
-      kiirtest_lead_id: kiirtestLeadId,
-      phone: phone || capturedPhone || null,
-      email: email || capturedEmail || null,
-      language: 'ET',
-      result: isGoodCandidate() ? 'good_candidate' : 'not_ideal',
-      intent: getLeadIntent(),
-      via: via || null,
-      ab_variant: getFunnelVariant() || 'control',
-      answers: answers,
-      utm: getUtmData(),
-      meta: getMetaClickIds(),
-      timestamp: new Date().toISOString()
-    };
-  }
-
-  function saveLeadContext(phone, via, name, email) {
-    var ctx = buildLeadContext(phone, via, name, email);
-    try { sessionStorage.setItem(LEAD_CONTEXT_KEY, JSON.stringify(ctx)); } catch(e) {}
-    return ctx;
-  }
-
-  function postTrack(payload) {
-    return fetch('/api/track', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      keepalive: true,
-      body: JSON.stringify(payload)
-    }).catch(function(){});
-  }
-
-  function getCookieValue(name) {
-    var match = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/[.$?*|{}()[\]\\/+^]/g, '\\$&') + '=([^;]*)'));
-    return match ? decodeURIComponent(match[1]) : null;
-  }
-
-  function getMetaClickIds() {
-    return {
-      fbp: getCookieValue('_fbp'),
-      fbc: getCookieValue('_fbc')
-    };
-  }
-
-  function trackMetaStandard(eventName, params) {
-    if (typeof fbq === 'undefined') return;
-    fbq('track', eventName, Object.assign({
-      content_category: 'kiirtest_flow3',
-      language: 'ET'
-    }, params || {}));
-  }
-
-  function trackMetaCustom(eventName, params) {
-    if (typeof fbq === 'undefined') return;
-    fbq('trackCustom', eventName, Object.assign({
-      content_category: 'kiirtest_flow3',
-      language: 'ET'
-    }, params || {}));
-  }
-
-  function showSmsGate() {
-    quizEl.style.display = 'none';
-
-    if (!isGoodCandidate()) {
-      // Non-eligible visitors skip the gate entirely — go to not_ideal result page
-      showResult();
-      return;
-    }
-
-    var gate = document.getElementById('smsGate');
-
-    // Set bridge button href with today's promo code + UTM passthrough
-    var todayCode = getTodayCode();
-    var utm = getUtmData() || {};
-    var bridgeUrl = buildTrackedUrl('/19', {
-      from: 'kiirtest',
-      code: todayCode,
-      utm_source: utm.source || 'kiirtest_lp_et',
-      utm_medium: utm.medium || 'web',
-      utm_campaign: utm.campaign || 'flow3_19',
-      lang: 'et',
-      kiirtest_lead_id: kiirtestLeadId,
-      ab_variant: getFunnelVariant() || 'control'
-    });
-    var directBookingUrl = buildTrackedUrl('https://booking.ksa.ee/?lang=et&promokood=FLOW19', {
-      promokood: todayCode,
-      utm_source: utm.source || 'kiirtest_lp_et',
-      utm_medium: utm.medium || 'web',
-      utm_campaign: utm.campaign || 'flow3_19',
-      source: utm.entry_source || utm.source || 'kiirtest_lp_et',
-      lang: 'et',
-      kiirtest_lead_id: kiirtestLeadId,
-      ab_variant: getFunnelVariant() || 'B'
-    });
-    var btn = document.getElementById('bridgeBtn');
-    if (btn) btn.setAttribute('href', bridgeUrl);
-
-    if (isBookingFirstMode()) {
-      trackGateEvent('eligible_gate_bridge_clicked');
-      if (typeof gtag !== 'undefined') {
-        gtag('event', 'booking_click', { language: 'ET', promo: todayCode, via: 'variant_b_direct_booking' });
-      }
-      trackMetaStandard('InitiateCheckout', { content_name: 'flow3_exam_direct_booking', funnel_step: 'direct_booking', value: 19, currency: 'EUR', ab_variant: getFunnelVariant() || 'B' });
-      trackMetaCustom('Flow3BookingClick', { funnel_step: 'direct_booking', ab_variant: getFunnelVariant() || 'B' });
-      window.location.href = directBookingUrl;
-      return;
-    }
-
-    if (isResultFirstMode()) {
-      trackGateEvent('eligible_gate_result_unlocked');
-      trackMetaCustom('KiirtestResultUnlocked', { funnel_step: 'result_first_no_contact', ab_variant: getFunnelVariant() || 'C' });
-      showResult({ via: 'result_first_no_contact' });
-      return;
-    }
-
-    gate.classList.add('active');
-
-    setTimeout(function() {
-      gate.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 100);
-
-    trackGateEvent('eligible_gate_shown');
-  }
-
-  function trackGateEvent(type) {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({ event: type, quiz_language: 'ET' });
-    if (typeof gtag !== 'undefined') { gtag('event', type, { language: 'ET' }); }
-    postTrack({ type: type, language: 'ET', intent: getLeadIntent(), lead_context: buildLeadContext(capturedPhone, type), answers: answers, utm: getUtmData(), timestamp: new Date().toISOString() });
-  }
-
-  // User clicked the bridge button — log + fire conversion + let link navigate normally
-  window.trackBridgeClick = function(via) {
-    saveLeadContext(capturedPhone, via || 'bridge_clicked');
-    trackGateEvent('eligible_gate_bridge_clicked');
-    trackMetaCustom('KiirtestBridgeClicked', { funnel_step: 'bridge_clicked' });
-    if (typeof gtag !== 'undefined') {
-      // Confirmed bookings should be the primary Google Ads conversion.
-      gtag('event', 'generate_lead', { language: 'ET', via: 'bridge_redirect' });
-    }
-  };
-
-  window.submitQualifiedPhone = function(e) {
-    e.preventDefault();
-    var nameInput = document.getElementById('qualifiedName');
-    var input = document.getElementById('qualifiedPhone');
-    var emailInput = document.getElementById('qualifiedEmail');
-    var error = document.getElementById('qualifiedPhoneError');
-    var btn = document.getElementById('qualifiedPhoneBtn');
-    var name = nameInput.value.trim();
-    var phone = normalisePhoneE164(input.value);
-    var email = emailInput.value.trim();
-    if (!name || !phone) {
-      nameInput.style.borderColor = !name ? 'var(--color-danger)' : '';
-      input.style.borderColor = !phone ? 'var(--color-danger)' : '';
-      error.style.display = 'block';
-      (!name ? nameInput : input).focus();
-      return;
-    }
-    nameInput.style.borderColor = '';
-    input.style.borderColor = '';
-    error.style.display = 'none';
-    capturedName = name;
-    capturedPhone = phone;
-    capturedEmail = email;
-    btn.disabled = true;
-    btn.textContent = 'Avan broneeringut...';
-    var ctx = saveLeadContext(phone, 'phone_before_booking', name, email);
-    trackMetaStandard('Lead', {
-      content_name: 'kiirtest_qualified_contact',
-      funnel_step: 'qualified_contact',
-      value: 19,
-      currency: 'EUR'
-    });
-    trackMetaCustom('KiirtestQualifiedContact', { funnel_step: 'qualified_contact' });
-    postTrack({
-      type: 'qualified_flow3_phone_lead',
-      language: 'ET',
-      contact: { name: name, phone: phone, email: email || null },
-      name: name,
-      phone: phone,
-      email: email || null,
-      intent: ctx.intent,
-      result: ctx.result,
-      via: ctx.via,
-      lead_context: ctx,
-      answers: answers,
-      utm: getUtmData(),
-      timestamp: ctx.timestamp
-    }).finally(function() {
-      var bridge = document.getElementById('bridgeBtn');
-      window.location.href = bridge ? bridge.href : buildTrackedUrl('/19', { from: 'kiirtest', code: getTodayCode(), lang: 'et', kiirtest_lead_id: kiirtestLeadId });
-    });
-  };
-
-  window.skipSmsGate = function() {
-    trackGateEvent('eligible_gate_skipped');
-    document.getElementById('smsGate').classList.remove('active');
-    showResult({ via: 'skipped' });
-  };
-
-  // ── Eligibility (locked 2026-04-30 with Lilia + Ants — see feedback_flow3_eligibility.md) ──
-  // Flow3 is ONLY for 18–45 yo confirmed myopes. Whitelist approach — anything that's not
-  // an explicit myopia answer in the eligible age range gets routed to Audit/Children's exam.
-  // Very high myopia (rohkem kui -9) also routed to Audit — clinically often beyond Flow3 range.
-  function isGoodCandidate() {
-    var eligibleAge = answers.age === '18-25' || answers.age === '26-35' || answers.age === '36-45';
-    if (!eligibleAge) return false;
-    if (answers.vision !== 'miinus') return false;
-    if (answers.prescription === 'rohkem kui -9') return false;
-    return true;
-  }
-
-  function showResult(opts) {
-    opts = opts || {};
-    quizEl.style.display = 'none';
-    var resultType = isGoodCandidate() ? 'good_candidate' : 'not_ideal';
-
-    if (resultType === 'good_candidate') {
-      document.getElementById('resultGood').classList.add('active');
-      document.getElementById('formQuizResult').value = resultType;
-      document.getElementById('formQuizAnswers').value = JSON.stringify(answers);
-      var locked = opts.via === 'skipped';
-      var insightBox = document.getElementById('resultInsightBox');
-      var priceBox = document.getElementById('resultPriceBox');
-      var bookBtn = document.getElementById('bookNowBtn');
-      if (insightBox) insightBox.style.display = locked ? 'none' : '';
-      if (priceBox) priceBox.style.display = locked ? 'none' : '';
-      if (bookBtn) bookBtn.style.display = locked ? 'none' : '';
-    } else {
-      document.getElementById('resultNotIdeal').classList.add('active');
-    }
-
-    // Show the right "we sent you something" notice based on how the gate was completed
-    if (resultType === 'good_candidate') {
-      if (opts.via === 'sms_self_sent') {
-        document.getElementById('smsConfirmNotice').style.display = 'block';
-        document.getElementById('smsOfferNudge').style.display = 'block';
-      } else if (opts.via === 'phone_form_fallback') {
-        document.getElementById('phoneConfirmNotice').style.display = 'block';
-      }
-    }
-
-    // Show personalised line based on pain point + lenses
-    if (resultType === 'good_candidate') { showPersonalLine(); }
-
-    // Flag daily lens users for Lilia
-    if (resultType === 'good_candidate' && answers.lenses === 'iga_paev' && capturedPhone) {
-      postTrack({ type: 'hot_lead_lens_user', language: 'ET', phone: capturedPhone || null, email: capturedEmail || null, intent: getLeadIntent(), via: opts.via || null, lead_context: buildLeadContext(capturedPhone, opts.via || 'result_viewed'), answers: answers, utm: getUtmData(), timestamp: new Date().toISOString() });
-    }
-
-    // Scroll result into view
-    setTimeout(function() {
-      var el = resultType === 'good_candidate'
-        ? document.getElementById('resultGood')
-        : document.getElementById('resultNotIdeal');
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 100);
-
-    // Tracking: quiz_completed + result_viewed
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-      'event': 'quiz_completed',
-      'quiz_result': resultType,
-      'quiz_language': 'ET',
-      'quiz_answers': answers
-    });
-    if (typeof gtag !== 'undefined') {
-      gtag('event', 'quiz_completed', { result_type: resultType, language: 'ET' });
-      gtag('event', 'result_viewed', { result_type: resultType, language: 'ET' });
-    }
-    trackMetaCustom('KiirtestQuizCompleted', { funnel_step: 'quiz_completed' });
-
-    fetch('/api/track', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        type: 'quiz_completed',
-        result: resultType,
-        language: 'ET',
-        email: capturedEmail || null,
-        answers: answers,
-        utm: getUtmData(),
-        timestamp: new Date().toISOString()
-      })
-    }).catch(function(){});
-  }
-
-  // ===== ACTIVE PROMO CODE + COUNTDOWN =====
-  // Mai confirmed FLOW19 in booking CRM; keep the same live code across weekdays.
-  var DAILY_CODES = {
-    0: 'FLOW19',  // Pühapäev (Sunday)
-    1: 'FLOW19',  // Esmaspäev (Monday)
-    2: 'FLOW19',  // Teisipäev (Tuesday)
-    3: 'FLOW19',  // Kolmapäev (Wednesday)
-    4: 'FLOW19',  // Neljapäev (Thursday)
-    5: 'FLOW19',  // Reede (Friday)
-    6: 'FLOW19',  // Laupäev (Saturday)
-  };
-
-  function getTodayCode() {
-    var day = new Date().getDay();
-    return DAILY_CODES[day] || 'FLOW19';
-  }
-
-  function applyDailyCode() {
-    var code = getTodayCode();
-    var els = ['promoCode', 'promoCodeBtn'];
-    els.forEach(function(id) {
-      var el = document.getElementById(id);
-      if (el) el.textContent = code;
-    });
-    // Update booking button URLs with today's promo code (skips slow service-page)
-    var bookingUrl = buildTrackedUrl('https://booking.ksa.ee/?lang=et&promokood=FLOW19', {
-      promokood: code,
-      lang: 'et',
-      kiirtest_lead_id: kiirtestLeadId
-    });
-    var btns = ['bookNowBtn', 'bookNowBtn2'];
-    btns.forEach(function(id) {
-      var el = document.getElementById(id);
-      if (el) el.href = bookingUrl;
-    });
-  }
-
-  function startCountdown() {
-    function update() {
-      var now = new Date();
-      var midnight = new Date();
-      midnight.setHours(23, 59, 59, 999);
-      var diff = midnight - now;
-      if (diff <= 0) {
-        applyDailyCode(); // new day, new code
-        diff = 86399999;
-      }
-      var h = Math.floor(diff / 3600000);
-      var m = Math.floor((diff % 3600000) / 60000);
-      var s = Math.floor((diff % 60000) / 1000);
-      var pad = function(n) { return n < 10 ? '0' + n : '' + n; };
-      var el = document.getElementById('countdown');
-      if (el) el.textContent = pad(h) + ':' + pad(m) + ':' + pad(s);
-    }
-    update();
-    setInterval(update, 1000);
-  }
-
-  applyDailyCode();
-  startCountdown();
-
-  // ===== TRACKING HELPERS =====
-  // ===== 0% INSTALLMENT LEAD =====
-  window.submitInstallment = function() {
-    var name = document.getElementById('installName').value.trim();
-    var phone = document.getElementById('installPhone').value.trim();
-    if (!name || !phone) {
-      if (!name) document.getElementById('installName').style.borderColor = '#e53e3e';
-      if (!phone) document.getElementById('installPhone').style.borderColor = '#e53e3e';
-      return;
-    }
-    var btn = event.target;
-    btn.disabled = true;
-    btn.textContent = 'Saadan…';
-
-    var data = new FormData();
-    data.append('access_key', 'f56ae819-28ae-4b51-9177-120a7fe65863');
-    data.append('subject', '🏦 0% järelmaks — ' + name + ' · ' + phone);
-    data.append('from_name', 'KSA Kiirtest — Järelmaks');
-    data.append('name', name);
-    data.append('phone', phone);
-    data.append('email', capturedEmail || '');
-    data.append('quiz_answers', JSON.stringify(answers));
-    data.append('lp_source', 'LP-KiirtestAd-ET-Installment');
-
-    fetch('https://api.web3forms.com/submit', { method: 'POST', body: data })
-      .then(function(r) { return r.json(); })
-      .then(function() {
-        document.getElementById('installmentForm').style.display = 'none';
-        document.getElementById('installmentDone').style.display = 'block';
-        trackMetaStandard('Lead', { content_name: 'kiirtest_installment_contact', funnel_step: 'installment_contact' });
-        window.dataLayer.push({ event: 'installment_lead', language: 'ET' });
-        fetch('/api/track', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ type: 'installment_lead', language: 'ET', contact: { name: name, phone: phone, email: capturedEmail || '' }, answers: answers, utm: getUtmData(), timestamp: new Date().toISOString() })
-        }).catch(function(){});
-      })
-      .catch(function() { btn.disabled = false; btn.textContent = 'Võtke minuga ühendust järelmaksu osas →'; });
-  };
-
-  window.trackBookNow = function() {
-    if (typeof gtag !== 'undefined') {
-      // Confirmed bookings should be the primary Google Ads conversion.
-      gtag('event', 'booking_click', { language: 'ET', promo: getTodayCode(), source: 'kiirtest' });
-    }
-    trackMetaStandard('InitiateCheckout', {
-      content_name: 'flow3_exam_booking_click',
-      funnel_step: 'booking_click',
-      value: 19,
-      currency: 'EUR'
-    });
-    trackMetaCustom('Flow3BookingClick', { funnel_step: 'booking_click' });
-    window.dataLayer.push({ event: 'book_now_clicked', lp_source: 'LP-KiirtestAd-ET-V3' });
-    var ctx = saveLeadContext(capturedPhone, 'result_booking_click');
-    postTrack({ type: 'book_now_clicked', language: 'ET', phone: capturedPhone || null, email: capturedEmail || null, intent: ctx.intent, lead_context: ctx, answers: answers, utm: getUtmData(), timestamp: new Date().toISOString() });
-  };
-
-  window.trackWhatsApp = function() {
-    trackMetaCustom('WhatsAppClicked');
-    window.dataLayer.push({ event: 'whatsapp_clicked', lp_source: 'LP-KiirtestAd-ET-V3' });
-    fetch('/api/track', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ type: 'whatsapp_clicked', language: 'ET', email: capturedEmail || null, answers: answers, timestamp: new Date().toISOString() })
-    }).catch(function(){});
-  };
-
-  // ===== FORM SUBMISSION (legacy — kept for fallback) =====
-  window.submitForm = function(e) {
-    e.preventDefault();
-    var form = document.getElementById('contactForm');
-    var nameVal = document.getElementById('fname').value.trim();
-    var phoneVal = document.getElementById('phone').value.trim();
-
-    // Fill captured email into hidden field
-    document.getElementById('formCapturedEmail').value = capturedEmail;
-
-    var valid = true;
-    if (!nameVal) {
-      document.getElementById('fname').classList.add('error');
-      document.getElementById('fnameError').classList.add('visible');
-      valid = false;
-    } else {
-      document.getElementById('fname').classList.remove('error');
-      document.getElementById('fnameError').classList.remove('visible');
-    }
-    if (!phoneVal) {
-      document.getElementById('phone').classList.add('error');
-      document.getElementById('phoneError').classList.add('visible');
-      valid = false;
-    } else {
-      document.getElementById('phone').classList.remove('error');
-      document.getElementById('phoneError').classList.remove('visible');
-    }
-    if (!valid) return;
-
-    var submitBtn = document.getElementById('submitBtn');
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Saadan…';
-
-    var formData = new FormData(form);
-    fetch('https://api.web3forms.com/submit', {
-      method: 'POST',
-      body: formData
-    })
-    .then(function(res) { return res.json(); })
-    .then(function(data) {
-      if (data.success) {
-        form.style.display = 'none';
-        document.getElementById('thankYou').classList.add('active');
-
-        if (typeof gtag !== 'undefined') {
-          gtag('event', 'generate_lead', { language: 'ET', source: 'kiirtest_fallback_form' });
-        }
-        trackMetaStandard('Lead', { content_name: 'kiirtest_legacy_contact', funnel_step: 'legacy_contact_form' });
-        window.dataLayer.push({
-          'event': 'form_submission',
-          'form_name': 'kiirtest_lp_contact_v2',
-          'lp_source': 'LP-KiirtestAd-ET-V2'
-        });
-        fetch('/api/track', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({
-            type: 'form_with_contact',
-            result: document.getElementById('formQuizResult').value,
-            language: 'ET',
-            contact: { name: nameVal, phone: phoneVal, email: capturedEmail },
-            answers: answers,
-            promoCode: getTodayCode(),
-            utm: getUtmData(),
-            timestamp: new Date().toISOString()
-          })
-        }).catch(function(){});
-      } else {
-        window.location.href = 'mailto:info@ksa.ee?subject=Kiirtest%20kontakt&body=Nimi:%20' + encodeURIComponent(nameVal) + '%0ATelefon:%20' + encodeURIComponent(phoneVal);
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Helista mulle tasuta →';
-      }
-    })
-    .catch(function() {
-      window.location.href = 'mailto:info@ksa.ee?subject=Kiirtest%20kontakt&body=Nimi:%20' + encodeURIComponent(nameVal) + '%0ATelefon:%20' + encodeURIComponent(phoneVal);
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Helista mulle tasuta →';
-    });
-  };
-
-  // ===== SCROLL REVEAL =====
-  var reveals = document.querySelectorAll('.reveal');
-  if ('IntersectionObserver' in window) {
-    var observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
+      await fetch('/api/track', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          type: 'email_captured', email, language: LANG, lp_source: 'LP-Kiirtest-ET',
+          result: answers.resultType, route: answers.route,
+          answers: {
+            forWhom: answers.forWhom, gender: answers.gender, age: answers.age, vision: answers.vision,
+            prescription: answers.prescription || 'N/A', lenses: answers.lenses,
+            stability: answers.stability, complaints: answers.complaints.join(', ') || '—',
+            complaintsOther: answers.complaintsOther || '', bother: answers.bother || '',
+            extraSymptoms: answers.extraSymptoms.join(', ') || '—', interest: answers.interest
+          },
+          timestamp: new Date().toISOString()
+        })
       });
-    }, { threshold: 0.1 });
-    reveals.forEach(function(el) { observer.observe(el); });
-  } else {
-    reveals.forEach(function(el) { el.classList.add('visible'); });
+    } catch(_) {}
+
+    // 2) 2× draw entry → Supabase
+    try {
+      await fetch('/api/draw-entry', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ email, first_name: name, language: LANG, month: DRAW_MONTH, source: 'kiirtest' })
+      });
+    } catch(_) {}
+
+    // 3) Conversions
+    if (typeof gtag !== 'undefined') gtag('event','conversion',{'send_to':'AW-18030087653/lXXnCMHKwI8cEOWbtZVD'});
+    if (typeof fbq !== 'undefined') fbq('track','Lead');
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event:'form_submission', form_name:'kiirtest_email_gate', lp_source:'LP-Kiirtest-ET', quiz_result: answers.resultType, quiz_route: answers.route });
+
+    revealResult();
+  });
+
+  function revealResult() {
+    const r = RESULTS[answers.route] || RESULTS.audit;
+    const b = BOOKING[answers.route] || BOOKING.flow3;
+    const icon = r.good
+      ? `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M6 16l7 7 13-13" stroke="#87be23" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+      : `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true"><circle cx="16" cy="16" r="13" stroke="#5a6b6c" stroke-width="1.5"/><path d="M16 14v8M16 11v1" stroke="#5a6b6c" stroke-width="2" stroke-linecap="round"/></svg>`;
+    const stabilityNote = answers.stability === 'Ei, on muutunud'
+      ? `<p class="result-text" style="font-size:var(--text-sm,.9rem);color:var(--color-text-secondary,#555);">Märkisite, et nägemine on viimasel aastal muutunud — see on oluline info, mida spetsialist uuringul arvesse võtab.</p>` : '';
+    const priceHtml = b.price ? `<div class="path-price">${b.price}${b.old?`<span class="old">${b.old}</span>`:''}${b.code?` · sooduskood ${b.code}`:''}</div>` : '';
+
+    document.getElementById('emailGate').style.display = 'none';
+    const reveal = document.getElementById('resultReveal');
+    reveal.style.display = 'block';
+    reveal.innerHTML = `
+      <div class="result-icon result-icon--${r.good ? 'good' : 'info'}" aria-hidden="true">${icon}</div>
+      <p class="result-label ${r.good ? '' : 'result-label--info'}">${r.label}</p>
+      <h2 class="result-title">${r.title}</h2>
+      <p class="result-text">${r.text}</p>
+      ${stabilityNote}
+      <div class="result-paths">
+        <div class="path-card path-card--primary">
+          <h4>${r.cta}</h4>
+          <p>Broneerige õige uuring kohe — sooduskoodiga.</p>
+          ${priceHtml}
+          <a href="${bookingUrl(answers.route)}" class="btn-cta-book" target="_blank" rel="noopener" style="margin-top:12px;display:inline-flex;" onclick="if(typeof fbq!=='undefined')fbq('track','Schedule');">
+            ${r.cta}
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+        <div class="path-card">
+          <h4>Mul on veel küsimusi</h4>
+          <p>Jätke oma nimi ja telefoninumber — KSA spetsialist helistab teile tagasi.</p>
+          <form id="callbackForm" novalidate>
+            <input type="text" class="step-textinput" id="cb-name" placeholder="Eesnimi" autocomplete="given-name" style="margin-bottom:8px;">
+            <input type="tel" class="step-textinput" id="cb-phone" placeholder="Telefon" autocomplete="tel" required style="margin-bottom:8px;">
+            <button type="submit" class="btn-submit" id="cbBtn"><span class="btn-label">Helista mulle</span><div class="spinner"></div></button>
+          </form>
+          <p style="margin:12px 0 0;font-size:var(--text-sm,.9rem);color:var(--color-text-secondary,#555);">📲 Salvestage meie number <strong>+372 644 5060</strong> oma kontaktidesse — just sellelt numbrilt me teile helistame.</p>
+          <p id="cbDone" style="display:none;margin:10px 0 0;color:var(--color-accent,#87be23);font-weight:500;">Aitäh! Spetsialist võtab teiega peagi ühendust. ✓</p>
+        </div>
+      </div>
+    `;
+    document.getElementById('callbackForm').addEventListener('submit', onCallbackSubmit);
+    window.scrollTo({top:0, behavior:'smooth'});
   }
 
-  // Init
-  updateProgress();
-})();
+  async function onCallbackSubmit(e) {
+    e.preventDefault();
+    const phone = document.getElementById('cb-phone').value.trim();
+    const cbName = (document.getElementById('cb-name').value || '').trim();
+    if (!phone) { document.getElementById('cb-phone').focus(); return; }
+    const btn = document.getElementById('cbBtn');
+    btn.disabled = true; btn.classList.add('loading');
+    try {
+      await fetch('/api/track', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          type: 'callback_requested', language: LANG, lp_source:'LP-Kiirtest-ET',
+          result: answers.resultType, route: answers.route,
+          contact: { name: cbName || answers.name, phone, email: answers.email },
+          answers: {
+            forWhom: answers.forWhom, gender: answers.gender, age: answers.age, vision: answers.vision,
+            prescription: answers.prescription || 'N/A', lenses: answers.lenses,
+            stability: answers.stability, complaints: answers.complaints.join(', ') || '—',
+            complaintsOther: answers.complaintsOther || '', bother: answers.bother || '',
+            extraSymptoms: answers.extraSymptoms.join(', ') || '—', interest: answers.interest
+          },
+          timestamp: new Date().toISOString()
+        })
+      });
+    } catch(_) {}
+    if (typeof fbq !== 'undefined') fbq('track','Contact');
+    document.getElementById('callbackForm').style.display = 'none';
+    document.getElementById('cbDone').style.display = 'block';
+  }
+
+  // ── Init ──────────────────────────────────────────
+  updateProgress(0);
+  document.querySelectorAll('.quiz-step:not(.active)').forEach(s => {
+    s.style.position = 'absolute'; s.style.opacity = '0';
+    s.style.transform = 'translateX(40px)'; s.style.pointerEvents = 'none';
+  });
 </script>
-  <!-- Vercel Web Analytics — cookieless, runs for 100% of visitors, GDPR-exempt;
-       data-cookieconsent="ignore" so future Cookiebot integration does not strip it -->
-  <script defer src="/_vercel/insights/script.js" data-cookieconsent="ignore"></script>
+
 </body>
 </html>

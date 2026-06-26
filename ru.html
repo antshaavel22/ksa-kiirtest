@@ -1,1162 +1,708 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({"gtm.start":
+new Date().getTime(),event:"gtm.js"});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
+"https://www.googletagmanager.com/gtm.js?id="+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,"script","dataLayer","GTM-KCZVRJ8");</script>
+<!-- End Google Tag Manager -->
+<!-- Google Ads tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18030087653"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag("js", new Date());
+gtag("config", "AW-18030087653");
+  gtag("config", "G-7R7T8GF37J");
+</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Экспресс-тест — Подходит ли вам лазерная коррекция зрения? | KSA Silmakeskus</title>
-  <meta name="description" content="Ответьте на 7 вопросов и получите персональный ответ — подходит ли вам процедура Flow3. Бесплатный экспресс-тест от KSA Silmakeskus.">
-  <meta name="robots" content="index, follow">
+  <meta name="description" content="Тест зрения KSA Silmakeskus — за пару минут узнайте, какое обследование вам подходит лучше всего.">
+  <title>Тест зрения — KSA Silmakeskus</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./base.css">
-  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="kiirtest-v3.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2387be23'/%3E%3Ctext x='6' y='23' font-family='sans-serif' font-weight='700' font-size='16' fill='white'%3Eksa%3C/text%3E%3C/svg%3E">
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '116445785392738');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
 
-  <!-- QR code generator (used for desktop SMS gate fallback) -->
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js" defer></script>
-
-  <!-- Google Tag Manager -->
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({"gtm.start":
-  new Date().getTime(),event:"gtm.js"});var f=d.getElementsByTagName(s)[0],
-  j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
-  "https://www.googletagmanager.com/gtm.js?id="+i+dl;f.parentNode.insertBefore(j,f);
-  })(window,document,"script","dataLayer","GTM-KCZVRJ8");</script>
-  <!-- Google Ads tag -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18030087653"></script>
-  <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag("js", new Date());
-  gtag("config", "AW-18030087653");
-  gtag("config", "G-7R7T8GF37J");
-  </script>
-  <!-- Meta Pixel Code -->
-  <script>
-  !function(f,b,e,v,n,t,s)
-  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-  n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];
-  s.parentNode.insertBefore(t,s)}(window, document,'script',
-  'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', '116445785392738');
-  fbq('track', 'PageView');
-  </script>
-  <noscript><img height="1" width="1" style="display:none"
-  src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
-  /></noscript>
-  <!-- End Meta Pixel Code -->
-  <!-- Favicon (KSA brand mark — matches blog.ksa.ee) -->
-  <link rel="icon" type="image/x-icon" href="/favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="/icon.png">
-  <link rel="apple-touch-icon" sizes="32x32" href="/icon.png">
+<!-- V3 quiz styles (free-text, multi-select, result paths) -->
+<style>
+  .step-textarea, .step-textinput {
+    width: 100%; box-sizing: border-box; font-family: inherit;
+    font-size: var(--text-base, 1rem); color: var(--color-text, #1a1a1a);
+    border: 1.5px solid var(--color-border, #e2e2e0); border-radius: 10px;
+    padding: 14px 16px; background: #fff; resize: vertical; line-height: 1.5;
+  }
+  .step-textarea { min-height: 92px; }
+  .step-textarea:focus, .step-textinput:focus {
+    outline: none; border-color: var(--color-accent, #87be23);
+    box-shadow: 0 0 0 3px rgba(135,190,35,0.12);
+  }
+  .opt-btn.opt-check { position: relative; }
+  .opt-btn.opt-check.selected::after {
+    content: ''; position: absolute; right: 14px; top: 50%; width: 18px; height: 18px;
+    transform: translateY(-50%);
+    background: var(--color-accent, #87be23);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z'/%3E%3C/svg%3E") center/contain no-repeat;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z'/%3E%3C/svg%3E") center/contain no-repeat;
+  }
+  .result-paths { display: grid; gap: 14px; margin-top: var(--space-6, 24px); }
+  .path-card {
+    border: 1.5px solid var(--color-border, #e2e2e0); border-radius: 14px;
+    padding: 20px; text-align: left; background: #fff;
+  }
+  .path-card--primary { border-color: var(--color-accent, #87be23); background: rgba(135,190,35,0.05); }
+  .path-card h4 { margin: 0 0 6px; font-size: var(--text-lg, 1.1rem); font-weight: 600; }
+  .path-card p { margin: 0 0 14px; font-size: var(--text-sm, .9rem); color: var(--color-text-secondary, #555); line-height: 1.5; }
+  .path-price { font-weight: 600; }
+  .path-price .old { font-weight: 400; color: var(--color-text-muted, #999); text-decoration: line-through; margin-left: 6px; font-size: .9em; }
+  .callback-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .callback-row .step-textinput { flex: 1; min-width: 160px; }
+  .draw-badge {
+    margin-top: 16px; padding: 12px 16px; border-radius: 10px;
+    background: rgba(135,190,35,0.1); font-size: var(--text-sm, .9rem);
+    color: var(--color-text, #1a1a1a); text-align: center; font-weight: 500;
+  }
+  .email-gate { text-align: center; }
+  .email-gate .gate-icon { margin: 0 auto var(--space-3, 12px); width: 44px; height: 44px; }
+</style>
 </head>
 <body>
-
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KCZVRJ8" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 
-<!-- ========== HEADER ========== -->
-<header class="site-header">
-  <div class="site-header__inner">
-    <a href="https://ksa.ee" class="site-logo" target="_blank" rel="noopener noreferrer">
-      <span class="site-logo__mark">KSA</span>
-      <span class="site-logo__name">Silmakeskus</span>
+<!-- ── Header ─────────────────────────────────── -->
+<header class="header">
+  <div class="header__inner">
+    <a href="https://ksa.ee" class="header__logo" aria-label="KSA Silmakeskus — главная">
+      <svg height="38" viewBox="0 0 180 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <text x="0" y="36" font-family="'Geist', -apple-system, sans-serif" font-size="38" font-weight="600" letter-spacing="-1" fill="#87be23">ksa</text>
+        <text x="2" y="47" font-family="'Geist', -apple-system, sans-serif" font-size="8.5" font-weight="500" letter-spacing="3.5" fill="#87be23">SILMAKESKUS</text>
+      </svg>
     </a>
+    <div class="header__actions">
+      <nav class="lang-switch" aria-label="Язык">
+        <a href="index.html">ET</a>
+        <span class="sep">|</span>
+        <a href="ru.html" class="active" aria-current="page">RU</a>
+        <span class="sep">|</span>
+        <a href="en.html">EN</a>
+      </nav>
+    </div>
   </div>
 </header>
 
-<main>
+<!-- ── Progress bar ───────────────────────────── -->
+<div class="progress-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="10" aria-label="Прогресс теста">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
 
-  <!-- ========== HERO ========== -->
-  <section class="hero">
-    <div class="container container--narrow">
-      <span class="badge">БЕСПЛАТНЫЙ ЭКСПРЕСС-ТЕСТ &bull; 90 СЕКУНД</span>
-      <h1 class="hero__title">Подходит ли вам лазерная коррекция зрения?</h1>
-      <p class="hero__subtitle">Ответьте на 7 вопросов, чтобы получить персональный ответ — и сегодняшнее специальное предложение.</p>
+<!-- ── Quiz ───────────────────────────────────── -->
+<main class="quiz-page">
+  <div class="quiz-container">
+
+    <!-- Step indicator -->
+    <div class="step-indicator" id="stepIndicator" aria-live="polite">
+      Шаг <strong>1</strong> / 8
     </div>
 
-    <!-- Hero image full-width -->
-    <div class="hero-photo">
-      <img src="./happy-patient.jpg" alt="KSA Silmakeskus — пациент после лазерной процедуры" class="hero-photo__img" loading="eager">
+    <!-- Slides wrapper -->
+    <div class="quiz-slides" id="quizSlides">
+
+      <!-- ── Step 0: Who is this for ── -->
+      <div class="quiz-step active" id="step-0" data-step="0">
+        <h1 class="step-question">Для кого вы проходите тест?</h1>
+        <div class="option-grid" role="group" aria-label="Для кого">
+          <button class="opt-btn" data-value="Endale" onclick="selectOption(this, 0)">Для себя</button>
+          <button class="opt-btn" data-value="Oma lapsele" onclick="selectOption(this, 0)">Для своего ребенка</button>
+          <button class="opt-btn" data-value="Sõbrale või lähedasele" onclick="selectOption(this, 0)">Для друга или близкого</button>
+        </div>
+        <div class="quiz-nav">
+          <span></span>
+          <button class="btn-next" id="next-0" disabled onclick="goNext(0)">Далее
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 1: Gender ── -->
+      <div class="quiz-step" id="step-1" data-step="1">
+        <h2 class="step-question">Я…</h2>
+        <div class="option-grid option-grid--two" role="group" aria-label="Пол">
+          <button class="opt-btn" data-value="Naine" onclick="selectOption(this, 1)">
+            <span class="opt-icon">♀</span><span>Женщина</span>
+          </button>
+          <button class="opt-btn" data-value="Mees" onclick="selectOption(this, 1)">
+            <span class="opt-icon">♂</span><span>Мужчина</span>
+          </button>
+        </div>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goBack(1)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Назад</button>
+          <button class="btn-next" id="next-1" disabled onclick="goNext(1)">Далее
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 2: Age ── -->
+      <div class="quiz-step" id="step-2" data-step="2">
+        <h2 class="step-question">Ваш возраст</h2>
+        <div class="option-grid" role="group" aria-label="Возраст">
+          <button class="opt-btn" data-value="Alla 18" onclick="selectOption(this, 2)">До 18</button>
+          <button class="opt-btn" data-value="18-25" onclick="selectOption(this, 2)">18–25</button>
+          <button class="opt-btn" data-value="26-35" onclick="selectOption(this, 2)">26–35</button>
+          <button class="opt-btn" data-value="36-45" onclick="selectOption(this, 2)">36–45</button>
+          <button class="opt-btn" data-value="46-55" onclick="selectOption(this, 2)">46–55</button>
+          <button class="opt-btn" data-value="56+" onclick="selectOption(this, 2)">56+</button>
+        </div>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goBack(2)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Назад</button>
+          <button class="btn-next" id="next-2" disabled onclick="goNext(2)">Далее
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 3: Glasses type ── -->
+      <div class="quiz-step" id="step-3" data-step="3">
+        <h2 class="step-question">Какие очки вы носите?</h2>
+        <div class="option-grid" role="group" aria-label="Тип очков">
+          <button class="opt-btn" data-value="Miinusprillid" onclick="selectOption(this, 3)">Минусовые (близорукость)</button>
+          <button class="opt-btn" data-value="Plussprillid" onclick="selectOption(this, 3)">Плюсовые (дальнозоркость)</button>
+          <button class="opt-btn" data-value="Lugemisprillid" onclick="selectOption(this, 3)">Очки для чтения</button>
+          <button class="opt-btn" data-value="Ei kanna prille" onclick="selectOption(this, 3)">Не ношу очки</button>
+          <button class="opt-btn" data-value="Ei tea" onclick="selectOption(this, 3)">Не знаю</button>
+        </div>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goBack(3)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Назад</button>
+          <button class="btn-next" id="next-3" disabled onclick="goNext(3)">Далее
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 4: Prescription strength (dynamic by glasses type) ── -->
+      <div class="quiz-step" id="step-4" data-step="4">
+        <h2 class="step-question" id="q4-title">Сила очков</h2>
+        <p class="step-subtitle">Достаточно примерного значения</p>
+        <div class="option-grid" id="q4-options" role="group" aria-label="Сила очков"></div>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goBack(4)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Назад</button>
+          <button class="btn-next" id="next-4" disabled onclick="goNext(4)">Далее
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 5: Contact lenses ── -->
+      <div class="quiz-step" id="step-5" data-step="5">
+        <h2 class="step-question">Носите ли вы контактные линзы?</h2>
+        <div class="option-grid" role="group" aria-label="Контактные линзы">
+          <button class="opt-btn" data-value="Jah, iga päev" onclick="selectOption(this, 5)">Да, каждый день</button>
+          <button class="opt-btn" data-value="Mõnikord" onclick="selectOption(this, 5)">Иногда</button>
+          <button class="opt-btn" data-value="Ei kanna" onclick="selectOption(this, 5)">Не ношу</button>
+        </div>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goBack(5)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Назад</button>
+          <button class="btn-next" id="next-5" disabled onclick="goNext(5)">Далее
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 6: Refraction stability ── -->
+      <div class="quiz-step" id="step-6" data-step="6">
+        <h2 class="step-question">Было ли ваше зрение стабильным в течение последнего года?</h2>
+        <div class="option-grid" role="group" aria-label="Стабильность зрения">
+          <button class="opt-btn" data-value="Jah, stabiilne" onclick="selectOption(this, 6)">Да, стабильное</button>
+          <button class="opt-btn" data-value="Ei, on muutunud" onclick="selectOption(this, 6)">Нет, изменилось</button>
+          <button class="opt-btn" data-value="Ei tea" onclick="selectOption(this, 6)">Не знаю</button>
+        </div>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goBack(6)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Назад</button>
+          <button class="btn-next" id="next-6" disabled onclick="goNext(6)">Далее
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 7: Free-text bother ── -->
+      <div class="quiz-step" id="step-7" data-step="7">
+        <h2 class="step-question">Что вас сейчас больше всего беспокоит в вашем зрении?</h2>
+        <p class="step-subtitle">Опишите своими словами (необязательно)</p>
+        <textarea class="step-textarea" id="bother-input" placeholder="Напр. размытость вечером, неудобство линз, головные боли за компьютером…" oninput="onBotherInput()"></textarea>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goBack(7)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Назад</button>
+          <button class="btn-next" id="next-7" onclick="goNext(7)">Далее
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 8: Complaints (multi-select + free text) ── -->
+      <div class="quiz-step" id="step-8" data-step="8">
+        <h2 class="step-question">Жалобы, связанные со зрением</h2>
+        <p class="step-subtitle">Выберите все подходящее</p>
+        <div class="option-grid" id="complaints-grid" role="group" aria-label="Жалобы">
+          <button class="opt-btn opt-check" data-value="Silmade kuivus" onclick="toggleComplaint(this)">Сухость глаз</button>
+          <button class="opt-btn opt-check" data-value="Peavalud" onclick="toggleComplaint(this)">Головные боли</button>
+          <button class="opt-btn opt-check" data-value="Silmade allergia" onclick="toggleComplaint(this)">Аллергия глаз</button>
+          <button class="opt-btn opt-check" data-value="Halvem nägemine öösel" onclick="toggleComplaint(this)">Хуже вижу ночью</button>
+          <button class="opt-btn opt-check" data-value="Topeltnägemine" onclick="toggleComplaint(this)">Двоение</button>
+          <button class="opt-btn opt-check" data-value="Kaebused puuduvad" onclick="toggleComplaint(this)">Жалоб нет</button>
+        </div>
+        <textarea class="step-textarea" id="complaints-other" placeholder="Другое (опишите)…" style="margin-top:12px;"></textarea>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goBack(8)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Назад</button>
+          <button class="btn-next" id="next-8" onclick="goNext(8)">Далее
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 9: Correction interest ── -->
+      <div class="quiz-step" id="step-9" data-step="9">
+        <h2 class="step-question">Думали ли вы когда-нибудь о коррекции зрения?</h2>
+        <div class="option-grid" role="group" aria-label="Уровень интереса">
+          <button class="opt-btn" data-value="Jah, aktiivselt" onclick="selectOption(this, 9)">Да, активно</button>
+          <button class="opt-btn" data-value="Olen mõelnud" onclick="selectOption(this, 9)">Задумывался(ась)</button>
+          <button class="opt-btn" data-value="Alles uurin maad" onclick="selectOption(this, 9)">Только присматриваюсь</button>
+          <button class="opt-btn" data-value="Ei ole" onclick="selectOption(this, 9)">Нет</button>
+        </div>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goBack(9)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Назад</button>
+          <button class="btn-next" id="next-9" disabled onclick="goNext(9)">Смотреть результат
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 10: Extra clinical signs (info only — no routing impact) ── -->
+      <div class="quiz-step" id="step-10" data-step="10">
+        <h2 class="step-question">Есть ли у вас какие-либо из этих симптомов?</h2>
+        <div class="option-grid" id="symptoms-grid" role="group" aria-label="Дополнительные признаки">
+          <button class="opt-btn opt-check" data-value="Hommikune silmade punetus" onclick="toggleSymptom(this)">Покраснение глаз по утрам</button>
+          <button class="opt-btn opt-check" data-value="Halod või valguse sädelus öösel" onclick="toggleSymptom(this)">Ореолы или вспышки света ночью</button>
+          <button class="opt-btn opt-check" data-value="Hõljuvad mustad täpid nägemisväljas" onclick="toggleSymptom(this)">Плавающие черные точки перед глазами</button>
+          <button class="opt-btn opt-check" data-value="Ei ole märganud" onclick="toggleSymptom(this)">Нет</button>
+        </div>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goBack(10)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Назад</button>
+          <button class="btn-next" id="next-10" onclick="goNext(10)">Далее
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Result step: email gate → reveal ── -->
+      <div class="quiz-step" id="step-result" data-step="result">
+
+        <!-- Email gate (shown first) -->
+        <div class="email-gate" id="emailGate">
+          <div class="gate-icon" aria-hidden="true">
+            <svg width="44" height="44" viewBox="0 0 44 44" fill="none"><rect x="6" y="11" width="32" height="22" rx="3" stroke="#87be23" stroke-width="2"/><path d="M7 13l15 11 15-11" stroke="#87be23" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h2 class="result-title">Ваш результат готов</h2>
+          <p class="result-text">Введите e-mail, чтобы увидеть результат.</p>
+          <form class="quiz-form" id="gateForm" novalidate style="max-width:380px;margin:var(--space-5,20px) auto 0;">
+            <div class="form-field">
+              <input type="text" name="name" id="gate-name" placeholder="Имя (необязательно)" autocomplete="given-name">
+            </div>
+            <div class="form-field">
+              <input type="email" name="email" id="gate-email" placeholder="E-mail" autocomplete="email" required>
+            </div>
+            <button type="submit" class="btn-submit" id="gateBtn">
+              <span class="btn-label">Показать результат</span>
+              <div class="spinner"></div>
+            </button>
+            <p class="form-privacy">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1L2 3v3c0 2.5 1.8 4.7 4 5 2.2-.3 4-2.5 4-5V3L6 1z" stroke="#9a9a9a" stroke-width="1" fill="none"/><path d="M4 6l1.5 1.5L8 4.5" stroke="#9a9a9a" stroke-width="1" stroke-linecap="round"/></svg>
+              Ваши данные защищены, мы не передаем их третьим лицам.
+            </p>
+          </form>
+        </div>
+
+        <!-- Result reveal (hidden until email submitted) -->
+        <div class="result-screen" id="resultReveal" style="display:none;" aria-live="polite"></div>
+
+        <!-- Back / restart -->
+        <div style="margin-top: var(--space-8,32px); text-align:center;">
+          <button class="btn-back" onclick="restartQuiz()" style="margin: 0 auto;">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M11 7H3M6.5 3.5L3 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Начать заново
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /quiz-slides -->
+  </div><!-- /quiz-container -->
+
+  <!-- ── Stats bar ─────────────────────────────── -->
+  <div class="stats-bar" role="region" aria-label="Статистика KSA">
+    <div class="stats-inner">
+      <div class="stat-item"><div class="stat-number">55 000+</div><div class="stat-label">лазерных процедур</div></div>
+      <div class="stat-item"><div class="stat-number">300 000+</div><div class="stat-label">обследований зрения</div></div>
+      <div class="stat-item"><div class="stat-number">7-летняя</div><div class="stat-label">гарантия</div></div>
+      <div class="stat-item"><div class="stat-number">Schwind</div><div class="stat-label">технология</div></div>
     </div>
-
-    <!-- Stats strip -->
-    <div class="hero-stats">
-      <div class="container">
-        <div class="stats-strip">
-          <div class="stats-strip__item">
-            <span class="stats-strip__number">55&nbsp;000+</span>
-            <span class="stats-strip__label">процедур</span>
-          </div>
-          <div class="stats-strip__divider"></div>
-          <div class="stats-strip__item">
-            <span class="stats-strip__number">300&nbsp;000+</span>
-            <span class="stats-strip__label">обследований</span>
-          </div>
-          <div class="stats-strip__divider"></div>
-          <div class="stats-strip__item">
-            <span class="stats-strip__number">7 лет</span>
-            <span class="stats-strip__label">гарантия</span>
-          </div>
-          <div class="stats-strip__divider"></div>
-          <div class="stats-strip__item">
-            <span class="stats-strip__number">0</span>
-            <span class="stats-strip__label">эктазий</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== QUIZ AREA ========== -->
-  <section class="quiz-section">
-    <div class="container container--narrow">
-
-      <!-- QUIZ CARD -->
-      <div class="quiz-card" id="quiz">
-        <!-- Progress bar at very top -->
-        <div class="quiz-card__progress">
-          <div class="quiz-card__progress-bar" id="progressBar"></div>
-        </div>
-
-        <div class="quiz-card__body">
-          <div class="quiz-card__meta">
-            <button class="quiz__nav-back hidden" id="backBtn" onclick="goBack()">&#8592; Назад</button>
-            <span class="quiz-card__step" id="stepIndicator">1 / 7</span>
-          </div>
-
-          <!-- Шаг 1: Пол -->
-          <div class="quiz__step active" data-step="1">
-            <h2 class="quiz__question">Я...</h2>
-            <div class="quiz__options quiz__options--two">
-              <button class="quiz__option quiz__option--gender" data-key="gender" data-value="zhenshchina" onclick="selectOption(this)">
-                <span class="quiz__option-icon">&#9792;</span>
-                Женщина
-              </button>
-              <button class="quiz__option quiz__option--gender" data-key="gender" data-value="muzhchina" onclick="selectOption(this)">
-                <span class="quiz__option-icon">&#9794;</span>
-                Мужчина
-              </button>
-            </div>
-          </div>
-
-          <!-- Шаг 2: Возраст -->
-          <div class="quiz__step" data-step="2">
-            <h2 class="quiz__question">Мой возраст</h2>
-            <div class="quiz__options">
-              <button class="quiz__option" data-key="age" data-value="18-25" onclick="selectOption(this)">18–25</button>
-              <button class="quiz__option" data-key="age" data-value="26-35" onclick="selectOption(this)">26–35</button>
-              <button class="quiz__option" data-key="age" data-value="36-45" onclick="selectOption(this)">36–45</button>
-              <button class="quiz__option" data-key="age" data-value="46-55" onclick="selectOption(this)">46–55</button>
-              <button class="quiz__option" data-key="age" data-value="56+" onclick="selectOption(this)">56+</button>
-            </div>
-          </div>
-
-          <!-- Шаг 3: Тип зрения -->
-          <div class="quiz__step" data-step="3">
-            <h2 class="quiz__question">Моё зрение...</h2>
-            <div class="quiz__options">
-              <button class="quiz__option" data-key="vision" data-value="miinus" onclick="selectOption(this)">Ношу минусовые очки</button>
-              <button class="quiz__option" data-key="vision" data-value="pluss" onclick="selectOption(this)">Ношу плюсовые очки</button>
-              <button class="quiz__option" data-key="vision" data-value="muu" onclick="selectOption(this)">Другая коррекция зрения</button>
-            </div>
-          </div>
-
-          <!-- Шаг 4: Диоптрии (только для минуса) -->
-          <div class="quiz__step" data-step="4">
-            <h2 class="quiz__question">Сила моих очков</h2>
-            <div class="quiz__options">
-              <button class="quiz__option" data-key="prescription" data-value="-0.5 kuni -3" onclick="selectOption(this)">&minus;0,5 до &minus;3</button>
-              <button class="quiz__option" data-key="prescription" data-value="-3 kuni -6" onclick="selectOption(this)">&minus;3 до &minus;6</button>
-              <button class="quiz__option" data-key="prescription" data-value="-6 kuni -9" onclick="selectOption(this)">&minus;6 до &minus;9</button>
-              <button class="quiz__option" data-key="prescription" data-value="rohkem kui -9" onclick="selectOption(this)">Больше &minus;9</button>
-              <button class="quiz__option" data-key="prescription" data-value="ei tea" onclick="selectOption(this)">Не знаю</button>
-            </div>
-          </div>
-
-          <!-- Шаг 5: Интерес -->
-          <div class="quiz__step" data-step="5">
-            <h2 class="quiz__question">Думали ли вы о лазерной коррекции?</h2>
-            <div class="quiz__options">
-              <button class="quiz__option" data-key="interest" data-value="aktiivne" onclick="selectOption(this)">Да, активно изучаю</button>
-              <button class="quiz__option" data-key="interest" data-value="moelnud" onclick="selectOption(this)">Думал(а) об этом</button>
-              <button class="quiz__option" data-key="interest" data-value="uurin" onclick="selectOption(this)">Только начинаю изучать</button>
-            </div>
-          </div>
-
-          <!-- Шаг 6: Боль -->
-          <div class="quiz__step" data-step="6">
-            <h2 class="quiz__question">Что вас больше всего раздражает в очках?</h2>
-            <div class="quiz__options">
-              <button class="quiz__option" data-key="painpoint" data-value="sport" onclick="selectOption(this)">🏊 Спорт и плавание в очках</button>
-              <button class="quiz__option" data-key="painpoint" data-value="laatsed" onclick="selectOption(this)">💸 Постоянные траты на линзы и очки</button>
-              <button class="quiz__option" data-key="painpoint" data-value="hommik" onclick="selectOption(this)">😴 С утра без очков ничего не видно</button>
-              <button class="quiz__option" data-key="painpoint" data-value="reisimine" onclick="selectOption(this)">✈️ Неудобство в поездках и путешествиях</button>
-              <button class="quiz__option" data-key="painpoint" data-value="vihm" onclick="selectOption(this)">🌧️ Запотевшие или мокрые очки</button>
-            </div>
-          </div>
-
-          <!-- Шаг 7: Контактные линзы -->
-          <div class="quiz__step" data-step="7">
-            <h2 class="quiz__question">Носите ли вы контактные линзы?</h2>
-            <div class="quiz__options">
-              <button class="quiz__option" data-key="lenses" data-value="iga_paev" onclick="selectOption(this)">Да, каждый день</button>
-              <button class="quiz__option" data-key="lenses" data-value="moistkord" onclick="selectOption(this)">Иногда</button>
-              <button class="quiz__option" data-key="lenses" data-value="ei" onclick="selectOption(this)">Нет, только очки</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ELIGIBLE GATE (Option Z) — locked 2026-05-05 -->
-      <!-- For 18-45 myopes only. Routes to bridge page /19 with today's promo code prefilled. -->
-      <div class="sms-gate quiz-card" id="smsGate">
-        <div class="quiz-card__body quiz-card__body--centered">
-
-          <!-- Qualified header before unlock -->
-          <div style="background:linear-gradient(135deg,#87BE23 0%,#6aa31a 100%);border-radius:16px;padding:20px 24px;margin-bottom:20px;text-align:center;color:#fff;">
-            <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;opacity:0.85;margin-bottom:8px;">ПЕРВЫЙ ФИЛЬТР ПРОЙДЕН</div>
-            <div style="font-size:32px;font-weight:800;line-height:1.15;margin-bottom:8px;">Обследование Flow3 может быть вашим следующим шагом</div>
-            <div style="font-size:14px;opacity:0.95;">Откройте личную ссылку на запись и сохраните сегодняшнее предложение.</div>
-          </div>
-
-          <p style="margin:0 0 8px;font-size:var(--text-base);font-weight:600;color:var(--color-text);">Похоже, вам подходит обследование Flow3</p>
-          <p style="margin:0 0 20px;font-size:var(--text-sm);color:var(--color-text-secondary);line-height:1.55;">Оставьте контакт, чтобы открыть сегодняшнюю ссылку на запись. Если запись не получится завершить, специалист KSA поможет выбрать удобное время.</p>
-
-          <div class="qualified-phone">
-            <p class="qualified-phone__title">Открыть ссылку на запись</p>
-            <p class="qualified-phone__copy">Мы просим только имя и мобильный номер, чтобы ссылка и результат сохранились, а мы могли помочь выбрать время. Здесь мы не просим личный код, банковские данные или медицинские документы.</p>
-            <form class="qualified-phone__form" onsubmit="submitQualifiedPhone(event)">
-              <input class="gate-form__input" id="qualifiedName" type="text" placeholder="Имя" autocomplete="given-name" required>
-              <input class="gate-form__input" id="qualifiedPhone" type="tel" placeholder="+372 5XX XXXX" autocomplete="tel" inputmode="tel" required>
-              <input class="gate-form__input" id="qualifiedEmail" type="email" placeholder="Э-почта (необязательно)" autocomplete="email">
-              <button class="btn btn--primary btn--full btn--gate" id="qualifiedPhoneBtn" type="submit" style="font-size:16px;padding:18px 20px;">
-                Открыть мою ссылку
-              </button>
-            </form>
-            <p class="qualified-phone__error" id="qualifiedPhoneError">Пожалуйста, введите имя и корректный мобильный номер.</p>
-            <a id="bridgeBtn" href="#result" class="qualified-phone__secondary" onclick="skipSmsGate(); return false;">Посмотреть результат без промокода</a>
-          </div>
-          <p style="margin:10px 0 0;font-size:11px;color:var(--color-text-muted);line-height:1.5;">После контакта откроется запись и короткий FAQ.</p>
-
-          <!-- Three trust checkmarks -->
-          <ul style="list-style:none;padding:0;margin:var(--space-5) 0 0;text-align:left;font-size:13px;color:var(--color-text-secondary);line-height:1.6;">
-            <li style="margin-bottom:8px;">✓ Сегодняшняя ссылка со скидкой открывается после контакта</li>
-            <li style="margin-bottom:8px;">✓ 75-мин обследование — врач подтвердит соответствие Flow3</li>
-            <li>✓ Таллинн и Тарту &middot; при необходимости перезвоним</li>
-          </ul>
-
-          <button class="email-gate__skip" onclick="skipSmsGate()" style="margin-top:var(--space-4);background:transparent;border:none;color:var(--color-text-muted);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;">Продолжить без записи — посмотреть результат</button>
-        </div>
-      </div>
-
-      <!-- RESULT: Подходит -->
-      <div class="result quiz-card" id="resultGood">
-        <div class="quiz-card__body quiz-card__body--centered">
-
-          <!-- Animated checkmark -->
-          <div class="result-check">
-            <svg class="result-check__svg" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="26" cy="26" r="25" stroke="currentColor" stroke-width="2"/>
-              <path d="M15 26l8 8 14-14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-
-          <span class="result-badge result-badge--good">ОТЛИЧНЫЕ НОВОСТИ</span>
-          <h2 class="result__title">Вы, вероятно, подходите для процедуры Flow3!</h2>
-          <p class="result__text">Ваш возраст и зрение соответствуют нашим критериям. На обследовании мы подробнее проверим состояние ваших глаз.</p>
-          <p style="font-size:12px;color:var(--color-text-muted);font-style:italic;margin:var(--space-2) 0 0;line-height:1.5;">Это предварительная оценка по вашим ответам. Окончательную пригодность подтвердит врач на обследовании Flow3.</p>
-          <p class="result__personal" id="resultPersonal" style="font-size:var(--text-sm); color:var(--color-accent); font-weight:500; margin-top:var(--space-3); display:none;"></p>
-
-          <hr class="result-divider">
-
-          <!-- SMS confirm notice -->
-          <div id="smsConfirmNotice" class="email-confirm-notice" style="display:none;">
-            📲 Проверьте SMS — мы отправили вам ссылку 19€ на бронирование.
-          </div>
-          <!-- Phone-form fallback confirmation -->
-          <div id="phoneConfirmNotice" class="email-confirm-notice" style="display:none;">
-            📲 SMS уже идёт на ваш телефон — проверьте в течение 1 минуты.
-          </div>
-
-          <!-- Insight box -->
-          <div id="resultInsightBox" style="background:var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius); padding:var(--space-5) var(--space-6); margin-bottom:var(--space-6); text-align:left;">
-            <p style="font-size:var(--text-xs); font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-text-muted); margin-bottom:var(--space-3);">Подумайте так</p>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--space-2); margin-bottom:var(--space-4);">
-              <div style="font-size:var(--text-sm); color:var(--color-text-secondary);">Сейчас: линзы / месяц</div>
-              <div style="font-size:var(--text-sm); font-weight:500; color:var(--color-text); text-align:right;">~45 €</div>
-              <div style="font-size:var(--text-sm); color:var(--color-text-secondary);">Flow3 платёж / месяц</div>
-              <div style="font-size:var(--text-sm); font-weight:500; color:var(--color-text); text-align:right;">63 €</div>
-              <div style="font-size:var(--text-sm); color:var(--color-text-secondary); padding-top:var(--space-2); border-top:1px solid var(--color-border);">Разница в месяц</div>
-              <div style="font-size:var(--text-sm); font-weight:600; color:var(--color-accent); text-align:right; padding-top:var(--space-2); border-top:1px solid var(--color-border);">+18 € → <span style="font-weight:400; color:var(--color-text-secondary);">2 чашки кофе</span></div>
-            </div>
-            <p style="font-size:var(--text-sm); color:var(--color-text-secondary); line-height:1.6; margin:0;">Если вы можете позволить себе обследование за 19&nbsp;€, значит, Flow3 может быть ближе, чем кажется. Без накоплений. Без ожидания «подходящего момента».</p>
-          </div>
-
-          <!-- Dark price box -->
-          <div class="price-box" id="resultPriceBox">
-            <div class="price-box__ribbon">СЕГОДНЯ</div>
-            <p class="price-box__label">Обследование Flow3 &mdash; Таллинн &amp; Тарту</p>
-            <div class="price-box__prices">
-              <span class="price-box__current">19&euro;</span>
-              <span class="price-box__old">69&euro;</span>
-            </div>
-            <p style="font-size:var(--text-xs);color:#87BE23;font-weight:600;margin:0 0 8px;">Оплата онлайн сейчас &bull; Оплата в клинике 39&euro;</p>
-            <p class="price-box__countdown">&#9201; Предложение действует ещё <span id="countdown">--:--:--</span></p>
-          </div>
-          <span id="promoCode" style="display:none;">FLOW19</span>
-          <span id="promoCodeBtn" style="display:none;">FLOW19</span>
-
-          <!-- Primary CTA -->
-          <a href="https://booking.ksa.ee/?lang=ru&promokood=FLOW19" id="bookNowBtn" onclick="if(typeof gtag!=='undefined'){gtag('event','booking_click',{language:'RU',promo:getTodayCode()});} trackBookNow();" target="_blank" rel="noopener noreferrer"
-             class="btn btn--primary btn--full btn--cta">
-            Записаться и оплатить &rarr; <strong>19&nbsp;&euro;</strong>
-          </a>
-
-          <!-- 0% Рассрочка -->
-          <div style="margin: var(--space-2) 0 var(--space-5); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); overflow: hidden;">
-            <div style="padding: var(--space-5) var(--space-6) var(--space-4);">
-              <p style="font-size:var(--text-xs); font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-text-muted); margin-bottom:var(--space-2);">Рассрочка</p>
-              <p style="font-size:var(--text-sm); font-weight:500; color:var(--color-text); margin-bottom:var(--space-2);">Хотите оформить рассрочку под <strong style="color:var(--color-accent);">0%</strong>?</p>
-              <p style="font-size:var(--text-xs); color:var(--color-text-secondary); line-height:1.6; margin-bottom:var(--space-4);">Переговоры с Inbank и LHV берём на себя. Оставьте имя и номер телефона — наш консультант свяжется с вами и поможет подобрать подходящее решение.</p>
-              <div id="installmentForm">
-                <div style="display:flex; gap:var(--space-2); margin-bottom:var(--space-2);">
-                  <input type="text" id="installName" placeholder="Имя" autocomplete="given-name"
-                    style="flex:1; padding:12px var(--space-4); border:1.5px solid var(--color-border); border-radius:var(--radius-sm); font-size:var(--text-sm); font-family:inherit; outline:none; transition:border-color var(--t-fast);"
-                    onfocus="this.style.borderColor='var(--color-accent)'" onblur="this.style.borderColor='var(--color-border)'">
-                  <input type="tel" id="installPhone" placeholder="+372 5XX XXXX" autocomplete="tel"
-                    style="flex:1; padding:12px var(--space-4); border:1.5px solid var(--color-border); border-radius:var(--radius-sm); font-size:var(--text-sm); font-family:inherit; outline:none; transition:border-color var(--t-fast);"
-                    onfocus="this.style.borderColor='var(--color-accent)'" onblur="this.style.borderColor='var(--color-border)'">
-                </div>
-                <button onclick="submitInstallment()" type="button"
-                  style="width:100%; padding:13px; background:var(--color-text); color:white; border:none; border-radius:var(--radius-sm); font-size:var(--text-sm); font-weight:500; cursor:pointer; font-family:inherit; transition:opacity var(--t-fast);"
-                  onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
-                  Свяжитесь со мной по вопросу рассрочки &rarr;
-                </button>
-              </div>
-              <div id="installmentDone" style="display:none; text-align:center; padding:var(--space-4) 0; font-size:var(--text-sm); color:var(--color-accent); font-weight:500;">
-                ✓ Отправлено! Мы свяжемся с вами в течение 1 рабочего дня.
-              </div>
-            </div>
-          </div>
-
-          <!-- WhatsApp removed — landline not on WhatsApp -->
-
-          <p class="result-contact">
-            <a href="tel:+3726445060">+372 644 5060</a> &middot; <a href="mailto:info@ksa.ee">info@ksa.ee</a>
-          </p>
-
-          <!-- Hidden tracking fields -->
-          <input type="hidden" id="formQuizResult">
-          <input type="hidden" id="formQuizAnswers">
-          <input type="hidden" id="formCapturedEmail">
-        </div>
-      </div>
-
-      <!-- RESULT: Не подходит -->
-      <div class="result quiz-card" id="resultNotIdeal">
-        <div class="quiz-card__body quiz-card__body--centered">
-          <div class="result-info-icon">&#8505;</div>
-          <span class="result-badge result-badge--info">ЛИЧНАЯ РЕКОМЕНДАЦИЯ</span>
-          <h2 class="result__title">Flow3 может не подойти вашим глазам, но решение найдётся.</h2>
-          <p class="result__text">Судя по вашим ответам, лазерная коррекция Flow3 может быть не самым подходящим вариантом. Мы рекомендуем пройти обследование Audit — оптометрист и врач проведут детальную диагностику и составят письменное заключение.</p>
-          <hr class="result-divider">
-          <p class="result__subheading">Рекомендуем обследование Audit</p>
-          <a href="https://booking.ksa.ee/?lang=ru&funnel=audit" target="_blank" rel="noopener noreferrer" class="btn btn--dark btn--full btn--cta">
-            Записаться на обследование Audit
-          </a>
-          <p class="result-contact">
-            <a href="tel:+3726445060">+372 644 5060</a> &middot; <a href="mailto:info@ksa.ee">info@ksa.ee</a>
-          </p>
-        </div>
-      </div>
-
-      <!-- Legacy form (hidden) -->
-      <form id="contactForm" style="display:none;" onsubmit="submitForm(event)">
-        <input type="hidden" name="access_key" value="f56ae819-28ae-4b51-9177-120a7fe65863">
-        <input type="hidden" name="subject" value="Экспресс-тест контакт">
-        <input type="hidden" name="from_name" value="KSA Kiirtest LP">
-        <input id="fname" name="fname" type="text">
-        <input id="phone" name="phone" type="tel">
-        <div class="form__error" id="fnameError" style="display:none;"></div>
-        <div class="form__error" id="phoneError" style="display:none;"></div>
-        <button type="submit" id="submitBtn">Перезвоните мне &rarr;</button>
-      </form>
-      <div id="thankYou" style="display:none;"></div>
-
-    </div>
-  </section>
-
-  <!-- ========== ПОЧЕМУ FLOW3 ========== -->
-  <section class="section reveal">
-    <div class="container">
-      <div class="section-label">ПОЧЕМУ FLOW3</div>
-      <h2 class="section-title">Единственная полностью бесконтактная лазерная процедура в Эстонии</h2>
-      <div class="benefits">
-        <div class="benefit-card">
-          <div class="benefit-card__icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-          </div>
-          <h3 class="benefit-card__title">Полностью бесконтактная</h3>
-          <p class="benefit-card__text">Без механического контакта с глазом — только точная работа лазера.</p>
-        </div>
-        <div class="benefit-card">
-          <div class="benefit-card__icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-          </div>
-          <h3 class="benefit-card__title">Быстрое восстановление</h3>
-          <p class="benefit-card__text">В спортзал и бассейн уже через 7 дней.</p>
-        </div>
-        <div class="benefit-card">
-          <div class="benefit-card__icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          </div>
-          <h3 class="benefit-card__title">Гарантия до 7 лет</h3>
-          <p class="benefit-card__text">Одна из самых длительных в Прибалтике.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== КОМАНДА ========== -->
-  <section class="section section--surface reveal">
-    <div class="container">
-      <div class="surgeon-cards">
-        <div class="surgeon-card">
-          <img class="surgeon-card__photo" src="https://ksa.ee/wp-content/uploads/2025/07/drhaavel.jpg" alt="Др. Антс Хаавель" loading="lazy" width="96" height="96">
-          <div class="surgeon-card__content">
-            <blockquote class="surgeon-card__quote">"Результаты превосходны, когда отбор кандидатов на процедуру Flow3 систематичен и тщателен."</blockquote>
-            <p class="surgeon-card__name">Др. Антс Хаавель</p>
-            <p class="surgeon-card__role">Лазерный хирург · основатель KSA</p>
-          </div>
-        </div>
-        <div class="surgeon-card">
-          <img class="surgeon-card__photo" src="https://ksa.ee/wp-content/uploads/2025/07/drtillmann.jpg" alt="Др. Карл-Эрик Тильманн" loading="lazy" width="96" height="96">
-          <div class="surgeon-card__content">
-            <blockquote class="surgeon-card__quote">"Ноль случаев эктазии при Flow3 за 21 год — это не случайность, это система, которую сегодня предлагает только KSA."</blockquote>
-            <p class="surgeon-card__name">Др. Карл-Эрик Тильманн</p>
-            <p class="surgeon-card__role">Лазерный хирург</p>
-          </div>
-        </div>
-      </div>
-      <p class="team__tagline">21 год опыта. 26 из 27 наших сотрудников выбрали Flow3 для себя.</p>
-      <div style="text-align:center; margin-top:var(--space-5);">
-        <a href="https://ksa.ee/tiim/" style="font-size:var(--text-sm); font-weight:600; color:var(--color-accent); text-decoration:none; border-bottom:1.5px solid var(--color-accent); padding-bottom:1px;">Познакомьтесь с нашей командой &rarr;</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== ОТЗЫВ ========== -->
-  <section class="section reveal">
-    <div class="container">
-      <div class="testimonial">
-        <div class="testimonial__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-        <blockquote class="testimonial__quote">&laquo;Я чувствовал себя как на космическом корабле. 10 минут — и всё готово. Уже на следующий день я видел чётко.&raquo;</blockquote>
-        <cite class="testimonial__author">&mdash; Стефан Айрапетьян, эстонский суперзвезда-артист</cite>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== ФИНАЛЬНЫЙ CTA ========== -->
-  <section class="section section--dark reveal">
-    <div class="container">
-      <div class="cta">
-        <h2 class="cta__title">Готовы видеть чётко?</h2>
-        <div class="cta__buttons">
-          <a href="https://booking.ksa.ee/?lang=ru&promokood=FLOW19" id="bookNowBtn2" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--lg">Записаться на обследование &mdash; 19&nbsp;&euro;</a>
-          <a href="https://ksa.ee/vabane-prillidest/" target="_blank" rel="noopener noreferrer" class="btn btn--outline btn--lg">Подробнее</a>
-        </div>
-        <p class="cta__contact">Звоните: <a href="tel:+3726445060">+372 644 5060</a> | <a href="mailto:info@ksa.ee">info@ksa.ee</a></p>
-      </div>
-    </div>
-  </section>
+  </div>
 
 </main>
 
-<!-- ========== FOOTER ========== -->
-<footer class="footer">
-  <div class="container">
-    <div class="footer__inner">
-      <span class="footer__text">KSA Silmakeskus OÜ &copy; 2026 | Таллинн: J. Vilmsi 5 | Тарту: Kvartali keskus, Riia mnt. 2</span>
-      <div class="footer__langs">
-        <a href="./index.html" class="footer__lang">ET</a>
-        <a href="./ru.html" class="footer__lang active">RU</a>
-        <a href="./en.html" class="footer__lang">EN</a>
-      </div>
-    </div>
-  </div>
-</footer>
-
 <script>
-// ===== UTM / AD SOURCE CAPTURE =====
-(function captureUtm() {
-  if (sessionStorage.getItem('ksa_utm')) return;
-  var p = new URLSearchParams(window.location.search);
-  var data = {
-    source:   p.get('utm_source')   || '',
-    medium:   p.get('utm_medium')   || '',
-    campaign: p.get('utm_campaign') || '',
-    content:  p.get('utm_content')  || '',
-    term:     p.get('utm_term')     || '',
-    gclid:    p.get('gclid')        || '',
-    gbraid:   p.get('gbraid')       || '',
-    wbraid:   p.get('wbraid')       || '',
-    fbclid:   p.get('fbclid')       || '',
-    entry_source: p.get('source')    || '',
-    funnel:   p.get('funnel')       || 'flow3_kiirtest',
-    slug:     p.get('slug')         || '',
-    lang:     p.get('lang')         || 'ru',
-    referrer: document.referrer     || '',
+  // ══════════════════════════════════════════════════════════════
+  //  CONFIG — morning swap point for Audit/Kids codes (from Mai)
+  // ══════════════════════════════════════════════════════════════
+  const LANG = 'RU';
+  const DRAW_MONTH = '2026-07';
+  const BOOKING = {
+    flow3: { slug: 'flow3', code: 'FLOW19', price: '19 €', old: '69 €' },
+    audit: { slug: 'audit', code: '',       price: '' },   // ← code/price from Mai by 10:00
+    kids:  { slug: '',      code: '',       price: '' }     // ← slug/code/price from Mai by 10:00
   };
-  if (!Object.values(data).some(function(v){ return v; })) {
-    data.source = 'direct';
+  function bookingUrl(route) {
+    const b = BOOKING[route] || BOOKING.flow3;
+    let u = `https://booking.ksa.ee/?service=${encodeURIComponent(b.slug || 'flow3')}&lang=ru`;
+    if (b.code) u += `&promokood=${encodeURIComponent(b.code)}`;
+    u += '&source=kiirtest';
+    return u;
   }
-  sessionStorage.setItem('ksa_utm', JSON.stringify(data));
-})();
-function getUtmData() {
-  try { return JSON.parse(sessionStorage.getItem('ksa_utm') || 'null'); } catch(e) { return null; }
-}
-function getFunnelVariant() {
-  var p = new URLSearchParams(window.location.search);
-  var forced = (p.get('funnel_variant') || p.get('ab_variant') || '').toUpperCase();
-  if (forced === 'A' || forced === 'B' || forced === 'C') return forced;
-  if (p.get('booking_first') === '1' || p.get('direct_booking') === '1') return 'B';
-  if (p.get('no_contact') === '1' || p.get('result_first') === '1') return 'C';
-  if (p.get('ab_funnel') !== '1' && p.get('funnel_test') !== '1') return null;
-  try {
-    var key = 'ksa_kiirtest_ab_variant';
-    var saved = localStorage.getItem(key);
-    if (saved === 'A' || saved === 'B' || saved === 'C') return saved;
-    var variants = p.get('abc_funnel') === '1' ? ['A', 'B', 'C'] : ['A', 'B'];
-    var next = variants[Math.floor(Math.random() * variants.length)];
-    localStorage.setItem(key, next);
-    return next;
-  } catch(e) {
-    return Math.random() < 0.5 ? 'A' : 'B';
-  }
-}
-function isBookingFirstMode() {
-  return getFunnelVariant() === 'B';
-}
-function isResultFirstMode() {
-  return getFunnelVariant() === 'C';
-}
-function buildTrackedUrl(url, extra) {
-  var isAbsolute = /^https?:\/\//i.test(url);
-  var u = new URL(url, window.location.origin);
-  var utm = getUtmData() || {};
-  var params = Object.assign({
-    utm_source: utm.source || '',
-    utm_medium: utm.medium || '',
-    utm_campaign: utm.campaign || '',
-    utm_content: utm.content || '',
-    utm_term: utm.term || '',
-    gclid: utm.gclid || '',
-    gbraid: utm.gbraid || '',
-    wbraid: utm.wbraid || '',
-    fbclid: utm.fbclid || '',
-    source: utm.entry_source || utm.source || '',
-    slug: utm.slug || '',
-    lang: utm.lang || 'ru',
-    ab_variant: getFunnelVariant() || ''
-  }, extra || {});
-  if (u.hostname === 'booking.ksa.ee' && params.promokood) {
-    delete params.funnel;
-  }
-  Object.keys(params).forEach(function(key) {
-    var value = params[key];
-    if (value !== undefined && value !== null && value !== '') {
-      u.searchParams.set(key, value);
-    }
-  });
-  return isAbsolute ? u.href : (u.pathname + u.search + u.hash);
-}
-</script>
 
-<script>
-(function() {
-  'use strict';
+  // ── State ────────────────────────────────────────
+  const answers = {
+    forWhom: '', gender: '', age: '', vision: '', prescription: '',
+    lenses: '', stability: '', bother: '', complaints: [], complaintsOther: '',
+    extraSymptoms: [], interest: '', email: '', name: '', resultType: '', route: '', prescCode: ''
+  };
+  // [code, label] — code is canonical (drives routing), label is display (translatable)
+  const STRENGTH = {
+    Miinusprillid:  [['minus_1','−0,5 до −3'],['minus_2','−3 до −6'],['minus_3','−6 до −9'],['minus_high','свыше −9'],['minus_unknown','Не знаю']],
+    Plussprillid:   [['plus_1','+0,5 до +3'],['plus_2','+3 до +6'],['plus_high','свыше +6'],['plus_unknown','Не знаю']],
+    Lugemisprillid: [['read_1','+0,75 до +1,5'],['read_2','+1,75 до +2,5'],['read_3','+2,75 и больше'],['read_unknown','Не знаю']]
+  };
 
-  // ===== QUIZ STATE =====
-  var currentStep = 1;
-  var totalSteps = 7;
-  var answers = {};
-  var quizEl = document.getElementById('quiz');
-  var progressBar = document.getElementById('progressBar');
-  var stepIndicator = document.getElementById('stepIndicator');
-  var backBtn = document.getElementById('backBtn');
-
-  // Determine actual steps (skip step 4 if not miinus)
+  // ── Step sequence (4 = strength, only when glasses worn) ──
+  function hasStrength() { return !!STRENGTH[answers.vision]; }
   function getStepSequence() {
-    if (answers.vision === 'miinus') {
-      return [1, 2, 3, 4, 5, 6, 7];
-    }
-    return [1, 2, 3, 5, 6, 7];
+    const base = [0,1,2,3];
+    if (hasStrength()) base.push(4);
+    return base.concat([5,6,7,8,10,9]);
+  }
+  function getNextStep(current) {
+    const seq = getStepSequence();
+    const idx = seq.indexOf(current);
+    if (idx === -1 || idx >= seq.length - 1) return 'result';
+    return seq[idx + 1];
+  }
+  function getPrevStep(current) {
+    const seq = getStepSequence();
+    if (current === 'result') return seq[seq.length - 1];
+    const idx = seq.indexOf(current);
+    if (idx <= 0) return 1;
+    return seq[idx - 1];
   }
 
-  // Personalised result lines — Russian market data
-  var PAIN_LINES = {
-    sport:     'После Flow3 пациенты возвращаются в бассейн и спортзал уже через 7 дней — и экономят на линзах и очках до 600 € в год.',
-    laatsed:   'В Эстонии пользователи однодневных линз тратят в среднем 500–600 € в год. Flow3 обычно окупается примерно за 5 лет — а экономия за 25 лет может превысить 12 000 €.',
-    hommik:    'Чёткое зрение сразу после пробуждения, без поиска очков — и на 600 € меньше расходов в год.',
-    reisimine: 'Путешествуйте без растворов, контейнеров и запасных линз. А уже через несколько лет стоимость Flow3 может окупиться за счёт экономии.',
-    vihm:      'Flow3 в среднем окупается примерно за 5 лет. После этого вы экономите 400–600 € ежегодно.'
-  };
-
-  function showPersonalLine() {
-    var el = document.getElementById('resultPersonal');
-    if (!el) return;
-    var line = PAIN_LINES[answers.painpoint] || '';
-    if (answers.lenses === 'iga_paev') {
-      line = 'Пользователь ежедневных линз в Эстонии тратит около 500–560 € в год только на линзы. Flow3 обычно окупается примерно за 5 лет.';
-    } else if (answers.lenses === 'moistkord' && !line) {
-      line = 'С учётом трат на линзы, очки и контрольные визиты (400–600 € в год) Flow3 окупается в среднем за 5–7 лет.';
-    }
-    if (line) { el.textContent = '→ ' + line; el.style.display = 'block'; }
+  // ── Progress ──────────────────────────────────────
+  function updateProgress(step) {
+    const seq = getStepSequence();
+    const pos = step === 'result' ? seq.length + 1 : seq.indexOf(step) + 1;
+    const denom = seq.length + 1;
+    const pct = Math.round((pos / denom) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.querySelector('[aria-valuenow]').setAttribute('aria-valuenow', pct);
+    const ind = document.getElementById('stepIndicator');
+    if (step === 'result') ind.innerHTML = 'Результат';
+    else ind.innerHTML = `Шаг <strong>${seq.indexOf(step)+1}</strong> / ${seq.length}`;
   }
 
-  function getCurrentStepIndex() {
-    var seq = getStepSequence();
-    return seq.indexOf(currentStep);
-  }
-
-  function getTotalVisibleSteps() {
-    return getStepSequence().length;
-  }
-
-  function updateProgress() {
-    var idx = getCurrentStepIndex();
-    var total = getTotalVisibleSteps();
-    var pct = ((idx) / total) * 100;
-    progressBar.style.width = pct + '%';
-    stepIndicator.textContent = (idx + 1) + ' / ' + total;
-    backBtn.classList.toggle('hidden', idx === 0);
-  }
-
-  function showStep(step) {
-    var steps = quizEl.querySelectorAll('.quiz__step');
-    steps.forEach(function(s) { s.classList.remove('active'); });
-    var target = quizEl.querySelector('.quiz__step[data-step="' + step + '"]');
-    if (target) { target.classList.add('active'); }
-    currentStep = step;
-    updateProgress();
-  }
-
-  window.selectOption = function(btn) {
-    var key = btn.getAttribute('data-key');
-    var value = btn.getAttribute('data-value');
-    answers[key] = value;
-
-    // GA4: track quiz start + each step
-    if (typeof gtag !== 'undefined') {
-      if (Object.keys(answers).length === 1) {
-        gtag('event', 'quiz_started', { language: 'RU' });
-      }
-      gtag('event', 'quiz_step', { step_number: currentStep, question: key, answer: value, language: 'RU' });
-    }
-
-    var siblings = btn.parentElement.querySelectorAll('.quiz__option');
-    siblings.forEach(function(s) { s.classList.remove('selected'); });
+  // ── Single-select ──────────────────────────────────
+  function selectOption(btn, step) {
+    const grid = btn.closest('.option-grid');
+    grid.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
-
-    setTimeout(function() {
-      var seq = getStepSequence();
-      var idx = getCurrentStepIndex();
-      if (idx < seq.length - 1) {
-        showStep(seq[idx + 1]);
-      } else {
-        showSmsGate();
-      }
-    }, 300);
-  };
-
-  window.goBack = function() {
-    var seq = getStepSequence();
-    var idx = getCurrentStepIndex();
-    if (idx > 0) { showStep(seq[idx - 1]); }
-  };
-
-  // ===== ELIGIBLE GATE (Option Z) — locked 2026-05-05 =====
-  // Eligible candidates (18-45 myopes) see "Посмотреть варианты записи" CTA → bridge page /19.
-  // Non-eligible go straight to not_ideal result. Bridge page handles booking + FAQ + callback.
-
-  var capturedEmail = '';   // legacy
-  var capturedPhone = '';   // legacy
-  var capturedName = '';
-  var LEAD_CONTEXT_KEY = 'ksa_flow3_lead_context';
-  var KIIRTEST_LEAD_ID_KEY = 'ksa_kiirtest_lead_id';
-  var kiirtestLeadId = getOrCreateKiirtestLeadId();
-
-  function getOrCreateKiirtestLeadId() {
-    try {
-      var existing = sessionStorage.getItem(KIIRTEST_LEAD_ID_KEY);
-      if (existing) return existing;
-      var next = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('kt_' + Date.now() + '_' + Math.random().toString(36).slice(2));
-      sessionStorage.setItem(KIIRTEST_LEAD_ID_KEY, next);
-      return next;
-    } catch(e) {
-      return 'kt_' + Date.now() + '_' + Math.random().toString(36).slice(2);
-    }
+    const val = btn.dataset.value;
+    if (step === 0) answers.forWhom = val;
+    if (step === 1) answers.gender = val;
+    if (step === 2) answers.age = val;
+    if (step === 3) { answers.vision = val; answers.prescription = ''; buildStrengthStep(); }
+    if (step === 4) { answers.prescription = btn.dataset.label || val; answers.prescCode = val; }
+    if (step === 5) answers.lenses = val;
+    if (step === 6) answers.stability = val;
+    if (step === 9) answers.interest = val;
+    const nextBtn = document.getElementById(`next-${step}`);
+    if (nextBtn) nextBtn.disabled = false;
   }
 
-  function normalisePhoneE164(raw) {
-    var p = String(raw || '').replace(/[\s\-()]/g, '');
-    if (/^\+[1-9]\d{6,14}$/.test(p)) return p;
-    if (/^[1-9]\d{6,7}$/.test(p)) return '+372' + p;
-    if (/^00[1-9]\d{5,14}$/.test(p)) return '+' + p.slice(2);
-    return null;
+  // ── Step 4 dynamic options ──────────────────────────
+  function buildStrengthStep() {
+    const opts = STRENGTH[answers.vision];
+    const wrap = document.getElementById('q4-options');
+    const title = document.getElementById('q4-title');
+    if (!opts) { wrap.innerHTML = ''; return; }
+    title.textContent = answers.vision === 'Lugemisprillid' ? 'Сила очков для чтения' : 'Сила очков';
+    wrap.innerHTML = opts.map(([v,l]) => `<button class="opt-btn" data-value="${v}" data-label="${l}" onclick="selectOption(this, 4)">${l}</button>`).join('');
+    document.getElementById('next-4').disabled = true;
   }
 
-  function getLeadIntent() {
-    var parts = [];
-    if (answers.interest) parts.push('interest:' + answers.interest);
-    if (answers.painpoint) parts.push('pain:' + answers.painpoint);
-    if (answers.lenses) parts.push('lenses:' + answers.lenses);
-    return parts.join(' | ') || 'book_flow3_exam';
-  }
-
-  function buildLeadContext(phone, via, name, email) {
-    return {
-      name: name || capturedName || null,
-      kiirtest_lead_id: kiirtestLeadId,
-      phone: phone || capturedPhone || null,
-      email: email || capturedEmail || null,
-      language: 'RU',
-      result: isGoodCandidate() ? 'good_candidate' : 'not_ideal',
-      intent: getLeadIntent(),
-      via: via || null,
-      ab_variant: getFunnelVariant() || 'control',
-      answers: answers,
-      utm: getUtmData(),
-      meta: getMetaClickIds(),
-      timestamp: new Date().toISOString()
-    };
-  }
-
-  function saveLeadContext(phone, via, name, email) {
-    var ctx = buildLeadContext(phone, via, name, email);
-    try { sessionStorage.setItem(LEAD_CONTEXT_KEY, JSON.stringify(ctx)); } catch(e) {}
-    return ctx;
-  }
-
-  function postTrack(payload) {
-    return fetch('/api/track', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      keepalive: true,
-      body: JSON.stringify(payload)
-    }).catch(function(){});
-  }
-
-  function getCookieValue(name) {
-    var match = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/[.$?*|{}()[\]\\/+^]/g, '\\$&') + '=([^;]*)'));
-    return match ? decodeURIComponent(match[1]) : null;
-  }
-
-  function getMetaClickIds() {
-    return {
-      fbp: getCookieValue('_fbp'),
-      fbc: getCookieValue('_fbc')
-    };
-  }
-
-  function trackMetaStandard(eventName, params) {
-    if (typeof fbq === 'undefined') return;
-    fbq('track', eventName, Object.assign({
-      content_category: 'kiirtest_flow3',
-      language: 'RU'
-    }, params || {}));
-  }
-
-  function trackMetaCustom(eventName, params) {
-    if (typeof fbq === 'undefined') return;
-    fbq('trackCustom', eventName, Object.assign({
-      content_category: 'kiirtest_flow3',
-      language: 'RU'
-    }, params || {}));
-  }
-
-  function showSmsGate() {
-    quizEl.style.display = 'none';
-
-    if (!isGoodCandidate()) { showResult(); return; }
-
-    var gate = document.getElementById('smsGate');
-
-    var todayCode = getTodayCode();
-    var utm = getUtmData() || {};
-    var bridgeUrl = buildTrackedUrl('/19', {
-      from: 'kiirtest',
-      code: todayCode,
-      utm_source: utm.source || 'kiirtest_lp_ru',
-      utm_medium: utm.medium || 'web',
-      utm_campaign: utm.campaign || 'flow3_19',
-      lang: 'ru',
-      kiirtest_lead_id: kiirtestLeadId,
-      ab_variant: getFunnelVariant() || 'control'
-    });
-    var directBookingUrl = buildTrackedUrl('https://booking.ksa.ee/?lang=ru&promokood=FLOW19', {
-      promokood: todayCode,
-      utm_source: utm.source || 'kiirtest_lp_ru',
-      utm_medium: utm.medium || 'web',
-      utm_campaign: utm.campaign || 'flow3_19',
-      source: utm.entry_source || utm.source || 'kiirtest_lp_ru',
-      lang: 'ru',
-      kiirtest_lead_id: kiirtestLeadId,
-      ab_variant: getFunnelVariant() || 'B'
-    });
-    var btn = document.getElementById('bridgeBtn');
-    if (btn) btn.setAttribute('href', bridgeUrl);
-
-    if (isBookingFirstMode()) {
-      trackGateEvent('eligible_gate_bridge_clicked');
-      if (typeof gtag !== 'undefined') {
-        gtag('event', 'booking_click', { language: 'RU', promo: todayCode, via: 'variant_b_direct_booking' });
-      }
-      trackMetaStandard('InitiateCheckout', { content_name: 'flow3_exam_direct_booking', funnel_step: 'direct_booking', value: 19, currency: 'EUR', ab_variant: getFunnelVariant() || 'B' });
-      trackMetaCustom('Flow3BookingClick', { funnel_step: 'direct_booking', ab_variant: getFunnelVariant() || 'B' });
-      window.location.href = directBookingUrl;
-      return;
-    }
-
-    if (isResultFirstMode()) {
-      trackGateEvent('eligible_gate_result_unlocked');
-      trackMetaCustom('KiirtestResultUnlocked', { funnel_step: 'result_first_no_contact', ab_variant: getFunnelVariant() || 'C' });
-      showResult({ via: 'result_first_no_contact' });
-      return;
-    }
-
-    gate.classList.add('active');
-
-    setTimeout(function() {
-      gate.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 100);
-
-    trackGateEvent('eligible_gate_shown');
-  }
-
-  function trackGateEvent(type) {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({ event: type, quiz_language: 'RU' });
-    if (typeof gtag !== 'undefined') { gtag('event', type, { language: 'RU' }); }
-    postTrack({ type: type, language: 'RU', intent: getLeadIntent(), lead_context: buildLeadContext(capturedPhone, type), answers: answers, utm: getUtmData(), timestamp: new Date().toISOString() });
-  }
-
-  window.trackBridgeClick = function(via) {
-    saveLeadContext(capturedPhone, via || 'bridge_clicked');
-    trackGateEvent('eligible_gate_bridge_clicked');
-    trackMetaCustom('KiirtestBridgeClicked', { funnel_step: 'bridge_clicked' });
-    if (typeof gtag !== 'undefined') {
-      // Confirmed bookings should be the primary Google Ads conversion.
-      gtag('event', 'generate_lead', { language: 'RU', via: 'bridge_redirect' });
-    }
-  };
-
-  window.submitQualifiedPhone = function(e) {
-    e.preventDefault();
-    var nameInput = document.getElementById('qualifiedName');
-    var input = document.getElementById('qualifiedPhone');
-    var emailInput = document.getElementById('qualifiedEmail');
-    var error = document.getElementById('qualifiedPhoneError');
-    var btn = document.getElementById('qualifiedPhoneBtn');
-    var name = nameInput.value.trim();
-    var phone = normalisePhoneE164(input.value);
-    var email = emailInput.value.trim();
-    if (!name || !phone) {
-      nameInput.style.borderColor = !name ? 'var(--color-danger)' : '';
-      input.style.borderColor = !phone ? 'var(--color-danger)' : '';
-      error.style.display = 'block';
-      (!name ? nameInput : input).focus();
-      return;
-    }
-    nameInput.style.borderColor = '';
-    input.style.borderColor = '';
-    error.style.display = 'none';
-    capturedName = name;
-    capturedPhone = phone;
-    capturedEmail = email;
-    btn.disabled = true;
-    btn.textContent = 'Открываем запись...';
-    var ctx = saveLeadContext(phone, 'phone_before_booking', name, email);
-    trackMetaStandard('Lead', {
-      content_name: 'kiirtest_qualified_contact',
-      funnel_step: 'qualified_contact',
-      value: 19,
-      currency: 'EUR'
-    });
-    trackMetaCustom('KiirtestQualifiedContact', { funnel_step: 'qualified_contact' });
-    postTrack({
-      type: 'qualified_flow3_phone_lead',
-      language: 'RU',
-      contact: { name: name, phone: phone, email: email || null },
-      name: name,
-      phone: phone,
-      email: email || null,
-      intent: ctx.intent,
-      result: ctx.result,
-      via: ctx.via,
-      lead_context: ctx,
-      answers: answers,
-      utm: getUtmData(),
-      timestamp: ctx.timestamp
-    }).finally(function() {
-      var bridge = document.getElementById('bridgeBtn');
-      window.location.href = bridge ? bridge.href : buildTrackedUrl('/19', { from: 'kiirtest', code: getTodayCode(), lang: 'ru', kiirtest_lead_id: kiirtestLeadId });
-    });
-  };
-
-  window.skipSmsGate = function() {
-    trackGateEvent('eligible_gate_skipped');
-    document.getElementById('smsGate').classList.remove('active');
-    showResult({ via: 'skipped' });
-  };
-
-  // ── Eligibility (locked 2026-04-30 — feedback_flow3_eligibility.md) ──
-  function isGoodCandidate() {
-    var eligibleAge = answers.age === '18-25' || answers.age === '26-35' || answers.age === '36-45';
-    if (!eligibleAge) return false;
-    if (answers.vision !== 'miinus') return false;
-    if (answers.prescription === 'rohkem kui -9') return false;
-    return true;
-  }
-
-  function showResult(opts) {
-    opts = opts || {};
-    quizEl.style.display = 'none';
-    var resultType = isGoodCandidate() ? 'good_candidate' : 'not_ideal';
-
-    if (resultType === 'good_candidate') {
-      document.getElementById('resultGood').classList.add('active');
-      document.getElementById('formQuizResult').value = resultType;
-      document.getElementById('formQuizAnswers').value = JSON.stringify(answers);
-      var locked = opts.via === 'skipped';
-      var insightBox = document.getElementById('resultInsightBox');
-      var priceBox = document.getElementById('resultPriceBox');
-      var bookBtn = document.getElementById('bookNowBtn');
-      if (insightBox) insightBox.style.display = locked ? 'none' : '';
-      if (priceBox) priceBox.style.display = locked ? 'none' : '';
-      if (bookBtn) bookBtn.style.display = locked ? 'none' : '';
+  // ── Multi-select complaints ─────────────────────────
+  function toggleComplaint(btn) {
+    const none = 'Kaebused puuduvad';
+    const val = btn.dataset.value;
+    const grid = document.getElementById('complaints-grid');
+    if (val === none) {
+      grid.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
     } else {
-      document.getElementById('resultNotIdeal').classList.add('active');
+      grid.querySelector(`[data-value="${none}"]`).classList.remove('selected');
+      btn.classList.toggle('selected');
     }
-
-    if (resultType === 'good_candidate') {
-      if (opts.via === 'sms_self_sent') {
-        var sc = document.getElementById('smsConfirmNotice'); if (sc) sc.style.display = 'block';
-        var sn = document.getElementById('smsOfferNudge'); if (sn) sn.style.display = 'block';
-      } else if (opts.via === 'phone_form_fallback') {
-        var pc = document.getElementById('phoneConfirmNotice'); if (pc) pc.style.display = 'block';
-      }
-    }
-
-    if (resultType === 'good_candidate') { showPersonalLine(); }
-
-    if (resultType === 'good_candidate' && answers.lenses === 'iga_paev' && capturedPhone) {
-      postTrack({ type: 'hot_lead_lens_user', language: 'RU', phone: capturedPhone || null, email: capturedEmail || null, intent: getLeadIntent(), via: opts.via || null, lead_context: buildLeadContext(capturedPhone, opts.via || 'result_viewed'), answers: answers, utm: getUtmData(), timestamp: new Date().toISOString() });
-    }
-
-    setTimeout(function() {
-      var el = resultType === 'good_candidate'
-        ? document.getElementById('resultGood')
-        : document.getElementById('resultNotIdeal');
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 100);
-
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-      'event': 'quiz_completed',
-      'quiz_result': resultType,
-      'quiz_language': 'RU',
-      'quiz_answers': answers
-    });
-    trackMetaCustom('KiirtestQuizCompleted', { funnel_step: 'quiz_completed' });
-
-    fetch('/api/track', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        type: 'quiz_completed',
-        result: resultType,
-        language: 'RU',
-        email: capturedEmail || null,
-        answers: answers,
-        utm: getUtmData(),
-        timestamp: new Date().toISOString()
-      })
-    }).catch(function(){});
+    answers.complaints = [...grid.querySelectorAll('.opt-btn.selected')].map(b => b.dataset.value);
   }
 
-  // ===== ACTIVE PROMO CODE + COUNTDOWN =====
-  var DAILY_CODES = {
-    0: 'FLOW19',
-    1: 'FLOW19',
-    2: 'FLOW19',
-    3: 'FLOW19',
-    4: 'FLOW19',
-    5: 'FLOW19',
-    6: 'FLOW19',
-  };
-
-  function getTodayCode() {
-    var day = new Date().getDay();
-    return DAILY_CODES[day] || 'FLOW19';
+  function toggleSymptom(btn) {
+    const none = 'Ei ole märganud';
+    const val = btn.dataset.value;
+    const grid = document.getElementById('symptoms-grid');
+    if (val === none) {
+      grid.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    } else {
+      grid.querySelector(`[data-value="${none}"]`).classList.remove('selected');
+      btn.classList.toggle('selected');
+    }
+    answers.extraSymptoms = [...grid.querySelectorAll('.opt-btn.selected')].map(b => b.dataset.value);
   }
 
-  function applyDailyCode() {
-    var code = getTodayCode();
-    var els = ['promoCode', 'promoCodeBtn'];
-    els.forEach(function(id) {
-      var el = document.getElementById(id);
-      if (el) el.textContent = code;
-    });
-    // Update booking button URLs with today's promo code (skips slow service-page)
-    var bookingUrl = buildTrackedUrl('https://booking.ksa.ee/?lang=ru&promokood=FLOW19', {
-      promokood: code,
-      lang: 'ru',
-      kiirtest_lead_id: kiirtestLeadId
-    });
-    var btns = ['bookNowBtn', 'bookNowBtn2'];
-    btns.forEach(function(id) {
-      var el = document.getElementById(id);
-      if (el) el.href = bookingUrl;
-    });
+  function onBotherInput() { answers.bother = document.getElementById('bother-input').value.trim(); }
+
+  // ── Navigation ──────────────────────────────────────
+  function goNext(fromStep) {
+    if (fromStep === 8) {
+      answers.complaintsOther = document.getElementById('complaints-other').value.trim();
+    }
+    transitionTo(fromStep, getNextStep(fromStep));
+  }
+  function goBack(fromStep) { transitionTo(fromStep, getPrevStep(fromStep), true); }
+
+  function restartQuiz() {
+    Object.keys(answers).forEach(k => { answers[k] = Array.isArray(answers[k]) ? [] : ''; });
+    document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('.btn-next').forEach(b => { if (!['next-7','next-8','next-10'].includes(b.id)) b.disabled = true; });
+    document.getElementById('bother-input').value = '';
+    document.getElementById('complaints-other').value = '';
+    document.getElementById('emailGate').style.display = '';
+    document.getElementById('gateForm').reset();
+    document.getElementById('resultReveal').style.display = 'none';
+    document.getElementById('resultReveal').innerHTML = '';
+    transitionTo('result', 0, true);
   }
 
-  function startCountdown() {
-    function update() {
-      var now = new Date();
-      var midnight = new Date();
-      midnight.setHours(23, 59, 59, 999);
-      var diff = midnight - now;
-      if (diff <= 0) { applyDailyCode(); diff = 86399999; }
-      var h = Math.floor(diff / 3600000);
-      var m = Math.floor((diff % 3600000) / 60000);
-      var s = Math.floor((diff % 60000) / 1000);
-      var pad = function(n) { return n < 10 ? '0' + n : '' + n; };
-      var el = document.getElementById('countdown');
-      if (el) el.textContent = pad(h) + ':' + pad(m) + ':' + pad(s);
-    }
-    update();
-    setInterval(update, 1000);
+  function transitionTo(fromStep, toStep, reverse = false) {
+    const fromEl = document.getElementById(`step-${fromStep}`);
+    const toEl = document.getElementById(`step-${toStep}`);
+    if (!fromEl || !toEl) return;
+    fromEl.classList.remove('active'); toEl.classList.add('active');
+    fromEl.style.transform = reverse ? 'translateX(40px)' : 'translateX(-40px)';
+    fromEl.style.opacity = '0'; fromEl.style.pointerEvents = 'none'; fromEl.style.position = 'absolute';
+    toEl.style.position = 'relative';
+    toEl.style.transform = reverse ? 'translateX(-40px)' : 'translateX(40px)';
+    toEl.style.opacity = '0'; toEl.style.pointerEvents = 'none';
+    toEl.offsetHeight;
+    requestAnimationFrame(() => {
+      toEl.style.transition = 'opacity 220ms cubic-bezier(0.25,0.46,0.45,0.94), transform 220ms cubic-bezier(0.25,0.46,0.45,0.94)';
+      toEl.style.transform = 'translateX(0)'; toEl.style.opacity = '1'; toEl.style.pointerEvents = 'all';
+      setTimeout(() => {
+        fromEl.style.cssText = ''; fromEl.style.position = 'absolute'; fromEl.style.opacity = '0';
+        fromEl.style.transform = 'translateX(40px)'; fromEl.style.pointerEvents = 'none';
+      }, 230);
+    });
+    if (toStep === 'result') { window.scrollTo({top:0, behavior:'smooth'}); }
+    updateProgress(toStep);
   }
 
-  applyDailyCode();
-  startCountdown();
+  // ── Routing ─────────────────────────────────────────
+  function computeRoute() {
+    const young = ['18-25','26-35','36-45'].includes(answers.age);
+    const minor = answers.age === 'Alla 18';
+    const isMyope = answers.vision === 'Miinusprillid';
+    const tooHigh = answers.prescCode === 'minus_high';
+    if (minor) return 'kids';
+    if (young && isMyope && !tooHigh) return 'flow3';
+    return 'audit';
+  }
 
-  // ===== INSTALLMENT LEAD =====
-  window.submitInstallment = function() {
-    var name = document.getElementById('installName').value.trim();
-    var phone = document.getElementById('installPhone').value.trim();
-    if (!name || !phone) {
-      if (!name) document.getElementById('installName').style.borderColor = '#e53e3e';
-      if (!phone) document.getElementById('installPhone').style.borderColor = '#e53e3e';
-      return;
+  const RESULTS = {
+    flow3: {
+      label: 'Близорукие глаза',
+      title: 'Вы, вероятно, были бы подходящим кандидатом для Flow3.',
+      text: 'Ваш возраст и рецепт соответствуют условиям лазерной процедуры Flow3. На обследовании мы точно оценим состояние ваших глаз и дадим письменное заключение.',
+      cta: 'Записаться на обследование Flow3', good: true
+    },
+    audit: {
+      label: 'Личная рекомендация',
+      title: 'Вам лучше всего подойдет полное обследование Audit.',
+      text: 'По вашим ответам мы рекомендуем обследование зрения Audit, в ходе которого оптометрист и врач проводят полное обследование и составляют письменный итоговый отчет с копиями результатов.',
+      cta: 'Записаться на обследование Audit', good: false
+    },
+    kids: {
+      label: 'Проверка зрения детей',
+      title: 'Рекомендуем полную проверку зрения для ребенка.',
+      text: 'Зрение детей развивается быстро, и ранняя проверка важна. Наши специалисты проведут ребенку полную и дружелюбную проверку зрения.',
+      cta: 'Записать ребенка на обследование', good: false
     }
-    var btn = event.target;
-    btn.disabled = true;
-    btn.textContent = 'Отправляем…';
-
-    var data = new FormData();
-    data.append('access_key', 'f56ae819-28ae-4b51-9177-120a7fe65863');
-    data.append('subject', '🏦 0% рассрочка — ' + name + ' · ' + phone);
-    data.append('from_name', 'KSA Kiirtest — Рассрочка');
-    data.append('name', name);
-    data.append('phone', phone);
-    data.append('email', capturedEmail || '');
-    data.append('quiz_answers', JSON.stringify(answers));
-    data.append('lp_source', 'LP-KiirtestAd-RU-Installment');
-
-    fetch('https://api.web3forms.com/submit', { method: 'POST', body: data })
-      .then(function(r) { return r.json(); })
-      .then(function() {
-        document.getElementById('installmentForm').style.display = 'none';
-        document.getElementById('installmentDone').style.display = 'block';
-        trackMetaStandard('Lead', { content_name: 'kiirtest_installment_contact', funnel_step: 'installment_contact' });
-        window.dataLayer.push({ event: 'installment_lead', language: 'RU' });
-        fetch('/api/track', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ type: 'installment_lead', language: 'RU', contact: { name: name, phone: phone, email: capturedEmail || '' }, answers: answers, utm: getUtmData(), timestamp: new Date().toISOString() })
-        }).catch(function(){});
-      })
-      .catch(function() { btn.disabled = false; btn.textContent = 'Свяжитесь со мной по вопросу рассрочки →'; });
   };
 
-  window.trackBookNow = function() {
-    if (typeof gtag !== 'undefined') {
-      // Confirmed bookings should be the primary Google Ads conversion.
-      gtag('event', 'booking_click', { language: 'RU', promo: getTodayCode(), source: 'kiirtest' });
-    }
-    trackMetaStandard('InitiateCheckout', {
-      content_name: 'flow3_exam_booking_click',
-      funnel_step: 'booking_click',
-      value: 19,
-      currency: 'EUR'
-    });
-    trackMetaCustom('Flow3BookingClick', { funnel_step: 'booking_click' });
-    window.dataLayer.push({ event: 'book_now_clicked', lp_source: 'LP-KiirtestAd-RU-V2' });
-    var ctx = saveLeadContext(capturedPhone, 'result_booking_click');
-    postTrack({ type: 'book_now_clicked', language: 'RU', phone: capturedPhone || null, email: capturedEmail || null, intent: ctx.intent, lead_context: ctx, answers: answers, utm: getUtmData(), timestamp: new Date().toISOString() });
-  };
-
-  window.trackWhatsApp = function() {
-    trackMetaCustom('WhatsAppClicked');
-    window.dataLayer.push({ event: 'whatsapp_clicked', lp_source: 'LP-KiirtestAd-RU-V2' });
-    fetch('/api/track', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ type: 'whatsapp_clicked', language: 'RU', email: capturedEmail || null, answers: answers, timestamp: new Date().toISOString() })
-    }).catch(function(){});
-  };
-
-  // ===== LEGACY FORM (fallback) =====
-  window.submitForm = function(e) {
+  // ── Email gate submit → reveal result + fire leads + 2× draw ──
+  document.getElementById('gateForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    var form = document.getElementById('contactForm');
-    var nameVal = document.getElementById('fname').value.trim();
-    var phoneVal = document.getElementById('phone').value.trim();
-    document.getElementById('formCapturedEmail').value = capturedEmail;
-    if (!nameVal || !phoneVal) return;
-    var submitBtn = document.getElementById('submitBtn');
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Отправляем…';
-    fetch('https://api.web3forms.com/submit', { method: 'POST', body: new FormData(form) })
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
-        if (data.success) {
-          form.style.display = 'none';
-          if (typeof gtag !== 'undefined') {
-            gtag('event', 'generate_lead', { language: 'RU', source: 'kiirtest_fallback_form' });
-          }
-          trackMetaStandard('Lead', { content_name: 'kiirtest_legacy_contact', funnel_step: 'legacy_contact_form' });
-        } else {
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Перезвоните мне →';
-        }
-      })
-      .catch(function() { submitBtn.disabled = false; submitBtn.textContent = 'Перезвоните мне →'; });
-  };
+    const email = document.getElementById('gate-email').value.trim();
+    const name  = document.getElementById('gate-name').value.trim();
+    if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      document.getElementById('gate-email').focus(); return;
+    }
+    answers.email = email; answers.name = name;
+    answers.route = computeRoute();
+    answers.resultType = answers.route === 'flow3' ? 'good_candidate' : answers.route;
 
-  // ===== SCROLL REVEAL =====
-  var reveals = document.querySelectorAll('.reveal');
-  if ('IntersectionObserver' in window) {
-    var observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+    const btn = document.getElementById('gateBtn');
+    btn.disabled = true; btn.classList.add('loading');
+
+    try {
+      await fetch('/api/track', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          type: 'email_captured', email, language: LANG, lp_source: 'LP-Kiirtest-RU',
+          result: answers.resultType, route: answers.route,
+          answers: {
+            forWhom: answers.forWhom, gender: answers.gender, age: answers.age, vision: answers.vision,
+            prescription: answers.prescription || 'N/A', lenses: answers.lenses,
+            stability: answers.stability, complaints: answers.complaints.join(', ') || '—',
+            complaintsOther: answers.complaintsOther || '', bother: answers.bother || '',
+            extraSymptoms: answers.extraSymptoms.join(', ') || '—', interest: answers.interest
+          },
+          timestamp: new Date().toISOString()
+        })
       });
-    }, { threshold: 0.1 });
-    reveals.forEach(function(el) { observer.observe(el); });
-  } else {
-    reveals.forEach(function(el) { el.classList.add('visible'); });
+    } catch(_) {}
+
+    try {
+      await fetch('/api/draw-entry', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ email, first_name: name, language: LANG, month: DRAW_MONTH, source: 'kiirtest' })
+      });
+    } catch(_) {}
+
+    if (typeof gtag !== 'undefined') gtag('event','conversion',{'send_to':'AW-18030087653/lXXnCMHKwI8cEOWbtZVD'});
+    if (typeof fbq !== 'undefined') fbq('track','Lead');
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event:'form_submission', form_name:'kiirtest_email_gate', lp_source:'LP-Kiirtest-RU', quiz_result: answers.resultType, quiz_route: answers.route });
+
+    revealResult();
+  });
+
+  function revealResult() {
+    const r = RESULTS[answers.route] || RESULTS.audit;
+    const b = BOOKING[answers.route] || BOOKING.flow3;
+    const icon = r.good
+      ? `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M6 16l7 7 13-13" stroke="#87be23" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+      : `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true"><circle cx="16" cy="16" r="13" stroke="#5a6b6c" stroke-width="1.5"/><path d="M16 14v8M16 11v1" stroke="#5a6b6c" stroke-width="2" stroke-linecap="round"/></svg>`;
+    const stabilityNote = answers.stability === 'Ei, on muutunud'
+      ? `<p class="result-text" style="font-size:var(--text-sm,.9rem);color:var(--color-text-secondary,#555);">Вы отметили, что зрение изменилось за последний год — это важная информация, которую специалист учтет на обследовании.</p>` : '';
+    const priceHtml = b.price ? `<div class="path-price">${b.price}${b.old?`<span class="old">${b.old}</span>`:''}${b.code?` · промокод ${b.code}`:''}</div>` : '';
+
+    document.getElementById('emailGate').style.display = 'none';
+    const reveal = document.getElementById('resultReveal');
+    reveal.style.display = 'block';
+    reveal.innerHTML = `
+      <div class="result-icon result-icon--${r.good ? 'good' : 'info'}" aria-hidden="true">${icon}</div>
+      <p class="result-label ${r.good ? '' : 'result-label--info'}">${r.label}</p>
+      <h2 class="result-title">${r.title}</h2>
+      <p class="result-text">${r.text}</p>
+      ${stabilityNote}
+      <div class="result-paths">
+        <div class="path-card path-card--primary">
+          <h4>${r.cta}</h4>
+          <p>Запишитесь на нужное обследование сразу — с промокодом.</p>
+          ${priceHtml}
+          <a href="${bookingUrl(answers.route)}" class="btn-cta-book" target="_blank" rel="noopener" style="margin-top:12px;display:inline-flex;" onclick="if(typeof fbq!=='undefined')fbq('track','Schedule');">
+            ${r.cta}
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+        <div class="path-card">
+          <h4>У меня есть вопросы</h4>
+          <p>Оставьте имя и номер телефона — специалист KSA перезвонит вам.</p>
+          <form id="callbackForm" novalidate>
+            <input type="text" class="step-textinput" id="cb-name" placeholder="Имя" autocomplete="given-name" style="margin-bottom:8px;">
+            <input type="tel" class="step-textinput" id="cb-phone" placeholder="Телефон" autocomplete="tel" required style="margin-bottom:8px;">
+            <button type="submit" class="btn-submit" id="cbBtn"><span class="btn-label">Перезвоните мне</span><div class="spinner"></div></button>
+          </form>
+          <p style="margin:12px 0 0;font-size:var(--text-sm,.9rem);color:var(--color-text-secondary,#555);">📲 Сохраните наш номер <strong>+372 644 5060</strong> в контакты — именно с этого номера мы вам позвоним.</p>
+          <p id="cbDone" style="display:none;margin:10px 0 0;color:var(--color-accent,#87be23);font-weight:500;">Спасибо! Специалист свяжется с вами в ближайшее время. ✓</p>
+        </div>
+      </div>
+    `;
+    document.getElementById('callbackForm').addEventListener('submit', onCallbackSubmit);
+    window.scrollTo({top:0, behavior:'smooth'});
   }
 
-  updateProgress();
-})();
+  async function onCallbackSubmit(e) {
+    e.preventDefault();
+    const phone = document.getElementById('cb-phone').value.trim();
+    const cbName = (document.getElementById('cb-name').value || '').trim();
+    if (!phone) { document.getElementById('cb-phone').focus(); return; }
+    const btn = document.getElementById('cbBtn');
+    btn.disabled = true; btn.classList.add('loading');
+    try {
+      await fetch('/api/track', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          type: 'callback_requested', language: LANG, lp_source:'LP-Kiirtest-RU',
+          result: answers.resultType, route: answers.route,
+          contact: { name: cbName || answers.name, phone, email: answers.email },
+          answers: {
+            forWhom: answers.forWhom, gender: answers.gender, age: answers.age, vision: answers.vision,
+            prescription: answers.prescription || 'N/A', lenses: answers.lenses,
+            stability: answers.stability, complaints: answers.complaints.join(', ') || '—',
+            complaintsOther: answers.complaintsOther || '', bother: answers.bother || '',
+            extraSymptoms: answers.extraSymptoms.join(', ') || '—', interest: answers.interest
+          },
+          timestamp: new Date().toISOString()
+        })
+      });
+    } catch(_) {}
+    if (typeof fbq !== 'undefined') fbq('track','Contact');
+    document.getElementById('callbackForm').style.display = 'none';
+    document.getElementById('cbDone').style.display = 'block';
+  }
+
+  // ── Init ──────────────────────────────────────────
+  updateProgress(0);
+  document.querySelectorAll('.quiz-step:not(.active)').forEach(s => {
+    s.style.position = 'absolute'; s.style.opacity = '0';
+    s.style.transform = 'translateX(40px)'; s.style.pointerEvents = 'none';
+  });
 </script>
-  <!-- Vercel Web Analytics — cookieless, runs for 100% of visitors, GDPR-exempt;
-       data-cookieconsent="ignore" so future Cookiebot integration does not strip it -->
-  <script defer src="/_vercel/insights/script.js" data-cookieconsent="ignore"></script>
+
 </body>
 </html>

@@ -595,6 +595,7 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
         body: JSON.stringify({
           type: 'email_captured', email, language: LANG, lp_source: 'LP-Kiirtest-ET',
           result: answers.resultType, route: answers.route,
+          promoCode: (BOOKING[answers.route]||BOOKING.flow3).code, code: (BOOKING[answers.route]||BOOKING.flow3).code, from: 'kiirtest',
           answers: {
             forWhom: answers.forWhom, gender: answers.gender, age: answers.age, vision: answers.vision,
             prescription: answers.prescription || 'N/A', lenses: answers.lenses,
@@ -683,6 +684,7 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
         body: JSON.stringify({
           type: 'callback_requested', language: LANG, lp_source:'LP-Kiirtest-ET',
           result: answers.resultType, route: answers.route,
+          promoCode: (BOOKING[answers.route]||BOOKING.flow3).code, code: (BOOKING[answers.route]||BOOKING.flow3).code, from: 'kiirtest',
           contact: { name: cbName || answers.name, phone, email: answers.email },
           answers: {
             forWhom: answers.forWhom, gender: answers.gender, age: answers.age, vision: answers.vision,

@@ -1577,7 +1577,7 @@ export default async function handler(req, res) {
     const variant = leadVariant(body);
     const sourceLabel = from === 'lilia' ? 'Lilia QR / e-kirjast' : (from === 'kiirtest' ? 'Kiirtest LP' : 'Bridge /19 (otse)');
     blocks = [
-      { type: 'header', text: { type: 'plain_text', text: `📞 Tagasihelistamise soov — bridge /19` } },
+      { type: 'header', text: { type: 'plain_text', text: `📞 Tagasihelistamise soov — ${sourceLabel}` } },
       { type: 'section', text: { type: 'mrkdwn', text: `*Lilia — helista 1 tööp jooksul!*\nIsik vajas broneerimisega abi ja jättis kontakti.` } },
       { type: 'section', fields: [
         { type: 'mrkdwn', text: `*Nimi:*\n${cName}` },

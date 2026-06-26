@@ -59,7 +59,7 @@ module.exports = async (req, res) => {
 
   const email = (body.email || '').trim().toLowerCase();
   const first_name = (body.first_name || '').trim() || null;
-  const language = (body.language || 'ET').toUpperCase();
+  const language = (body.language || 'et').toLowerCase();  // newsletter_entries CHECK requires 'et'|'ru'|'en'
   const source = (body.source || 'kiirtest').slice(0, 40);
   const entry_month = monthToDate(body.month) || monthToDate(new Date().toISOString());
 

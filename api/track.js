@@ -113,6 +113,33 @@ function getDailyCode() {
 const KSA_CRM_ENDPOINT = process.env.KSA_CRM_ENDPOINT || 'https://crm.ksa.ee/api/v1/tickets/intake/flow3';
 const KSA_TICKETS_API_KEY = process.env.KSA_TICKETS_API_KEY;
 
+// ── Brevo (Sendinblue) lead routing ─────────────────────────────────────────
+// LP + guide leads pushed into a Brevo contact list for nurture/email.
+// Dormant no-op until BREVO_API_KEY + BREVO_LP_LIST_ID env vars are set.
+const BREVO_API_KEY = process.env.BREVO_API_KEY || null;
+const BREVO_LP_LIST_ID = process.env.BREVO_LP_LIST_ID ? Number(process.env.BREVO_LP_LIST_ID) : null;
+async function pushToBrevo({ email, name, phone, lp_source, campaign_code, diopter, lang, leadType } = {}) {
+  if (!BREVO_API_KEY || !BREVO_LP_LIST_ID || !email) return { skipped: true };
+  const firstName = String(name || '').trim().split(/\s+/)[0] || '';
+  const cleanPhone = String(phone || '').replace(/\s+/g, '');
+  const attributes = {
+    FIRSTNAME: firstName, LP_SOURCE: lp_source || '', LEAD_TYPE: leadType || '',
+    LANGUAGE: lang || '', CAMPAIGN_CODE: campaign_code || '', DIOPTER: diopter || '',
+  };
+  if (isE164(cleanPhone)) attributes.SMS = cleanPhone;
+  const send = (attrs) => fetch('https://api.brevo.com/v3/contacts', {
+    method: 'POST',
+    headers: { 'api-key': BREVO_API_KEY, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({ email, attributes: attrs, listIds: [BREVO_LP_LIST_ID], updateEnabled: true }),
+  });
+  try {
+    let r = await send(attributes);
+    if (r.status === 400) { console.warn('Brevo 400, retry minimal:', await r.text()); r = await send({ FIRSTNAME: firstName }); }
+    if (!r.ok && r.status !== 204) { console.error('Brevo push error:', r.status, await r.text()); return { ok: false, status: r.status }; }
+    return { ok: true };
+  } catch (e) { console.error('Brevo fetch error:', e); return { ok: false, error: String(e) }; }
+}
+
 function isE164(phone) {
   return typeof phone === 'string' && /^\+[1-9]\d{7,14}$/.test(phone.trim());
 }
@@ -1370,6 +1397,33 @@ export default async function handler(req, res) {
       }
     }
 
+  } else if (type === 'lp_guide_download') {
+    const providedToken = req.headers['x-track-source'] || '';
+    if (providedToken !== LP_TRACK_SHARED_TOKEN) return res.status(403).json({ error: 'Invalid track source' });
+    if (!isAllowedOrigin) return res.status(403).json({ error: 'Origin not allowed' });
+    const { name, email, phone } = contact || body || {};
+    const lang = detectLang(lp_source, language);
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({ error: 'Invalid payload' });
+    const gBlocks = [
+      { type: 'header', text: { type: 'plain_text', text: `📘 Teejuhi tellimus — ${lp_source || 'LP'}` } },
+      { type: 'section', fields: [
+        { type: 'mrkdwn', text: `*Nimi:*\n${name || '—'}` },
+        { type: 'mrkdwn', text: `*E-post:*\n${email}` },
+        { type: 'mrkdwn', text: `*Keel:*\n${lang}` },
+        { type: 'mrkdwn', text: `*LP allikas:*\n${lp_source || '—'}` },
+        { type: 'mrkdwn', text: `*Reklaamiallikas:*\n${adSource || '—'}` },
+      ]},
+      { type: 'context', elements: [{ type: 'mrkdwn', text: `_${ts}_ · lead magnet (teejuht)` }] },
+    ];
+    if (SLACK_LP_WEBHOOK) {
+      try {
+        const r = await fetch(SLACK_LP_WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ blocks: gBlocks }) });
+        if (!r.ok) console.error('Slack LP (guide) error:', r.status, await r.text());
+      } catch (err) { console.error('Slack LP (guide) fetch error:', err); }
+    }
+    await pushToBrevo({ email, name, phone, lp_source, lang, leadType: 'guide_download' });
+    return res.status(200).json({ ok: true });
+
   } else if (type === 'lp_contact_submitted') {
     // ── LP contact form submission → post to #lp-kontaktid ─────────────────
     // Shared token check (mild abuse filter)
@@ -1393,6 +1447,8 @@ export default async function handler(req, res) {
     // LP source label mapping → clean display name
     const LP_LABEL = {
       'LP-Glasses-ET':  'Glasses (prillidest loobumine)',
+      'LP-Glasses-EN':  'Glasses (EN)',
+      'LP-Glasses-RU':  'Glasses (RU)',
       'LP-Sports-ET':   'Sports (aktiivsed eluviisid)',
       'LP-Finance-ET':  'Finance (järelmaks)',
       'LP-BestTime-ET': 'Best Time (õige aeg)',
@@ -1430,6 +1486,8 @@ export default async function handler(req, res) {
         console.error('Slack LP fetch error:', err);
       }
     }
+
+    await pushToBrevo({ email, name, phone, lp_source, campaign_code, diopter, lang, leadType: 'booking' });
 
     return res.status(200).json({ ok: true });
 

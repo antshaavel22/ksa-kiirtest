@@ -30,10 +30,14 @@
 // No external KV/DB needed — works as long as the pending emails are within
 // the latest ~200 records on the Resend account.
 
+import { createHash } from 'crypto';
+
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const SHARED_TOKEN = process.env.LP_TRACK_SHARED_TOKEN;
 const SLACK_KIIRTEST_WEBHOOK = process.env.SLACK_KIIRTEST_CHANNEL_WEBHOOK_URL ||
   process.env.SLACK_WEBHOOK_URL;
+const SUPABASE_URL = process.env.SUPABASE_URL || '';
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY || '';
 const GOOGLE_ADS_DEVELOPER_TOKEN = process.env.GOOGLE_ADS_DEVELOPER_TOKEN;
 const GOOGLE_ADS_CLIENT_ID = process.env.GOOGLE_ADS_CLIENT_ID;
 const GOOGLE_ADS_CLIENT_SECRET = process.env.GOOGLE_ADS_CLIENT_SECRET;
@@ -42,7 +46,7 @@ const GOOGLE_ADS_CUSTOMER_ID = (process.env.GOOGLE_ADS_CUSTOMER_ID || '538058814
 const GOOGLE_ADS_LOGIN_CUSTOMER_ID = (process.env.GOOGLE_ADS_LOGIN_CUSTOMER_ID || '').replace(/\D/g, '');
 const GOOGLE_ADS_BOOKING_CONVERSION_ACTION =
   process.env.GOOGLE_ADS_BOOKING_CONVERSION_ACTION ||
-  'customers/5380588148/conversionActions/7579562619';
+  'customers/5380588148/conversionActions/7635909244';
 const FLOW3_SERVICE_PATTERN = /flow\s*3|flow3|laser|laserkorrektsioon|laserkirurgia|silmauuring|eye\s*exam|examination/i;
 
 async function fetchRecentEmails(maxPages = 3) {
@@ -257,37 +261,111 @@ function contactFromBody(body) {
   };
 }
 
+
+// ── Slack card de-duplication ──────────────────────────────────────────────
+// Why: on 2026-09-09 a backfill re-ran this webhook over 34 existing bookings.
+// Each re-run re-posted its Slack card, so #kiirtesti-täitmised showed 34 cards
+// in ~70 seconds and looked like a lead spike. Cards are now written once per
+// booking, ever, and once per person per 30 min (catches double-submits that
+// have no booking ref). Table: public.kiirtest_slack_posts (hashes only, no PII).
+const DEDUP_TABLE = 'kiirtest_slack_posts';
+const PERSON_WINDOW_MIN = 30;
+
+function personHash(contact) {
+  const basis = (contact?.phone || contact?.email || '').toString().trim().toLowerCase().replace(/\s+/g, '');
+  if (!basis) return null;
+  return createHash('sha256').update(basis).digest('hex');
+}
+
+async function sb(path, opts = {}) {
+  return fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    ...opts,
+    headers: {
+      apikey: SUPABASE_SERVICE_KEY,
+      Authorization: `Bearer ${SUPABASE_SERVICE_KEY}`,
+      'Content-Type': 'application/json',
+      ...(opts.headers || {}),
+    },
+  });
+}
+
+/** Returns a reason string if this card should be skipped, else null. */
+async function dedupeReason({ bookingId, pHash, kind }) {
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) return null; // not configured → never block the card
+  try {
+    if (bookingId) {
+      const r = await sb(`${DEDUP_TABLE}?key=eq.${encodeURIComponent(`booking:${bookingId}`)}&select=key`);
+      const rows = await r.json();
+      if (Array.isArray(rows) && rows.length) return 'booking_already_posted';
+    }
+    if (pHash) {
+      const since = new Date(Date.now() - PERSON_WINDOW_MIN * 60000).toISOString();
+      const r = await sb(`${DEDUP_TABLE}?person_hash=eq.${pHash}&kind=eq.${kind}&posted_at=gte.${since}&select=key`);
+      const rows = await r.json();
+      if (Array.isArray(rows) && rows.length) return 'person_posted_recently';
+    }
+  } catch (err) {
+    console.error('slack dedupe check failed (posting anyway):', err.message);
+  }
+  return null;
+}
+
+async function markPosted({ bookingId, pHash, kind }) {
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) return;
+  const key = bookingId ? `booking:${bookingId}` : (pHash ? `person:${pHash}:${kind}:${Date.now()}` : null);
+  if (!key) return;
+  try {
+    await sb(DEDUP_TABLE, {
+      method: 'POST',
+      headers: { Prefer: 'resolution=ignore-duplicates' },
+      body: JSON.stringify({ key, kind, booking_id: bookingId || null, person_hash: pHash || null }),
+    });
+  } catch (err) {
+    console.error('slack dedupe mark failed:', err.message);
+  }
+}
+
 async function notifySlack({ contact, source, service, cancelled, failed, googleAds, body }) {
   const bookingId = firstValue(body?.booking_id, body?.bookingId, body?.order_id, body?.orderId);
   const promo = firstValue(body?.promo_code, body?.promoCode, body?.promokood, body?.code, body?.utm?.promokood);
-  const leadId = firstValue(body?.kiirtest_lead_id, body?.kiirtestLeadId, body?.lead_id, body?.leadId, body?.utm?.kiirtest_lead_id);
-  const variant = firstValue(body?.ab_variant, body?.variant, body?.funnel_variant, body?.utm?.ab_variant);
   const value = firstValue(body?.conversion_value, body?.value);
   const currency = body?.currency || 'EUR';
+  const pHash = personHash(contact);
+
+  const skip = await dedupeReason({ bookingId, pHash, kind: 'booking' });
+  if (skip) {
+    console.log('Slack card skipped:', skip, bookingId || '(no booking id)');
+    return { skipped: skip };
+  }
+
+  // Compact card: only what reception can act on. Internal plumbing (lead id,
+  // funnel variant, cancelled-email count) stays in the ledger email + logs.
+  const who = [contact?.name, contact?.phone, contact?.email].filter(Boolean).join(' · ');
+  const what = [service, value ? `${value} ${currency}` : null, promo ? `kood ${promo}` : null]
+    .filter(Boolean).join(' · ');
+  const ads = googleAds?.skipped
+    ? `Ads: vahele jäetud (${googleAds.reason})`
+    : (googleAds ? `Ads: saadetud${googleAds.partialFailureError ? ' ⚠️ partial failure' : ' ✅'}` : null);
+  const meta = [source ? `Allikas: ${source}` : null, ads].filter(Boolean).join(' · ');
+
   const lines = [
-    `:white_check_mark: *Flow3 broneering kinnitatud — Kiirtest*`,
-    contact?.name ? `*Nimi:* ${contact.name}` : null,
-    contact?.phone ? `*Telefon:* ${contact.phone}` : null,
-    contact?.email ? `*E-post:* ${contact.email}` : null,
-    bookingId ? `*Booking ID:* ${bookingId}` : null,
-    source ? `*Allikas:* ${source}` : null,
-    service ? `*Teenus:* ${service}` : null,
-    variant ? `*Funnel:* ${variant}` : null,
-    leadId ? `*Kiirtest lead ID:* ${leadId}` : null,
-    promo ? `*Sooduskood:* ${promo}` : null,
-    value ? `*Väärtus:* ${value} ${currency}` : null,
-    contact?.email ? `*Tühistatud follow-up kirju:* ${cancelled}${failed ? ` (ebaõnnestus: ${failed})` : ''}` : `*Follow-up kirjad:* ei kontrollitud (e-post puudus payloadis)`,
-    googleAds?.skipped ? `*Google Ads:* vahele jäetud (${googleAds.reason})` : null,
-    googleAds && !googleAds.skipped ? `*Google Ads:* booking conversion uploaded (${googleAds.clickIdType})${googleAds.partialFailureError ? ' — check partial failure' : ''}` : null,
+    `:white_check_mark: *Flow3 broneering*${bookingId ? ` · ${bookingId}` : ''}`,
+    who || null,
+    what || null,
+    meta || null,
+    failed ? `:warning: ${failed} follow-up kirja tühistamine ebaõnnestus` : null,
     `_${new Date().toLocaleString('et-EE', { timeZone: 'Europe/Tallinn' })}_`,
   ].filter(Boolean);
+
   try {
     await fetch(SLACK_KIIRTEST_WEBHOOK, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text: lines.join('\n') }),
     });
+    await markPosted({ bookingId, pHash, kind: 'booking' });
   } catch (_) { /* don't fail the request on slack errors */ }
+  return { posted: true };
 }
 
 async function sendBookingLedger({ contact, source, service, googleAds, body }) {

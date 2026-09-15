@@ -144,6 +144,58 @@ function isE164(phone) {
   return typeof phone === 'string' && /^\+[1-9]\d{7,14}$/.test(phone.trim());
 }
 
+function isEmailish(email) {
+  return typeof email === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+}
+
+// Quiz stores prescription as a free string ("-4.5", "-6 kuni -9", "üle -9", "pluss").
+// Only a clean single number becomes prescription_sphere; ranges stay raw in quiz_meta.
+function parseSphere(raw) {
+  const t = String(raw ?? '').trim().replace(',', '.');
+  return /^[+-]?\d+(\.\d+)?$/.test(t) ? Number(t) : null;
+}
+
+// Email-only kiirtest lead → CRM ticket. Shape per Mai 2026-09-15 (B = Sobiv
+// kandidaat, C = Vajab konsultatsiooni). age_band/vision_issue use the enums the
+// CRM already accepts from buildCRMPayload; the raw quiz answers ride along in
+// quiz_meta.quiz_answers so nothing is lost.
+function buildEmailLeadPayload({ body, answers, lang, email, result, promoCode, adSource, lp_source }) {
+  const good = result === 'good_candidate';
+  const ageBand = mapAgeBand(answers.age || answers.age_band) || '18_45';
+  const visionIssue = mapVisionIssue(answers.vision || answers.vision_issue);
+  const sphere = parseSphere(answers.prescription ?? answers.prescription_sphere);
+  const u = body?.utm || {};
+  const ids = {};
+  if (u.gclid)  ids.gclid  = u.gclid;
+  if (u.gbraid) ids.gbraid = u.gbraid;
+  if (u.wbraid) ids.wbraid = u.wbraid;
+  if (u.fbclid) ids.fbclid = u.fbclid;
+  return {
+    source: good ? 'kiirtest_lp_email_sobiv' : 'kiirtest_lp_email_konsultatsioon',
+    lang: (lang || 'et').toLowerCase(),
+    intent: good ? 'kiirtest_email_qualified' : 'kiirtest_email_consultation',
+    contact: { email: String(email).trim() },
+    qualifying: {
+      age_band: ageBand,
+      gender: answers.gender || null,
+      vision_issue: visionIssue,
+      ...(sphere !== null ? { prescription_sphere: sphere } : {}),
+    },
+    group_hint: deriveGroupHint(ageBand, visionIssue),
+    quiz_meta: {
+      source: adSource || 'Otse',
+      discount_code: promoCode || null,
+      interest_level: answers.interest || null,
+      quiz_answers: answers || {},
+      lp_source: lp_source || null,
+      ad_source: detectAdSource(u.source, u.medium),
+      event_type: 'email_captured',
+    },
+    utm: { source: u.source || null, medium: u.medium || null, campaign: u.campaign || null },
+    click_ids: Object.keys(ids).length ? ids : null,
+  };
+}
+
 function mapAgeBand(quizAge) {
   const a = String(quizAge || '').toLowerCase();
   if (['18-25', '26-35', '36-45', '18_45'].includes(a)) return '18_45';
@@ -178,15 +230,21 @@ function detectAdSource(utmSource, utmMedium) {
   return 'direct';
 }
 
-async function postToCRM(payload, ctx = '') {
+async function postToCRM(payload, ctx = '', opts = {}) {
   if (!KSA_TICKETS_API_KEY) {
     console.error('KAISA-436: KSA_TICKETS_API_KEY missing — skipping CRM POST');
     return false;
   }
-  // Validate required field — phone in E.164. If missing, skip silently:
-  // the lead is still preserved in Slack + email; CRM ticket is best-effort.
-  if (!isE164(payload?.contact?.phone)) {
-    console.warn(`KAISA-436[${ctx}]: phone missing or not E.164, skip CRM POST`, payload?.contact?.phone || '—');
+  // Contact gate. A phone, when given, must be E.164 (unchanged). Without a phone
+  // an email is enough — Mai 2026-09-15: email-only kiirtest leads were dropped
+  // here for 4 days (20 tickets entered by hand). Slack + email path is untouched.
+  const phone = payload?.contact?.phone;
+  if (phone && !isE164(phone)) {
+    console.warn(`KAISA-436[${ctx}]: phone not E.164, skip CRM POST`, phone);
+    return false;
+  }
+  if (!phone && !isEmailish(payload?.contact?.email)) {
+    console.warn(`KAISA-436[${ctx}]: no phone and no email, skip CRM POST`);
     return false;
   }
   try {
@@ -201,9 +259,11 @@ async function postToCRM(payload, ctx = '') {
     if (!res.ok) {
       const text = await res.text().catch(() => '');
       console.error(`KAISA-436[${ctx}]: CRM POST ${res.status}`, text.slice(0, 400));
-      // Best-effort Slack alarm; do not throw — Slack+email path already ran
+      // Best-effort Slack alarm; do not throw — Slack+email path already ran.
+      // quiet4xx: caller knows the CRM may still reject this shape (schema not
+      // yet updated) — log only, no alarm per lead.
       try {
-        if (SLACK_WEBHOOK) {
+        if (SLACK_WEBHOOK && !(opts.quiet4xx && res.status >= 400 && res.status < 500)) {
           await fetch(SLACK_WEBHOOK, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1253,6 +1313,16 @@ export default async function handler(req, res) {
         console.error('Internal notify error:', err);
       }
     }
+
+    // KAISA-436 (Mai 2026-09-15): email-only lead → CRM ticket so Lilia sees it.
+    // The CRM schema still requires a phone until Mai's fix lands (~2026-09-17);
+    // until then this returns 4xx — logged, no Slack alarm. Slack + email above
+    // are untouched either way.
+    await postToCRM(
+      buildEmailLeadPayload({ body, answers, lang, email, result, promoCode, adSource, lp_source }),
+      type,
+      { quiet4xx: true },
+    );
 
   } else if (type === 'quiz_completed') {
     // Anonymous quiz completions are useful for analytics, but they are not

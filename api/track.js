@@ -150,9 +150,17 @@ function isEmailish(email) {
 
 // Quiz stores prescription as a free string ("-4.5", "-6 kuni -9", "üle -9", "pluss").
 // Only a clean single number becomes prescription_sphere; ranges stay raw in quiz_meta.
+// Quiz gives a range ("−0,5 kuni −3", "+3 kuni +6") or an open end ("üle −9").
+// A clean number is used as-is; a range becomes its midpoint (Mai's request,
+// CRM-T175); an open end becomes the bound itself. Unicode minus is normalised.
 function parseSphere(raw) {
-  const t = String(raw ?? '').trim().replace(',', '.');
-  return /^[+-]?\d+(\.\d+)?$/.test(t) ? Number(t) : null;
+  const t = String(raw ?? '').trim().replace(/[−–]/g, '-').replace(/,/g, '.');
+  if (/^[+-]?\d+(\.\d+)?$/.test(t)) return Number(t);
+  const range = t.match(/^([+-]?\d+(?:\.\d+)?)\s*(?:kuni|до|to|-)\s*([+-]?\d+(?:\.\d+)?)$/i);
+  if (range) return Math.round(((Number(range[1]) + Number(range[2])) / 2) * 100) / 100;
+  const open = t.match(/^(?:üle|более|over|>)\s*([+-]?\d+(?:\.\d+)?)$/i);
+  if (open) return Number(open[1]);
+  return null;
 }
 
 // Email-only kiirtest lead → CRM ticket. Shape per Mai 2026-09-15 (B = Sobiv
@@ -204,11 +212,22 @@ function mapAgeBand(quizAge) {
   return null;
 }
 
+// The quiz stores the same Estonian option values in all three language
+// versions ("Miinusprillid" etc.), so exact matches come first. The substring
+// fallbacks stay for older payloads. Mapping agreed with Mai (CRM-T175, 2026-09-21):
+// Miinusprillid → myopia · Plussprillid → hyperopia · Lugemisprillid → presbyopia ·
+// Ei tea → unknown · Ei kanna prille → other.
 function mapVisionIssue(quizVision) {
-  const v = String(quizVision || '').toLowerCase();
-  if (v === 'miinus' || v === 'myopia' || v.includes('minus') || v.includes('myop') || v.includes('близо')) return 'myopia';
-  if (v === 'pluss' || v === 'hyperopia' || v.includes('plus') || v.includes('hyper') || v.includes('даль')) return 'hyperopia';
-  if (v.includes('presby') || v.includes('vana') || v.includes('пресби')) return 'presbyopia';
+  const raw = String(quizVision || '').trim();
+  const v = raw.toLowerCase();
+  const exact = {
+    miinusprillid: 'myopia', plussprillid: 'hyperopia', lugemisprillid: 'presbyopia',
+    'ei tea': 'unknown', 'ei kanna prille': 'other',
+  };
+  if (exact[v]) return exact[v];
+  if (v === 'miinus' || v === 'myopia' || v.includes('miinus') || v.includes('minus') || v.includes('myop') || v.includes('близо')) return 'myopia';
+  if (v === 'pluss' || v === 'hyperopia' || v.includes('pluss') || v.includes('plus') || v.includes('hyper') || v.includes('даль')) return 'hyperopia';
+  if (v.includes('lugemis') || v.includes('presby') || v.includes('vana') || v.includes('пресби') || v.includes('reading')) return 'presbyopia';
   if (v) return 'other';
   return 'unknown';
 }

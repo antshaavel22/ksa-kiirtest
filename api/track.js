@@ -182,6 +182,10 @@ function buildEmailLeadPayload({ body, answers, lang, email, result, promoCode, 
     source: good ? 'kiirtest_lp_email_sobiv' : 'kiirtest_lp_email_konsultatsioon',
     lang: (lang || 'et').toLowerCase(),
     intent: good ? 'kiirtest_email_qualified' : 'kiirtest_email_consultation',
+    // Mai 2026-09-22: the CRM joins the lead to a later booking on this id, which
+    // the quiz also puts on the booking link as kiirtest_lead_id.
+    ...(typeof body?.client_session_id === 'string' && body.client_session_id
+      ? { client_session_id: body.client_session_id.slice(0, 64) } : {}),
     contact: { email: String(email).trim() },
     qualifying: {
       age_band: ageBand,

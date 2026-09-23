@@ -380,12 +380,51 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
     audit: { slug: 'audit', code: 'BLOG139',  price: '139 €', old: '149 €' },
     kids:  { slug: 'kids',  code: 'BLOGKIDS', price: '79 €' }
   };
+  // ── Attribution: keep the landing URL's ad parameters for the whole visit ──
+  // Mai (CRM, 2026-09-22): since 12.09 the booking links carried no kiirtest_lead_id
+  // and no click IDs, so 4 paid Flow3 exams could not be sent to Google Ads and the
+  // CRM could not tie a booking back to its lead. Captured once, reused on every
+  // booking link and on the lead payload.
+  const ATTR_KEYS = ['gclid','gbraid','wbraid','fbclid','utm_source','utm_medium','utm_campaign','utm_content','utm_term'];
+  const ATTR_STORE = 'ksa_attribution', LEAD_STORE = 'ksa_kiirtest_lead_id';
+  function attrCapture() {
+    try {
+      const here = new URLSearchParams(location.search), fresh = {};
+      ATTR_KEYS.forEach(k => { const v = here.get(k); if (v) fresh[k] = v.slice(0, 200); });
+      if (Object.keys(fresh).length) {
+        const prev = JSON.parse(sessionStorage.getItem(ATTR_STORE) || '{}');
+        sessionStorage.setItem(ATTR_STORE, JSON.stringify(Object.assign(prev, fresh)));
+      }
+    } catch (e) {}
+  }
+  function attrGet() {
+    try { return JSON.parse(sessionStorage.getItem(ATTR_STORE) || '{}'); } catch (e) { return {}; }
+  }
+  /** Stable per-visit id so the CRM can match this lead to a later booking. */
+  function leadId() {
+    try {
+      let id = sessionStorage.getItem(LEAD_STORE);
+      if (!id) {
+        id = 'kt_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+        sessionStorage.setItem(LEAD_STORE, id);
+      }
+      return id;
+    } catch (e) { return 'kt_' + Date.now().toString(36); }
+  }
+  attrCapture();
+
   function bookingUrl(route) {
     const b = BOOKING[route] || BOOKING.flow3;
-    let u = `https://booking.ksa.ee/?service=${encodeURIComponent(b.slug || 'flow3')}&lang=ru`;
-    if (b.code) u += `&promokood=${encodeURIComponent(b.code)}`;
-    u += '&source=kiirtest&funnel=' + route;
-    return u;
+    const u = new URL('https://booking.ksa.ee/');
+    u.searchParams.set('service', b.slug || 'flow3');
+    u.searchParams.set('lang', ru);
+    if (b.code) u.searchParams.set('promokood', b.code);
+    u.searchParams.set('source', 'kiirtest');
+    u.searchParams.set('funnel', route);
+    u.searchParams.set('kiirtest_lead_id', leadId());
+    const a = attrGet();
+    ATTR_KEYS.forEach(k => { if (a[k]) u.searchParams.set(k, a[k]); });
+    return u.toString();
   }
 
   // ── State ────────────────────────────────────────
@@ -591,7 +630,9 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
       await fetch('/api/track', {
         method: 'POST', headers: {'Content-Type':'application/json'},
         body: JSON.stringify({
-          type: 'email_captured', email, language: LANG, lp_source: 'LP-Kiirtest-RU',
+          type: 'email_captured', email, language: LANG,
+          client_session_id: leadId(), utm: attrGet(),
+          lp_source: 'LP-Kiirtest-RU',
           result: answers.resultType, route: answers.route,
           promoCode: (BOOKING[answers.route]||BOOKING.flow3).code, code: (BOOKING[answers.route]||BOOKING.flow3).code, from: 'kiirtest',
           answers: {

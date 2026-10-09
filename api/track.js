@@ -169,7 +169,11 @@ function parseSphere(raw) {
 // quiz_meta.quiz_answers so nothing is lost.
 function buildEmailLeadPayload({ body, answers, lang, email, result, promoCode, adSource, lp_source }) {
   const good = result === 'good_candidate';
-  const ageBand = mapAgeBand(answers.age || answers.age_band) || '18_45';
+  // age_band must stay one of the CRM's three enums or the ticket is rejected,
+  // so an unmapped age keeps the default — but the routing hint below must not
+  // then claim Flow3 eligibility.
+  const mappedAge = mapAgeBand(answers.age || answers.age_band);
+  const ageBand = mappedAge || '18_45';
   const visionIssue = mapVisionIssue(answers.vision || answers.vision_issue);
   const sphere = parseSphere(answers.prescription ?? answers.prescription_sphere);
   const u = body?.utm || {};
@@ -193,7 +197,7 @@ function buildEmailLeadPayload({ body, answers, lang, email, result, promoCode, 
       vision_issue: visionIssue,
       ...(sphere !== null ? { prescription_sphere: sphere } : {}),
     },
-    group_hint: deriveGroupHint(ageBand, visionIssue),
+    group_hint: mappedAge ? deriveGroupHint(ageBand, visionIssue) : 'unclassified',
     quiz_meta: {
       source: adSource || 'Otse',
       discount_code: promoCode || null,
@@ -208,9 +212,18 @@ function buildEmailLeadPayload({ body, answers, lang, email, result, promoCode, 
   };
 }
 
+// The quiz offers exactly six bands in all three languages: Alla 18 / До 18 /
+// Under 18 · 18-25 · 26-35 · 36-45 · 46-55 · 56+. Exact matches come first, the
+// substring fallbacks stay for older payloads. '56+' was missing from the
+// over_45 list until 2026-10-09, so those answers fell through to the caller's
+// '18_45' default and were filed as Flow3-eligible — Mai found 16 of them, 8 in
+// the Flow3 queue. An age we cannot map now yields 'unclassified' at the call
+// sites rather than a band that implies eligibility.
 function mapAgeBand(quizAge) {
-  const a = String(quizAge || '').toLowerCase();
+  const a = String(quizAge || '').toLowerCase().trim();
   if (['18-25', '26-35', '36-45', '18_45'].includes(a)) return '18_45';
+  if (['46-55', '56+', '56-65', '65+', 'over_45'].includes(a)) return 'over_45';
+  if (['alla 18', 'до 18', 'under 18', 'under_18'].includes(a)) return 'under_18';
   if (['46-55', '56-65', '65+', 'over_45', 'üle 45', 'старше 45'].some(s => a.includes(s.toLowerCase()))) return 'over_45';
   if (a.includes('alla 18') || a.includes('under_18') || a.includes('до 18') || a.includes('under 18')) return 'under_18';
   return null;
@@ -317,9 +330,10 @@ async function postToCRM(payload, ctx = '', opts = {}) {
 }
 
 function buildCRMPayload({ body, leadData, lang, name, phone, email, adSource, code, eventType }) {
-  const ageBand = mapAgeBand(leadData.age || leadData.age_band) || '18_45';
+  const mappedAge = mapAgeBand(leadData.age || leadData.age_band);
+  const ageBand = mappedAge || '18_45';
   const visionIssue = mapVisionIssue(leadData.vision || leadData.vision_issue);
-  const groupHint = deriveGroupHint(ageBand, visionIssue);
+  const groupHint = mappedAge ? deriveGroupHint(ageBand, visionIssue) : 'unclassified';
   return {
     source: 'kiirtest',
     lang: (lang || 'et').toLowerCase(),

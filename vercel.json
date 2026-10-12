@@ -8,28 +8,74 @@
     {
       "path": "/api/analytics-report?type=weekly",
       "schedule": "30 5 * * 1"
+    },
+    {
+      "path": "/api/conversion-health",
+      "schedule": "0 6 * * *"
     }
   ],
   "rewrites": [
-    { "source": "/taname", "destination": "/taname.html" },
-    { "source": "/taname-en", "destination": "/taname-en.html" },
-    { "source": "/taname-ru", "destination": "/taname-ru.html" },
-    { "source": "/en", "destination": "/en.html" },
-    { "source": "/ru", "destination": "/ru.html" },
-    { "source": "/lilia-qr", "destination": "/lilia-qr.html" },
-    { "source": "/lilia", "destination": "/lilia-qr.html" },
-    { "source": "/19", "destination": "/19.html" },
-    { "source": "/broneeri-19", "destination": "/19.html" },
-    { "source": "/flow3/kiirtest", "destination": "/index.html" },
-    { "source": "/flow3/quicktest", "destination": "/en.html" },
-    { "source": "/flow3/bystryj-test", "destination": "/ru.html" }
+    {
+      "source": "/taname",
+      "destination": "/taname.html"
+    },
+    {
+      "source": "/taname-en",
+      "destination": "/taname-en.html"
+    },
+    {
+      "source": "/taname-ru",
+      "destination": "/taname-ru.html"
+    },
+    {
+      "source": "/en",
+      "destination": "/en.html"
+    },
+    {
+      "source": "/ru",
+      "destination": "/ru.html"
+    },
+    {
+      "source": "/lilia-qr",
+      "destination": "/lilia-qr.html"
+    },
+    {
+      "source": "/lilia",
+      "destination": "/lilia-qr.html"
+    },
+    {
+      "source": "/19",
+      "destination": "/19.html"
+    },
+    {
+      "source": "/broneeri-19",
+      "destination": "/19.html"
+    },
+    {
+      "source": "/flow3/kiirtest",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/flow3/quicktest",
+      "destination": "/en.html"
+    },
+    {
+      "source": "/flow3/bystryj-test",
+      "destination": "/ru.html"
+    }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Content-Security-Policy", "value": "frame-ancestors 'self' https://ksa.ee https://blog.ksa.ee https://*.vercel.app http://localhost:*" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "frame-ancestors 'self' https://ksa.ee https://blog.ksa.ee https://*.vercel.app http://localhost:*"
+        }
       ]
     }
   ]

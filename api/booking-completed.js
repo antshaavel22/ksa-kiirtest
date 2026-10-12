@@ -194,7 +194,7 @@ async function googleAccessToken() {
   return data.access_token;
 }
 
-async function uploadGoogleAdsBooking(body, options = {}) {
+export async function uploadGoogleAdsBooking(body, options = {}) {
   if (!hasGoogleAdsConfig()) {
     return { skipped: true, reason: 'missing_google_ads_env' };
   }
@@ -333,6 +333,50 @@ async function markPosted({ bookingId, pHash, kind }) {
   }
 }
 
+/**
+ * Raise a problem in Slack at most once per window.
+ *
+ * Why this exists: in the six months to October 2026 this pipeline broke three
+ * times — the Google Ads v20 sunset in August, booking links losing their click
+ * IDs in September, and a token mismatch that returned 401 for 33 days — and
+ * every one of them was silent. Each was found by a person noticing a number
+ * looked wrong, weeks later. A conversion that never arrives looks exactly like
+ * a quiet week, which is why nobody looks.
+ *
+ * Reuses the Slack dedupe table rather than adding one, and fails open: if the
+ * window cannot be checked the alert still goes out. Better a repeated alert
+ * than a silent pipeline.
+ */
+async function alertOnce(kind, windowMin, text) {
+  const hook = SLACK_KIIRTEST_WEBHOOK;
+  if (!hook) { console.error('ALERT (no webhook):', kind, text); return; }
+  const key = `alert:${kind}`;
+  if (SUPABASE_URL && SUPABASE_SERVICE_KEY) {
+    try {
+      const since = new Date(Date.now() - windowMin * 60000).toISOString();
+      const r = await sb(`${DEDUP_TABLE}?key=eq.${encodeURIComponent(key)}&posted_at=gte.${since}&select=key`);
+      const rows = await r.json();
+      if (Array.isArray(rows) && rows.length) return;
+    } catch (err) {
+      console.error('alert window check failed (alerting anyway):', err.message);
+    }
+  }
+  try {
+    await fetch(hook, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }),
+    });
+    if (SUPABASE_URL && SUPABASE_SERVICE_KEY) {
+      await sb(DEDUP_TABLE, {
+        method: 'POST',
+        headers: { Prefer: 'resolution=merge-duplicates' },
+        body: JSON.stringify({ key, kind: 'alert', posted_at: new Date().toISOString() }),
+      });
+    }
+  } catch (err) {
+    console.error('alertOnce failed:', err.message, text);
+  }
+}
+
 async function notifySlack({ contact, source, service, cancelled, failed, googleAds, body }) {
   const bookingId = firstValue(body?.booking_id, body?.bookingId, body?.order_id, body?.orderId);
   const promo = firstValue(body?.promo_code, body?.promoCode, body?.promokood, body?.code, body?.utm?.promokood);
@@ -421,6 +465,13 @@ export default async function handler(req, res) {
   const auth = req.headers['authorization'] || '';
   const accepted = [CRM_TOKEN, SHARED_TOKEN].filter(Boolean).map((t) => `Bearer ${t}`);
   if (!accepted.length || !accepted.includes(auth)) {
+    await alertOnce(
+      '401',
+      60,
+      ':rotating_light: *Konversioonid põrkavad tagasi.* `/api/booking-completed` vastas 401 — ' +
+      'CRM saadab tokenit, mida server vastu ei võta, nii et ükski broneering ei jõua Google Adsi. ' +
+      'Kontrolli `KIIRTEST_WEBHOOK_TOKEN` Vercelis ja CRM-is. Eelmine kord jäi see märkamata 33 päevaks.'
+    );
     return res.status(401).json({ ok: false, error: 'Unauthorized' });
   }
 
@@ -465,6 +516,28 @@ export default async function handler(req, res) {
   } catch (err) {
     console.error('Google Ads booking upload error:', err);
     googleAds = { skipped: true, reason: 'upload_error', error: err.message };
+  }
+
+  if (googleAds?.skipped && googleAds.reason === 'missing_click_id') {
+    await alertOnce(
+      'noclickid',
+      180,
+      ':warning: *Broneering jõudis kohale ilma klikk-ID-ta.* Ilma `gclid`/`gbraid`/`wbraid`-ta ei saa ' +
+      'seda Google Adsile saata, nii et tasuline klikk jääb mõõtmata. Tavaliselt tähendab see, et ' +
+      'broneerimislink kaotas oma parameetrid. Septembris kestis sama viga 11 päeva.'
+    );
+  } else if (googleAds?.skipped && googleAds.reason === 'upload_error') {
+    await alertOnce(
+      'upload_error',
+      60,
+      `:rotating_light: *Google Ads keeldus konversioonist.* ${String(googleAds.error || '').slice(0, 300)}`
+    );
+  } else if (googleAds?.skipped && googleAds.reason === 'missing_google_ads_env') {
+    await alertOnce(
+      'noenv',
+      360,
+      ':rotating_light: *Google Adsi seadistus puudub.* Broneeringud tulevad, aga konversioone ei saadeta üldse.'
+    );
   }
 
   await notifySlack({ contact, source, service, cancelled, failed, googleAds, body });

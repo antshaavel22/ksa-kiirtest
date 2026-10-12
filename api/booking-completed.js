@@ -33,6 +33,14 @@
 import { createHash } from 'crypto';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
+// The CRM has its own token. KIIRTEST_WEBHOOK_TOKEN was created in Vercel on
+// 9 September 2026 and handed to Mai for the CRM, but nothing ever read it —
+// this handler still compared against LP_TRACK_SHARED_TOKEN, which track.js
+// also uses. Every conversion the CRM posted from that day on came back 401
+// (KSA-877425), so Google Ads stopped seeing bookings. Accept the CRM's own
+// token first and keep the shared one working, and fail closed when neither is
+// configured rather than comparing against "Bearer undefined".
+const CRM_TOKEN = process.env.KIIRTEST_WEBHOOK_TOKEN;
 const SHARED_TOKEN = process.env.LP_TRACK_SHARED_TOKEN;
 const SLACK_KIIRTEST_WEBHOOK = process.env.SLACK_KIIRTEST_CHANNEL_WEBHOOK_URL ||
   process.env.SLACK_WEBHOOK_URL;
@@ -411,7 +419,8 @@ export default async function handler(req, res) {
   }
 
   const auth = req.headers['authorization'] || '';
-  if (auth !== `Bearer ${SHARED_TOKEN}`) {
+  const accepted = [CRM_TOKEN, SHARED_TOKEN].filter(Boolean).map((t) => `Bearer ${t}`);
+  if (!accepted.length || !accepted.includes(auth)) {
     return res.status(401).json({ ok: false, error: 'Unauthorized' });
   }
 

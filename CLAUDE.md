@@ -28,15 +28,21 @@ Ads conversion upload.
 ## Branches and deploying — read this before anything else
 
 - **`kiirtest-v3` is live.** It is the repository default branch. Work from it.
-- **`master` is from June 2026 and four months stale.** Do not branch from it, do not merge
-  it, do not deploy it. It exists only as history.
-- **A push does not deploy.** Vercel's git integration still points at an old, abandoned
-  repository (`ksa-kiirtest-lp`, untouched since April). Until Ants reconnects it, the only
-  thing that reaches kiirtest.ksa.ee is `vercel --prod` run by Ants or his assistant.
-- So: push your branch, say what changed, and ask for it to be deployed. Never assume your
-  change is live because the push succeeded — check the live URL.
+- **`master` is Vercel's production branch, and pushing to it deploys kiirtest.ksa.ee
+  immediately.** No review, no promote, no undo button. It was four months stale until
+  12 October, when it was fast-forwarded onto `kiirtest-v3`; the two now hold the same commit.
+- **So never push to `master`.** Work on your own branch (`silvia/<what>`, `jana/<what>`),
+  push that, and say what changed. A push to your own branch builds a preview and touches
+  nothing live.
+- Ants moves a change to production. If something does go out by accident, it is recoverable:
+  `vercel rollback <previous-deployment-url>` puts the last good version back in seconds.
+- Never assume your change is live because the push succeeded — check the live URL.
 - After any deploy, verify with `curl` against `https://kiirtest.ksa.ee/`, not against the
   deployment URL (those are behind Vercel's deployment protection and answer 401).
+- The funnel watches itself since 12 October: `/api/conversion-health` sends Google Ads one
+  validate-only conversion every morning, and `booking-completed` raises a 401, a missing
+  click id or an upload error in #kiirtesti-täitmised as it happens. A red message there is
+  real. Silence means the pipe is open.
 
 ## Never change these without Ants
 

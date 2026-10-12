@@ -436,7 +436,7 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
     const b = BOOKING[route] || BOOKING.flow3;
     const u = new URL('https://booking.ksa.ee/');
     u.searchParams.set('service', b.slug || 'flow3');
-    u.searchParams.set('lang', ru);
+    u.searchParams.set('lang', LANG.toLowerCase());
     if (b.code) u.searchParams.set('promokood', b.code);
     u.searchParams.set('source', 'kiirtest');
     u.searchParams.set('funnel', route);

@@ -127,12 +127,38 @@ const BREVO_AGE_CATEGORY = { '18-25': 1, '26-35': 2, '36-45': 3, '46-55': 4, '56
 // A failed Brevo push must be visible. Falls back to the general webhook rather
 // than going quiet, because a lost consented contact cannot be recovered later.
 const SLACK_ALERTS_WEBHOOK = process.env.SLACK_ALERTS_WEBHOOK_URL || process.env.SLACK_WEBHOOK_URL || null;
-async function alertSlack(text) {
+const ALERT_WINDOW_MIN = 60;
+async function alertSlack(text, kind = 'general') {
   if (!SLACK_ALERTS_WEBHOOK) { console.error('ALERT (no webhook configured):', text); return; }
+  // One alert per kind per hour. A broken integration fails on every single
+  // lead, and ten identical red messages tell nobody more than one does — they
+  // just train people to scroll past the channel.
+  const url = process.env.SUPABASE_URL, key = process.env.SUPABASE_SERVICE_KEY;
+  const dedupKey = `alert:track:${kind}`;
+  if (url && key) {
+    try {
+      const since = new Date(Date.now() - ALERT_WINDOW_MIN * 60000).toISOString();
+      const r = await fetch(
+        `${url}/rest/v1/kiirtest_slack_posts?key=eq.${encodeURIComponent(dedupKey)}&posted_at=gte.${since}&select=key`,
+        { headers: { apikey: key, Authorization: `Bearer ${key}` }, cache: 'no-store' }
+      );
+      const rows = await r.json();
+      if (Array.isArray(rows) && rows.length) return;
+    } catch (e) {
+      console.error('alert window check failed (alerting anyway):', e.message);
+    }
+  }
   try {
     await fetch(SLACK_ALERTS_WEBHOOK, {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }),
     });
+    if (url && key) {
+      await fetch(`${url}/rest/v1/kiirtest_slack_posts`, {
+        method: 'POST',
+        headers: { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates' },
+        body: JSON.stringify({ key: dedupKey, kind: 'alert', posted_at: new Date().toISOString() }),
+      });
+    }
   } catch (e) { console.error('alertSlack failed:', e.message, '—', text); }
 }
 async function pushToBrevo({ email, name, phone, lp_source, campaign_code, diopter, lang, leadType, listId, attributes: attrOverride } = {}) {
@@ -163,7 +189,7 @@ async function pushToBrevo({ email, name, phone, lp_source, campaign_code, diopt
       // rather than losing it, but say which attributes were dropped.
       const detail = await r.text();
       console.warn('Brevo 400, retry without attributes:', detail, Object.keys(attributes).join(','));
-      await alertSlack(`:warning: Brevo võttis kontakti vastu, aga atribuudid jäid salvestamata (list ${targetList}). Kontrolli, kas need väljad on Brevos olemas: ${Object.keys(attributes).join(', ')}. Brevo vastus: ${detail.slice(0, 300)}`);
+      await alertSlack(`:warning: Brevo võttis kontakti vastu, aga atribuudid jäid salvestamata (list ${targetList}). Kontrolli, kas need väljad on Brevos olemas: ${Object.keys(attributes).join(', ')}. Brevo vastus: ${detail.slice(0, 300)}`, 'brevo_attrs');
       r = await send(strip({ FIRSTNAME: firstName }));
     }
     if (!r.ok && r.status !== 204) { console.error('Brevo push error:', r.status, await r.text()); return { ok: false, status: r.status }; }
@@ -1427,12 +1453,12 @@ export default async function handler(req, res) {
         // BREVO_API_KEY is Production-only, so previews would alert on every
         // test submit. Production silence here would hide a real misconfiguration.
         if (process.env.VERCEL_ENV === 'production') {
-          await alertSlack(`:rotating_light: Kiirtest: nõusolek anti, aga Brevosse ei saadetud — BREVO_API_KEY või BREVO_KIIRTEST_LIST_ID on seadistamata. Keel: ${lang}.`);
+          await alertSlack(`:rotating_light: Kiirtest: nõusolek anti, aga Brevosse ei saadetud — BREVO_API_KEY või BREVO_KIIRTEST_LIST_ID on seadistamata. Keel: ${lang}.`, 'brevo_unconfigured');
         } else {
           console.log('Brevo skipped (not configured in this environment):', process.env.VERCEL_ENV);
         }
       } else if (r && r.ok === false) {
-        await alertSlack(`:rotating_light: Kiirtest: Brevo push ebaõnnestus, list ${BREVO_KIIRTEST_LIST_ID}. Staatus: ${r.status || r.error}. Keel: ${lang}. Nõusolek oli antud, nii et see kontakt jäi listist välja.`);
+        await alertSlack(`:rotating_light: Kiirtest: Brevo push ebaõnnestus, list ${BREVO_KIIRTEST_LIST_ID}. Staatus: ${r.status || r.error}. Keel: ${lang}. Nõusolek oli antud, nii et see kontakt jäi listist välja.`, 'brevo_push');
       }
     } else {
       console.log('Brevo skipped (no marketing consent):', lang, answers.age || '—');

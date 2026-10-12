@@ -1436,17 +1436,20 @@ export default async function handler(req, res) {
       const r = await pushToBrevo({
         email, lang, leadType: 'kiirtest',
         listId: BREVO_KIIRTEST_LIST_ID,
+        // Only attributes that exist in Brevo. Unknown names are accepted and
+        // then silently dropped, so inventing them loses the data without an
+        // error: KEEL, VANUS, SUGU, SOODUSKOOD and OPT_IN are the real fields
+        // (checked against the account's attribute list on 2026-10-12). The
+        // quiz result, vision, interest level and consent version have no field
+        // yet — Mai creates them, and they are added here when she has.
         attributes: {
           KEEL: (lang || 'et').toLowerCase(),
           VANUS: BREVO_AGE_CATEGORY[answers.age] || null,
           SUGU: answers.gender || null,
-          KT_TULEMUS: label,
-          KT_SOODUSKOOD: promoCode || null,
-          KT_NAGEMINE: answers.vision || null,
-          KT_HUVI: answers.interest || null,
-          KT_TESTI_KUUPAEV: new Date().toISOString().slice(0, 10),
-          KT_NOUSOLEK_AEG: consent.given_at || null,
-          KT_NOUSOLEK_VERSIOON: consent.text_version || null,
+          SOODUSKOOD: promoCode || null,
+          // We only reach this line with an explicit tick, so the flag is true
+          // by construction rather than by assumption.
+          OPT_IN: true,
         },
       });
       if (r && r.skipped) {

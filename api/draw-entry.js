@@ -61,6 +61,13 @@ module.exports = async (req, res) => {
   const first_name = (body.first_name || '').trim() || null;
   const language = (body.language || 'et').toLowerCase();  // newsletter_entries CHECK requires 'et'|'ru'|'en'
   const source = (body.source || 'kiirtest').slice(0, 40);
+  // Was hardcoded true below, which asserted a marketing consent nobody gave.
+  // Entering the draw is the person's own action (gdpr_consent), but email
+  // marketing needs the tick from the form. Callers that send nothing keep the
+  // old behaviour so other surfaces are unaffected.
+  const marketing_consent = body.marketing_consent === undefined
+    ? true
+    : body.marketing_consent === true;
   const entry_month = monthToDate(body.month) || monthToDate(new Date().toISOString());
 
   if (!isEmail(email)) {
@@ -101,7 +108,7 @@ module.exports = async (req, res) => {
         entry_month,
         extra_entries: 1,
         gdpr_consent: true,
-        marketing_consent: true,
+        marketing_consent,
         referral_code: 'KT-' + randomUUID(),  // NOT NULL + UNIQUE in newsletter_entries
         prize_choice: 'giftcard',              // NOT NULL + CHECK (sunglasses|contacts|drops|giftcard); kiirtest has no preference → giftcard
       }),

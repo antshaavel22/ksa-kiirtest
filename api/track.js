@@ -115,26 +115,57 @@ const KSA_TICKETS_API_KEY = process.env.KSA_TICKETS_API_KEY;
 
 // ── Brevo (Sendinblue) lead routing ─────────────────────────────────────────
 // LP + guide leads pushed into a Brevo contact list for nurture/email.
-// Dormant no-op until BREVO_API_KEY + BREVO_LP_LIST_ID env vars are set.
+// No-op unless BREVO_API_KEY and the relevant list id are set.
 const BREVO_API_KEY = process.env.BREVO_API_KEY || null;
 const BREVO_LP_LIST_ID = process.env.BREVO_LP_LIST_ID ? Number(process.env.BREVO_LP_LIST_ID) : null;
-async function pushToBrevo({ email, name, phone, lp_source, campaign_code, diopter, lang, leadType } = {}) {
-  if (!BREVO_API_KEY || !BREVO_LP_LIST_ID || !email) return { skipped: true };
+// Mai 2026-10-09: kiirtest leads go to their own list ("Kiirtest leadid", 27),
+// never the newsletter list, and only with an explicit marketing tick.
+const BREVO_KIIRTEST_LIST_ID = process.env.BREVO_KIIRTEST_LIST_ID ? Number(process.env.BREVO_KIIRTEST_LIST_ID) : null;
+// Brevo's VANUS attribute is a category number, not the label the quiz stores.
+const BREVO_AGE_CATEGORY = { '18-25': 1, '26-35': 2, '36-45': 3, '46-55': 4, '56+': 5, 'Alla 18': 6 };
+
+// A failed Brevo push must be visible. Falls back to the general webhook rather
+// than going quiet, because a lost consented contact cannot be recovered later.
+const SLACK_ALERTS_WEBHOOK = process.env.SLACK_ALERTS_WEBHOOK_URL || process.env.SLACK_WEBHOOK_URL || null;
+async function alertSlack(text) {
+  if (!SLACK_ALERTS_WEBHOOK) { console.error('ALERT (no webhook configured):', text); return; }
+  try {
+    await fetch(SLACK_ALERTS_WEBHOOK, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }),
+    });
+  } catch (e) { console.error('alertSlack failed:', e.message, '—', text); }
+}
+async function pushToBrevo({ email, name, phone, lp_source, campaign_code, diopter, lang, leadType, listId, attributes: attrOverride } = {}) {
+  const targetList = listId || BREVO_LP_LIST_ID;
+  if (!BREVO_API_KEY || !targetList || !email) return { skipped: true };
   const firstName = String(name || '').trim().split(/\s+/)[0] || '';
   const cleanPhone = String(phone || '').replace(/\s+/g, '');
-  const attributes = {
+  // Brevo rejects nulls, and an empty string overwrites a value the CRM set.
+  const strip = (o) => Object.fromEntries(
+    Object.entries(o).filter(([, v]) => v !== null && v !== undefined && v !== ''));
+  const attributes = strip(attrOverride || {
     FIRSTNAME: firstName, LP_SOURCE: lp_source || '', LEAD_TYPE: leadType || '',
     LANGUAGE: lang || '', CAMPAIGN_CODE: campaign_code || '', DIOPTER: diopter || '',
-  };
+  });
   if (isE164(cleanPhone)) attributes.SMS = cleanPhone;
+  // updateEnabled lets the CRM and the quiz enrich the same contact. We never
+  // send emailBlacklisted — someone who unsubscribed in Brevo stays unsubscribed,
+  // whatever a later form says.
   const send = (attrs) => fetch('https://api.brevo.com/v3/contacts', {
     method: 'POST',
     headers: { 'api-key': BREVO_API_KEY, 'Content-Type': 'application/json', 'Accept': 'application/json' },
-    body: JSON.stringify({ email, attributes: attrs, listIds: [BREVO_LP_LIST_ID], updateEnabled: true }),
+    body: JSON.stringify({ email, attributes: attrs, listIds: [targetList], updateEnabled: true }),
   });
   try {
     let r = await send(attributes);
-    if (r.status === 400) { console.warn('Brevo 400, retry minimal:', await r.text()); r = await send({ FIRSTNAME: firstName }); }
+    if (r.status === 400) {
+      // Usually an attribute that does not exist in Brevo yet. Keep the contact
+      // rather than losing it, but say which attributes were dropped.
+      const detail = await r.text();
+      console.warn('Brevo 400, retry without attributes:', detail, Object.keys(attributes).join(','));
+      await alertSlack(`:warning: Brevo võttis kontakti vastu, aga atribuudid jäid salvestamata (list ${targetList}). Kontrolli, kas need väljad on Brevos olemas: ${Object.keys(attributes).join(', ')}. Brevo vastus: ${detail.slice(0, 300)}`);
+      r = await send(strip({ FIRSTNAME: firstName }));
+    }
     if (!r.ok && r.status !== 204) { console.error('Brevo push error:', r.status, await r.text()); return { ok: false, status: r.status }; }
     return { ok: true };
   } catch (e) { console.error('Brevo fetch error:', e); return { ok: false, error: String(e) }; }
@@ -167,7 +198,7 @@ function parseSphere(raw) {
 // kandidaat, C = Vajab konsultatsiooni). age_band/vision_issue use the enums the
 // CRM already accepts from buildCRMPayload; the raw quiz answers ride along in
 // quiz_meta.quiz_answers so nothing is lost.
-function buildEmailLeadPayload({ body, answers, lang, email, result, promoCode, adSource, lp_source }) {
+function buildEmailLeadPayload({ body, answers, lang, email, result, promoCode, adSource, lp_source, consent }) {
   const good = result === 'good_candidate';
   // age_band must stay one of the CRM's three enums or the ticket is rejected,
   // so an unmapped age keeps the default — but the routing hint below must not
@@ -209,6 +240,13 @@ function buildEmailLeadPayload({ body, answers, lang, email, result, promoCode, 
     },
     utm: { source: u.source || null, medium: u.medium || null, campaign: u.campaign || null },
     click_ids: Object.keys(ids).length ? ids : null,
+    // Mai 2026-10-09: reception sees on the ticket whether this person agreed to
+    // marketing email, when, and which wording they agreed to.
+    consent: {
+      marketing_email: consent?.marketing_email === true,
+      text_version: consent?.text_version || null,
+      given_at: consent?.given_at || null,
+    },
   };
 }
 
@@ -1355,11 +1393,50 @@ export default async function handler(req, res) {
     // The CRM schema still requires a phone until Mai's fix lands (~2026-09-17);
     // until then this returns 4xx — logged, no Slack alarm. Slack + email above
     // are untouched either way.
+    const consent = body?.consent || {};
     await postToCRM(
-      buildEmailLeadPayload({ body, answers, lang, email, result, promoCode, adSource, lp_source }),
+      buildEmailLeadPayload({ body, answers, lang, email, result, promoCode, adSource, lp_source, consent }),
       type,
       { quiet4xx: true },
     );
+
+    // ── Brevo: "Kiirtest leadid" list, consent-gated (Mai 2026-10-09) ────────
+    // Three conditions, all required: an email, an explicit marketing tick, and
+    // an age band that is not "Alla 18". Without the tick the CRM ticket still
+    // happens exactly as before — only Brevo is withheld, so the result the
+    // patient came for is never traded against a marketing consent.
+    const brevoAllowed = consent.marketing_email === true && (answers.age || '') !== 'Alla 18';
+    if (brevoAllowed) {
+      const r = await pushToBrevo({
+        email, lang, leadType: 'kiirtest',
+        listId: BREVO_KIIRTEST_LIST_ID,
+        attributes: {
+          KEEL: (lang || 'et').toLowerCase(),
+          VANUS: BREVO_AGE_CATEGORY[answers.age] || null,
+          SUGU: answers.gender || null,
+          KT_TULEMUS: label,
+          KT_SOODUSKOOD: promoCode || null,
+          KT_NAGEMINE: answers.vision || null,
+          KT_HUVI: answers.interest || null,
+          KT_TESTI_KUUPAEV: new Date().toISOString().slice(0, 10),
+          KT_NOUSOLEK_AEG: consent.given_at || null,
+          KT_NOUSOLEK_VERSIOON: consent.text_version || null,
+        },
+      });
+      if (r && r.skipped) {
+        // BREVO_API_KEY is Production-only, so previews would alert on every
+        // test submit. Production silence here would hide a real misconfiguration.
+        if (process.env.VERCEL_ENV === 'production') {
+          await alertSlack(`:rotating_light: Kiirtest: nõusolek anti, aga Brevosse ei saadetud — BREVO_API_KEY või BREVO_KIIRTEST_LIST_ID on seadistamata. Keel: ${lang}.`);
+        } else {
+          console.log('Brevo skipped (not configured in this environment):', process.env.VERCEL_ENV);
+        }
+      } else if (r && r.ok === false) {
+        await alertSlack(`:rotating_light: Kiirtest: Brevo push ebaõnnestus, list ${BREVO_KIIRTEST_LIST_ID}. Staatus: ${r.status || r.error}. Keel: ${lang}. Nõusolek oli antud, nii et see kontakt jäi listist välja.`);
+      }
+    } else {
+      console.log('Brevo skipped (no marketing consent):', lang, answers.age || '—');
+    }
 
   } else if (type === 'quiz_completed') {
     // Anonymous quiz completions are useful for analytics, but they are not

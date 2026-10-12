@@ -1424,7 +1424,13 @@ export default async function handler(req, res) {
         },
       });
       if (r && r.skipped) {
-        await alertSlack(`:rotating_light: Kiirtest: nõusolek anti, aga Brevosse ei saadetud — BREVO_API_KEY või BREVO_KIIRTEST_LIST_ID on seadistamata. Keel: ${lang}.`);
+        // BREVO_API_KEY is Production-only, so previews would alert on every
+        // test submit. Production silence here would hide a real misconfiguration.
+        if (process.env.VERCEL_ENV === 'production') {
+          await alertSlack(`:rotating_light: Kiirtest: nõusolek anti, aga Brevosse ei saadetud — BREVO_API_KEY või BREVO_KIIRTEST_LIST_ID on seadistamata. Keel: ${lang}.`);
+        } else {
+          console.log('Brevo skipped (not configured in this environment):', process.env.VERCEL_ENV);
+        }
       } else if (r && r.ok === false) {
         await alertSlack(`:rotating_light: Kiirtest: Brevo push ebaõnnestus, list ${BREVO_KIIRTEST_LIST_ID}. Staatus: ${r.status || r.error}. Keel: ${lang}. Nõusolek oli antud, nii et see kontakt jäi listist välja.`);
       }

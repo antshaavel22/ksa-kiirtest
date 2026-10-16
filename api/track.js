@@ -101,7 +101,7 @@ async function utmLabel(utm) {
 
 // ── Server-side promo code ───────────────────────────────────────────────────
 function getDailyCode() {
-  return 'FLOW19';
+  return 'KIIRTEST39';
 }
 
 // ── KAISA-436: Mai CRM intake ────────────────────────────────────────────────
@@ -516,7 +516,7 @@ function buildInstallmentGuideEmail(name) {
 
   ${section('05', 'Kuidas taotlus käib?', `
     <ol style="font-size:14px;color:#444;line-height:2;margin:0 0 14px;padding-left:16px;">
-      <li>Broneeri Flow3 silmauuring (19 € tänase eripakkumisega)</li>
+      <li>Broneeri Flow3 silmauuring (39 € tänase eripakkumisega)</li>
       <li>Uuring toimub — arst kinnitab, et sobid protseduurile</li>
       <li>KSA saadab sulle Inbanki/LHV taotluslingi</li>
       <li>Täidad taotluse veebis — otsus tuleb tavaliselt <strong style="color:#0F0F0F;">1–2 minuti jooksul</strong></li>
@@ -560,8 +560,8 @@ const EMAIL = {
     greeting: 'Tere!',
     introGood: 'Tegid meie Flow3 kiirtesti ja sinu tulemus näitas, et laserprotseduur võiks sulle sobida. Tahtsime veenduda, et said oma sooduskoodi kätte ja et kõik on selge.',
     introConsult: 'Tegid meie Flow3 kiirtesti. Sinu vastuste põhjal sobib sulle nägemisuuring Audit — optometrist ja arst teevad põhjalikud uuringud ja saadavad kirjaliku raporti.',
-    cta: 'Broneeri aeg — maksa veebis 19 €',
-    ctaUrl: 'https://booking.ksa.ee/?lang=et',
+    cta: 'Broneeri aeg — maksa veebis 39 €',
+    ctaUrl: 'https://booking.ksa.ee/?lang=et&service=flow',
     ctaAudit: 'Broneeri nägemisuuring Audit',
     ctaAuditUrl: 'https://booking.ksa.ee/?lang=et&funnel=audit',
     contact: 'Kirjuta mulle: <a href="mailto:lilia@ksa.ee" style="color:#87BE23;">lilia@ksa.ee</a> või helista: <a href="tel:+3726445060" style="color:#87BE23;">+372 644 5060</a>',
@@ -571,8 +571,8 @@ const EMAIL = {
     greeting: 'Hello!',
     introGood: 'You completed our Flow3 quick test and your result showed that laser eye surgery could be right for you. We wanted to make sure you received your discount code and that everything is clear.',
     introConsult: 'You completed our Flow3 quick test. Based on your answers, we recommend a Vision Audit exam — our optometrist and doctor will do a thorough assessment and send you a written report.',
-    cta: 'Book your appointment — pay online €19',
-    ctaUrl: 'https://booking.ksa.ee/?lang=en',
+    cta: 'Book your appointment — pay online €39',
+    ctaUrl: 'https://booking.ksa.ee/?lang=en&service=flow',
     ctaAudit: 'Book Vision Audit exam',
     ctaAuditUrl: 'https://booking.ksa.ee/?lang=en&funnel=audit',
     contact: 'Write to me: <a href="mailto:lilia@ksa.ee" style="color:#87BE23;">lilia@ksa.ee</a> or call: <a href="tel:+3726445060" style="color:#87BE23;">+372 644 5060</a>',
@@ -582,8 +582,8 @@ const EMAIL = {
     greeting: 'Здравствуйте!',
     introGood: 'Вы прошли наш экспресс-тест Flow3, и результат показал, что лазерная коррекция зрения может вам подойти. Хотели убедиться, что вы получили свой код скидки и всё понятно.',
     introConsult: 'Вы прошли наш экспресс-тест Flow3. По вашим ответам вам подойдёт обследование Audit — оптометрист и врач проведут детальную диагностику и составят письменное заключение.',
-    cta: 'Записаться на приём — онлайн-оплата 19 €',
-    ctaUrl: 'https://booking.ksa.ee/?lang=ru',
+    cta: 'Записаться на приём — онлайн-оплата 39 €',
+    ctaUrl: 'https://booking.ksa.ee/?lang=ru&service=flow',
     ctaAudit: 'Записаться на обследование Audit',
     ctaAuditUrl: 'https://booking.ksa.ee/?lang=ru&funnel=audit',
     contact: 'Напишите мне: <a href="mailto:lilia@ksa.ee" style="color:#87BE23;">lilia@ksa.ee</a> или позвоните: <a href="tel:+3726445060" style="color:#87BE23;">+372 644 5060</a>',
@@ -689,8 +689,8 @@ function buildEmailHtml(lang, name, promoCode, result, answers) {
         <td align="center">
           <table cellpadding="0" cellspacing="0" border="0" style="margin:0 auto;">
             <tr>
-              <td style="font-family:Arial,sans-serif;font-size:22px;font-weight:700;color:#1A1A1A;padding-right:10px;">19&nbsp;€</td>
-              <td style="font-family:Arial,sans-serif;font-size:14px;color:#999;text-decoration:line-through;padding-right:12px;">69&nbsp;€</td>
+              <td style="font-family:Arial,sans-serif;font-size:22px;font-weight:700;color:#1A1A1A;padding-right:10px;">39&nbsp;€</td>
+              <td style="font-family:Arial,sans-serif;font-size:14px;color:#999;text-decoration:line-through;padding-right:12px;">149&nbsp;€</td>
               <td style="font-family:Arial,sans-serif;font-size:12px;color:#5A8A00;font-weight:600;">Flow3 silmauuring</td>
             </tr>
           </table>
@@ -734,16 +734,10 @@ function buildEmailHtml(lang, name, promoCode, result, answers) {
     ? withPromoCode(t.ctaUrl, promoCode)
     : t.ctaAuditUrl;
   const ctaLabel = isGood ? t.cta : t.ctaAudit;
-  const clinicNote = {
-    ET: 'Kliinikus kohapeal tasumisel <strong>39&nbsp;€</strong>',
-    EN: 'Pay at clinic on the day: <strong>€39</strong>',
-    RU: 'Оплата в клинике: <strong>39&nbsp;€</strong>',
-  };
   const ctaHtml = `
   <!-- CTA -->
   <tr><td style="padding:24px 28px 20px;text-align:center;">
     <a href="${ctaUrl}" style="display:inline-block;background:#87BE23;color:#0F0F0F;font-family:Arial,sans-serif;font-size:16px;font-weight:700;text-decoration:none;padding:16px 36px;border-radius:6px;letter-spacing:-0.2px;">${ctaLabel}</a>
-    ${isGood ? `<div style="font-family:Arial,sans-serif;font-size:12px;color:#999;margin-top:10px;">${(clinicNote[lang] || clinicNote.ET)}</div>` : ''}
   </td></tr>`;
 
   return `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>

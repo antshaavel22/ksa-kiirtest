@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow"><!-- bridge page, not a SEO target -->
-  <title>Sinu 19€ Flow3 broneeringulink | KSA Silmakeskus</title>
+  <title>Sinu 39€ Flow3 broneeringulink | KSA Silmakeskus</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -280,18 +280,18 @@
 
       <div class="bridge-hero">
         <p class="bridge-hero__greeting" id="greeting">Tere!</p>
-        <h1 class="bridge-hero__title">Sinu 19&nbsp;€ Flow3 broneeringulink</h1>
+        <h1 class="bridge-hero__title">Sinu 39&nbsp;€ Flow3 broneeringulink</h1>
         <p class="bridge-hero__subtitle">Vali endale sobiv aeg Tallinnas või Tartus.<br>Soodushind kohaldatakse automaatselt.</p>
 
         <div class="price-badge">
           <span class="price-badge__label">TÄNA</span>
-          <span class="price-badge__current">19&nbsp;€</span>
-          <span class="price-badge__old">69&nbsp;€</span>
+          <span class="price-badge__current">39&nbsp;€</span>
+          <span class="price-badge__old">149&nbsp;€</span>
         </div>
-        <p class="promo-line">Sinu sooduskood: <strong id="codeText">FLOW19</strong> &middot; kehtib täna kuni südaööni</p>
+        <p class="promo-line">Sinu sooduskood: <strong id="codeText">KIIRTEST39</strong> &middot; kehtib täna kuni südaööni</p>
 
         <a href="#" id="bookBtn" class="book-cta" target="_blank" rel="noopener noreferrer" onclick="trackBookClick()">
-          📅 Broneeri Flow3 silmauuring → 19&nbsp;€
+          📅 Broneeri Flow3 silmauuring → 39&nbsp;€
           <span class="book-cta__sub">Avaneb booking.ksa.ee &middot; soodushind juba peal</span>
         </a>
 
@@ -340,7 +340,7 @@
 
       <details class="faq-item">
         <summary>Mis siis, kui Flow3 mulle ei sobi?</summary>
-        <p class="faq-item__body">~30%-le uuringule tulnutest ütleme ausalt "ei" — see on osa Flow3 ohutuspoliitikast. Sellisel juhul soovitame teist KSA teenust (näiteks Audit nägemisuuringut), mis sinu silmadele paremini sobib. 19&nbsp;€ uuring annab sulle igal juhul täpse pildi sinu silmade hetkeseisust.</p>
+        <p class="faq-item__body">~30%-le uuringule tulnutest ütleme ausalt "ei" — see on osa Flow3 ohutuspoliitikast. Sellisel juhul soovitame teist KSA teenust (näiteks Audit nägemisuuringut), mis sinu silmadele paremini sobib. 39&nbsp;€ uuring annab sulle igal juhul täpse pildi sinu silmade hetkeseisust.</p>
       </details>
 
       <details class="faq-item">
@@ -365,11 +365,11 @@
 <script>
   // ── Active promo code (matches kiirtest LP + lilia-qr) ──
   var DAILY_CODES = {
-    0: 'FLOW19', 1: 'FLOW19', 2: 'FLOW19', 3: 'FLOW19',
-    4: 'FLOW19', 5: 'FLOW19', 6: 'FLOW19'
+    0: 'KIIRTEST39', 1: 'KIIRTEST39', 2: 'KIIRTEST39', 3: 'KIIRTEST39',
+    4: 'KIIRTEST39', 5: 'KIIRTEST39', 6: 'KIIRTEST39'
   };
   function getTodayCode() {
-    return DAILY_CODES[new Date().getDay()] || 'FLOW19';
+    return DAILY_CODES[new Date().getDay()] || 'KIIRTEST39';
   }
 
   // ── URL params: ?code=X (fallback to today's), ?from=lilia|kiirtest|ad (greeting variant) ──
@@ -476,10 +476,12 @@
   function applyConfig() {
     // Use code from URL if provided (Lilia's QR sets this), otherwise today's
     var code = (getQueryParam('code') || '').trim().toUpperCase() || getTodayCode();
+    // Old links and emails still carry the retired FLOW19.
+    if (code === 'FLOW19') code = getTodayCode();
     document.getElementById('codeText').textContent = code;
 
     // Build booking URL with code + full tracking passthrough.
-    var bookUrl = buildTrackedUrl('https://booking.ksa.ee/?lang=et', {
+    var bookUrl = buildTrackedUrl('https://booking.ksa.ee/?lang=et&service=flow', {
       promokood: code
     });
     document.getElementById('bookBtn').setAttribute('href', bookUrl);

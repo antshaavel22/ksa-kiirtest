@@ -226,7 +226,7 @@
     <div class="qr-canvas-wrap">
       <img id="qrImage" src="/lilia-qr-static.png" alt="QR kood — skanni telefoniga" />
     </div>
-    <p class="code-display" id="codeDisplay">FLOW19</p>
+    <p class="code-display" id="codeDisplay">KIIRTEST39</p>
     <p class="code-label">Tänane sooduskood</p>
   </div>
 
@@ -254,15 +254,15 @@
 <div class="copied-toast" id="toast">✓ Kopeeritud lõikepuhvrisse</div>
 
 <script>
-  // Active promo code — Mai confirmed FLOW19 in booking CRM.
+  // Active promo code — KIIRTEST39 (FLOW19 retired 2026-10).
   var DAILY_CODES = {
-    0: 'FLOW19',  // Pühapäev
-    1: 'FLOW19',  // Esmaspäev
-    2: 'FLOW19',  // Teisipäev
-    3: 'FLOW19',  // Kolmapäev
-    4: 'FLOW19',  // Neljapäev
-    5: 'FLOW19',  // Reede
-    6: 'FLOW19',  // Laupäev
+    0: 'KIIRTEST39',  // Pühapäev
+    1: 'KIIRTEST39',  // Esmaspäev
+    2: 'KIIRTEST39',  // Teisipäev
+    3: 'KIIRTEST39',  // Kolmapäev
+    4: 'KIIRTEST39',  // Neljapäev
+    5: 'KIIRTEST39',  // Reede
+    6: 'KIIRTEST39',  // Laupäev
   };
   var DAY_LABELS_SHORT = ['P', 'E', 'T', 'K', 'N', 'R', 'L'];
   var DAY_LABELS_FULL = ['Pühapäev', 'Esmaspäev', 'Teisipäev', 'Kolmapäev', 'Neljapäev', 'Reede', 'Laupäev'];
@@ -316,7 +316,7 @@
   function render() {
     var d = getDateForOffset(currentOffset);
     var dow = d.getDay();
-    var code = DAILY_CODES[dow] || 'FLOW19';
+    var code = DAILY_CODES[dow] || 'KIIRTEST39';
     var url = buildBookingUrl(code);
 
     document.getElementById('codeDisplay').textContent = code;

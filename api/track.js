@@ -960,10 +960,10 @@ const SEQUENCE = {
         sp('Lilia siin, KSA-st. Meie kliiniku töötajates <strong>26 inimest, kaasa arvatud mina</strong>, on teinud Flow3 protseduuri ise.') +
         sp('Mitte sellepärast, et keegi käskis — vaid sellepärast, et me nägime iga päev tulemusi, kui meie kliendid käisid järelkontrollides. Me ei soovita klientidele teenuseid, mida me ise endale ei teeks.') +
         sp('Sinu online\'s tehtud kiirtesti tulemus näitas, et sobiksid tulema Flow3 uuringule, kus selguks, kas laserprotseduur oleks sinu silmadele parim lahendus. Kahjuks 30%-le uuringule tulijatest ütleme "EI".') +
-        sp('Uuring sooduskoodiga vaid <strong>19€</strong> (tavahind 69€).') +
+        sp('Uuring sooduskoodiga vaid <strong>39€</strong> (tavahind 149€).') +
         ssig('Lilia', 'Kliendisuhete koordinaator · KSA Silmakeskus'),
         `https://booking.ksa.ee/?lang=et&promokood=${code}`,
-        'Uuri kas sa kvalifitseerud Flow3-ks — 19€ →'
+        'Uuri kas sa kvalifitseerud Flow3-ks — 39€ →'
       ),
     },
     {
@@ -977,7 +977,7 @@ const SEQUENCE = {
           'Prillide + läätsede kulu 10 aasta jooksul: <strong>3500–7000€</strong>. Flow3 laserprotseduur on ühekordne kulu, järelmaksu kuumakse algab vaid <strong>63€-st kuus</strong>.',
         ]) +
         sp('Flow3 ei sobi kõigile — sellepärast on uuringul käimine vajalik, et teada saada, kas kuulud 70% hulka kellele anname rohelise tule, või oled 30% hulgas, kellele ütleme selge "Ei".') +
-        sp('Sinu sooduskood kehtib veel, et saaksid tulla uuringule <strong>19€-ga</strong> 69 asemel.') +
+        sp('Sinu sooduskood kehtib veel, et saaksid tulla uuringule <strong>39€-ga</strong> 149 asemel.') +
         ssig('Lilia', 'Kliendisuhete koordinaator · KSA Silmakeskus'),
         `https://booking.ksa.ee/?lang=et&promokood=${code}`,
         'Uuri kas su silmad sobivad Flow3-ks →'
@@ -993,7 +993,7 @@ const SEQUENCE = {
         sp('Kui teed esimese sammu ja registreerud uuringule, saame anda endast parima ja välja selgitada, kas sobiksid.') +
         ssig('Dr. Ants Haavel', 'KSA Silmakeskus, juhataja · silmakirurg 30+ aastat'),
         `https://booking.ksa.ee/?lang=et&promokood=${code}`,
-        'Uuri kas sa kvalifitseerud Flow3-ks — 19€ →'
+        'Uuri kas sa kvalifitseerud Flow3-ks — 39€ →'
       ),
     },
     {
@@ -1003,10 +1003,10 @@ const SEQUENCE = {
         sp('Lilia siin. Tahan jagada lugu, mida Ekke Kõu Leitham ise rääkis — 8-kordne Eesti maadlusmeister, kellele treening on eluviis.') +
         sp('Ta pelgas kaua treeningutest eemal olla, aga juba 7. päeva pärast Flow3 laserprotseduuri oli ta tagasi maadlusmatil.') +
         sp('<em>"Kohe kui laseriruumist lahkusin, nägin juba palju selgemalt. Nädala pärast tegin täie hooga trenni ja 2 nädala pärast nägin juba 100% — see kõik oli nii imelik. Hea, aga imelik."</em>') +
-        sp('Uuring <strong>19€.</strong>') +
+        sp('Uuring <strong>39€.</strong>') +
         ssig('Lilia', 'Kliendisuhete koordinaator · KSA Silmakeskus'),
         `https://booking.ksa.ee/?lang=et&promokood=${code}`,
-        'Uuri kas sa sobid Flow3-ks — 19€ →'
+        'Uuri kas sa sobid Flow3-ks — 39€ →'
       ),
     },
     {
@@ -1019,24 +1019,24 @@ const SEQUENCE = {
         sp('<strong>"Mis kui minu silmadele ei sobi laserprotseduur?"</strong><br>Saad vastuse Flow3 uuringul. ~30%-le ütleme "ei sobi" — ja seda ütleme ausalt välja.') +
         sp('<strong>"Liiga kallis."</strong><br>Järelmaksuga <strong>63€/kuus</strong>. 30 aasta jooksul säästad 18 000 eurot, mida muidu kulutaksid prillide ja läätsedega.') +
         sp('<strong>"Ootan veel."</strong><br>Iga aasta ootamist maksab ~500 eurot. Ootamine ei tee seda odavamaks.') +
-        sp('Küsimusi? Kirjuta mulle — <a href="mailto:lilia@ksa.ee" style="color:#87BE23;">lilia@ksa.ee</a>. Uuring <strong>19€.</strong>') +
+        sp('Küsimusi? Kirjuta mulle — <a href="mailto:lilia@ksa.ee" style="color:#87BE23;">lilia@ksa.ee</a>. Uuring <strong>39€.</strong>') +
         ssig('Lilia', 'Kliendisuhete koordinaator · KSA Silmakeskus'),
         `https://booking.ksa.ee/?lang=et&promokood=${code}`,
-        'Uuri kas sinu silmad sobivad — 19€ →'
+        'Uuri kas sinu silmad sobivad — 39€ →'
       ),
     },
     {
       delayHours: 336,
       subject: 'Viimane kiri KSA-st',
       build: (code) => buildSeqHtml(
-        sp('Lilia siin. Miks me pakkusime Sulle Flow3 uuringut 19 euroga 69 asemel? Sellel oli kindel põhjus.') +
+        sp('Lilia siin. Miks me pakkusime Sulle Flow3 uuringut 39 euroga 149 asemel? Sellel oli kindel põhjus.') +
         sp('Keskmine prilli- ja läätsekandja kulutab iga kuu 46 eurot terava nägemise peale — ja see kulu on elu lõpuni. Juhul, kui teed protseduuri, maksab see vaid alates 63 eurot mõned aastad, ja seejärel on Sinu kulu null. Nii säästaksid edaspidi kuni <strong>18 000 eurot</strong>.') +
-        sp('Selleks, et teada, kas Sul oleks juba täna raha protseduurile tulemiseks olemas, ongi meie poolt <strong>finantstest</strong>: 63 − 46 = <strong>17 eurot</strong>. Kui saad lubada endale täna 19-eurost uuringut, ilma et see Sind rahaliselt jalust niidaks, näitab see tõsiasi, et kogu raha protseduuriks on Sul juba täna olemas.') +
+        sp('Selleks, et teada, kas Sul oleks juba täna raha protseduurile tulemiseks olemas, ongi meie poolt <strong>finantstest</strong>: 63 − 46 = <strong>17 eurot</strong>. Kui saad lubada endale täna 39-eurost uuringut, ilma et see Sind rahaliselt jalust niidaks, näitab see tõsiasi, et kogu raha protseduuriks on Sul juba täna olemas.') +
         sp('Nüüd on vaid vaja välja selgitada, kas laserprotseduur oleks Sinu silmadele parim valik.') +
         sp('Kui Sul on küsimusi, helista <a href="tel:+3726445060" style="color:#87BE23;">644 5060</a> ja küsi Liliat — või broneeri otse uuring online\'s.') +
         ssig('Lilia', 'Kliendisuhete koordinaator · KSA Silmakeskus'),
         `https://booking.ksa.ee/?lang=et&promokood=${code}`,
-        'Viimane võimalus: uuri kas sa kvalifitseerud — 19€ →'
+        'Viimane võimalus: uuri kas sa kvalifitseerud — 39€ →'
       ),
     },
   ],
@@ -1049,10 +1049,10 @@ const SEQUENCE = {
         sp('Lilia here, from KSA. Out of our clinic\'s staff, <strong>26 people — including myself</strong> — have had the Flow3 procedure.') +
         sp('Not because anyone told us to — but because we see the results every day when our patients come back for check-ups. We don\'t recommend services to clients that we wouldn\'t choose for ourselves.') +
         sp('Your online quick test showed you could be a candidate for the Flow3 exam, where we\'d find out whether laser surgery is the best solution for your eyes. Unfortunately, for 30% of people who come for the exam, our answer is "no".') +
-        sp('Exam with promo code: <strong>€19</strong> (regular price €69).') +
+        sp('Exam with promo code: <strong>€39</strong> (regular price €149).') +
         ssig('Lilia', 'Customer Relations Coordinator · KSA Eye Centre'),
         `https://booking.ksa.ee/?lang=en&promokood=${code}`,
-        'Find out if you qualify for Flow3 — €19 →'
+        'Find out if you qualify for Flow3 — €39 →'
       ),
     },
     {
@@ -1066,7 +1066,7 @@ const SEQUENCE = {
           'Glasses + contacts over 10 years: <strong>€3,500–7,000</strong>. Flow3 is a one-time cost — monthly instalments from just <strong>€63/month</strong>.',
         ]) +
         sp('Flow3 isn\'t right for everyone — that\'s exactly why the exam exists: to find out whether you\'re among the 70% who get the green light, or the 30% who get an honest "no".') +
-        sp('Your promo code is still valid — come for the exam at <strong>€19</strong> instead of €69.') +
+        sp('Your promo code is still valid — come for the exam at <strong>€39</strong> instead of €149.') +
         ssig('Lilia', 'Customer Relations Coordinator · KSA Eye Centre'),
         `https://booking.ksa.ee/?lang=en&promokood=${code}`,
         'Find out if your eyes qualify for Flow3 →'
@@ -1082,7 +1082,7 @@ const SEQUENCE = {
         sp('If you take the first step and book the exam, we\'ll do our best to find out whether you\'re suitable.') +
         ssig('Dr. Ants Haavel', 'KSA Eye Centre, CEO · Eye surgeon 30+ years'),
         `https://booking.ksa.ee/?lang=en&promokood=${code}`,
-        'Find out if you qualify for Flow3 — €19 →'
+        'Find out if you qualify for Flow3 — €39 →'
       ),
     },
     {
@@ -1092,7 +1092,7 @@ const SEQUENCE = {
         sp('Lilia here. I want to share a story that Ekke Kõu Leitham told me himself — an 8-time Estonian wrestling champion, for whom training is a way of life.') +
         sp('He dreaded being away from training for a long time. But just 7 days after the Flow3 procedure, he was back on the wrestling mat.') +
         sp('<em>"As soon as I left the laser room I could already see much more clearly. A week later I was training at full intensity, and after 2 weeks my vision was 100% — it was all so strange. Good strange."</em>') +
-        sp('Exam <strong>€19.</strong>') +
+        sp('Exam <strong>€39.</strong>') +
         ssig('Lilia', 'Customer Relations Coordinator · KSA Eye Centre'),
         `https://booking.ksa.ee/?lang=en&promokood=${code}`,
         'Find out if your eyes qualify for Flow3 →'
@@ -1108,7 +1108,7 @@ const SEQUENCE = {
         sp('<strong>"What if laser surgery isn\'t right for my eyes?"</strong><br>You\'ll get your answer at the Flow3 exam. We tell ~30% that it\'s not suitable — and we say so honestly.') +
         sp('<strong>"Too expensive."</strong><br>On instalments: <strong>€63/month</strong>. Over 30 years you\'d save €18,000 that would otherwise go on glasses and contacts.') +
         sp('<strong>"I\'ll wait."</strong><br>Every year of waiting costs ~€500. Waiting doesn\'t make it cheaper.') +
-        sp('Questions? Write to me — <a href="mailto:lilia@ksa.ee" style="color:#87BE23;">lilia@ksa.ee</a>. Exam <strong>€19.</strong>') +
+        sp('Questions? Write to me — <a href="mailto:lilia@ksa.ee" style="color:#87BE23;">lilia@ksa.ee</a>. Exam <strong>€39.</strong>') +
         ssig('Lilia', 'Customer Relations Coordinator · KSA Eye Centre'),
         `https://booking.ksa.ee/?lang=en&promokood=${code}`,
         'Find out if your eyes qualify for Flow3 →'
@@ -1118,14 +1118,14 @@ const SEQUENCE = {
       delayHours: 336,
       subject: 'Last email from KSA',
       build: (code) => buildSeqHtml(
-        sp('Lilia here. Why did we offer you the Flow3 exam for €19 instead of €69? There was a specific reason.') +
+        sp('Lilia here. Why did we offer you the Flow3 exam for €39 instead of €149? There was a specific reason.') +
         sp('The average glasses or contact lens wearer spends €46 per month on clear vision — for life. If you have the procedure, the cost is from €63/month for a few years, then zero. You\'d save up to <strong>€18,000</strong> going forward.') +
-        sp('To find out whether you already have the money for the procedure today, here\'s our <strong>financial test</strong>: 63 − 46 = <strong>€17</strong>. If you can afford today\'s €19 exam without it hitting you financially, that fact shows the money for the full procedure is already there.') +
+        sp('To find out whether you already have the money for the procedure today, here\'s our <strong>financial test</strong>: 63 − 46 = <strong>€17</strong>. If you can afford today\'s €39 exam without it hitting you financially, that fact shows the money for the full procedure is already there.') +
         sp('All that remains is to find out whether laser surgery is the best choice for your eyes.') +
         sp('If you have questions, call <a href="tel:+3726445060" style="color:#87BE23;">644 5060</a> and ask for Lilia — or book your exam directly online.') +
         ssig('Lilia', 'Customer Relations Coordinator · KSA Eye Centre'),
         `https://booking.ksa.ee/?lang=en&promokood=${code}`,
-        'Last chance: find out if you qualify — €19 →'
+        'Last chance: find out if you qualify — €39 →'
       ),
     },
   ],
@@ -1137,10 +1137,10 @@ const SEQUENCE = {
         sp('На связи Лилия из KSA. В нашей клинике уже <strong>26 человек, включая меня</strong>, сделали процедуру Flow3.') +
         sp('И дело не в том, что нам так приказали — просто мы каждый день видели результаты наших клиентов, когда они приходили на контрольные осмотры. Мы не рекомендуем клиентам услуги, которые не выбрали бы для себя.') +
         sp('Ваш онлайн-тест показал, что вы — подходящий кандидат для обследования Flow3. Оно поможет окончательно выяснить, станет ли лазерная процедура лучшим решением для ваших глаз. К сожалению, 30% пришедших на обследование мы вынуждены сказать «НЕТ».') +
-        sp('Обследование по промокоду — всего <strong>19 €</strong> (обычная цена 69 €).') +
+        sp('Обследование по промокоду — всего <strong>39 €</strong> (обычная цена 149 €).') +
         ssig('Лилия', 'Координатор по работе с клиентами · KSA Silmakeskus'),
         `https://booking.ksa.ee/?lang=ru&promokood=${code}`,
-        'Узнайте, подходит ли вам Flow3 — 19 € →'
+        'Узнайте, подходит ли вам Flow3 — 39 € →'
       ),
     },
     {
@@ -1154,7 +1154,7 @@ const SEQUENCE = {
           'Расходы на очки и линзы за 10 лет: от <strong>3500 до 7000 €</strong>. Лазерная процедура Flow3 — разовое вложение, ежемесячный платёж по рассрочке от <strong>63 €</strong>.',
         ]) +
         sp('Flow3 подходит не всем. Именно поэтому необходимо пройти обследование: так мы узнаем, входите ли вы в те 70%, кому мы даём «зелёный свет», или же вы в числе тех 30%, кому мы скажем чёткое «нет».') +
-        sp('Ваш промокод всё ещё действует — пройдите обследование всего за <strong>19 €</strong> вместо 69 €.') +
+        sp('Ваш промокод всё ещё действует — пройдите обследование всего за <strong>39 €</strong> вместо 149 €.') +
         ssig('Лилия', 'Координатор по работе с клиентами · KSA Silmakeskus'),
         `https://booking.ksa.ee/?lang=ru&promokood=${code}`,
         'Узнайте, подходят ли ваши глаза для Flow3 →'
@@ -1170,7 +1170,7 @@ const SEQUENCE = {
         sp('Если вы сделаете первый шаг и запишетесь на обследование, мы приложим все усилия, чтобы определить, подходит ли вам этот метод.') +
         ssig('Д-р Антс Хаавель', 'Руководитель клиники · глазной хирург, 30+ лет опыта'),
         `https://booking.ksa.ee/?lang=ru&promokood=${code}`,
-        'Узнайте, подходит ли вам Flow3 — 19 € →'
+        'Узнайте, подходит ли вам Flow3 — 39 € →'
       ),
     },
     {
@@ -1180,7 +1180,7 @@ const SEQUENCE = {
         sp('На связи Лилия. Хочу поделиться историей, которую рассказал нам Экке Кыу Лейтам — 8-кратный чемпион Эстонии по борьбе, для которого тренировки — это образ жизни.') +
         sp('Он долго опасался, что надолго выпадет из тренировочного процесса, но уже через 7 дней после лазерной процедуры Flow3 он вернулся на борцовский ковёр.') +
         sp('<em>«Как только я вышел из лазерного кабинета, я сразу стал видеть гораздо чётче. Через неделю я уже тренировался в полную силу, а через две недели зрение восстановилось на 100% — всё это было так необычно. Классно, но необычно».</em>') +
-        sp('Обследование — <strong>19 €</strong>.') +
+        sp('Обследование — <strong>39 €</strong>.') +
         ssig('Лилия', 'Координатор по работе с клиентами · KSA Silmakeskus'),
         `https://booking.ksa.ee/?lang=ru&promokood=${code}`,
         'Узнайте, подходят ли ваши глаза для Flow3 →'
@@ -1196,7 +1196,7 @@ const SEQUENCE = {
         sp('<strong>«Что если моим глазам не подходит лазер?»</strong><br>Ответ вы получите на обследовании Flow3. Примерно 30% кандидатов мы говорим «не подходит» — и говорим это честно.') +
         sp('<strong>«Слишком дорого».</strong><br>При оплате в рассрочку — от <strong>63 € в месяц</strong>. За 30 лет вы сэкономите около 18 000 €, которые иначе ушли бы на очки и линзы.') +
         sp('<strong>«Я ещё подожду».</strong><br>Каждый год ожидания обходится примерно в 500 €. Дешевле от этого процедура не станет.') +
-        sp('Есть вопросы? Напишите мне — <a href="mailto:lilia@ksa.ee" style="color:#87BE23;">lilia@ksa.ee</a>. Обследование — <strong>19 €</strong>.') +
+        sp('Есть вопросы? Напишите мне — <a href="mailto:lilia@ksa.ee" style="color:#87BE23;">lilia@ksa.ee</a>. Обследование — <strong>39 €</strong>.') +
         ssig('Лилия', 'Координатор по работе с клиентами · KSA Silmakeskus'),
         `https://booking.ksa.ee/?lang=ru&promokood=${code}`,
         'Узнайте, подходят ли ваши глаза для Flow3 →'
@@ -1206,14 +1206,14 @@ const SEQUENCE = {
       delayHours: 336,
       subject: 'Последнее письмо от KSA',
       build: (code) => buildSeqHtml(
-        sp('На связи Лилия. Почему мы предложили вам обследование Flow3 всего за 19 € вместо 69 €? На это была конкретная причина.') +
+        sp('На связи Лилия. Почему мы предложили вам обследование Flow3 всего за 39 € вместо 149 €? На это была конкретная причина.') +
         sp('В среднем человек, носящий очки или линзы, тратит на чёткое зрение около 46 € каждый месяц — и эти расходы сопровождают его всю жизнь. Если же вы сделаете процедуру, она будет стоить от 63 € в месяц в течение нескольких лет, а после — ваши расходы станут нулевыми. Так в будущем вы сэкономите до <strong>18 000 €</strong>.') +
-        sp('Чтобы понять, есть ли у вас средства на процедуру уже сегодня, мы предлагаем простой <strong>финансовый тест</strong>: 63 − 46 = <strong>17 €</strong>. Если вы можете позволить себе обследование за 19 € без ущерба для бюджета, это доказывает, что вся сумма для процедуры у вас фактически уже есть.') +
+        sp('Чтобы понять, есть ли у вас средства на процедуру уже сегодня, мы предлагаем простой <strong>финансовый тест</strong>: 63 − 46 = <strong>17 €</strong>. Если вы можете позволить себе обследование за 39 € без ущерба для бюджета, это доказывает, что вся сумма для процедуры у вас фактически уже есть.') +
         sp('Теперь осталось лишь выяснить, является ли лазерная коррекция лучшим решением именно для ваших глаз.') +
         sp('Если у вас есть вопросы, позвоните по номеру <a href="tel:+3726445060" style="color:#87BE23;">644 5060</a>, спросите Лилию — или забронируйте обследование прямо на сайте.') +
         ssig('Лилия', 'Координатор по работе с клиентами · KSA Silmakeskus'),
         `https://booking.ksa.ee/?lang=ru&promokood=${code}`,
-        'Последний шанс: узнайте, подходит ли вам Flow3 — 19 € →'
+        'Последний шанс: узнайте, подходит ли вам Flow3 — 39 € →'
       ),
     },
   ],

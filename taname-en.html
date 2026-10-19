@@ -207,12 +207,12 @@
       <div class="badge">Email sent ✓</div>
 
       <h1>Find out if your eyes qualify for Flow3</h1>
-      <p class="subtitle">The €19 exam shows whether you are among the 70% who qualify for Flow3. Your €50 bonus activates as soon as you book online.</p>
+      <p class="subtitle">The €39 exam shows whether you are among the 70% who qualify for Flow3. Your €110 bonus activates as soon as you book online.</p>
 
       <!-- Countdown urgency -->
       <div class="urgency-banner">
         <div class="urgency-label">
-          €50 bonus activates on booking
+          €110 bonus activates on booking
           <span>Offer expires</span>
         </div>
         <div class="countdown" id="countdown">24:00:00</div>
@@ -222,10 +222,10 @@
       <div class="code-box">
         <div class="code-label">Your discount code</div>
         <div class="code-row">
-          <div class="code-value" id="promoCode">FLOW19</div>
+          <div class="code-value" id="promoCode">KIIRTEST39</div>
           <button class="code-copy" onclick="copyCode()">Copy</button>
         </div>
-        <div class="code-prices">Exam <strong>&euro;19</strong> <s>&euro;69</s> &mdash; book online to activate €50 bonus</div>
+        <div class="code-prices">Exam <strong>&euro;39</strong> <s>&euro;149</s> &mdash; book online to activate €110 bonus</div>
       </div>
 
       <!-- Qualify stat -->
@@ -237,8 +237,8 @@
       </div>
 
       <!-- Primary CTA -->
-      <a href="https://booking.ksa.ee/?lang=en&promokood=FLOW19" class="btn-cta" id="bookBtn">
-        Book &euro;19 exam &rarr; activate bonus
+      <a href="https://booking.ksa.ee/?lang=en&service=flow&promokood=KIIRTEST39" class="btn-cta" id="bookBtn">
+        Book &euro;39 exam &rarr; activate bonus
       </a>
       <p class="btn-sub">Online &euro;19 &nbsp;&middot;&nbsp; In clinic &euro;39 &nbsp;&middot;&nbsp; Tallinn &amp; Tartu</p>
 
@@ -262,7 +262,7 @@
         <div class="steps-title">How the exam works</div>
         <div class="step">
           <div class="step-num">1</div>
-          <div class="step-text">Click the green button above — goes straight to the booking calendar, code <strong id="promoCode2">FLOW19</strong> is added automatically</div>
+          <div class="step-text">Click the green button above — goes straight to the booking calendar, code <strong id="promoCode2">KIIRTEST39</strong> is added automatically</div>
         </div>
         <div class="step">
           <div class="step-num">2</div>
@@ -291,12 +291,12 @@
 
   <script>
     // Active promo code
-    var DAILY_CODES = {0:'FLOW19',1:'FLOW19',2:'FLOW19',3:'FLOW19',4:'FLOW19',5:'FLOW19',6:'FLOW19'};
-    var code = DAILY_CODES[new Date().getDay()] || 'FLOW19';
+    var DAILY_CODES = {0:'KIIRTEST39',1:'KIIRTEST39',2:'KIIRTEST39',3:'KIIRTEST39',4:'KIIRTEST39',5:'KIIRTEST39',6:'KIIRTEST39'};
+    var code = DAILY_CODES[new Date().getDay()] || 'KIIRTEST39';
     document.getElementById('promoCode').textContent = code;
     document.getElementById('promoCode2').textContent = code;
     document.getElementById('bookBtn').href =
-      'https://booking.ksa.ee/?lang=en&promokood=' + code;
+      'https://booking.ksa.ee/?lang=en&service=flow&promokood=' + code;
 
     // Copy to clipboard
     function copyCode() {

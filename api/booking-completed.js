@@ -6,7 +6,7 @@
 //
 // USAGE (from booking.ksa.ee, after a paid Flow3 booking is confirmed):
 //   POST https://kiirtest.ksa.ee/api/booking-completed
-//   Authorization: Bearer <LP_TRACK_SHARED_TOKEN>
+//   Authorization: Bearer <KIIRTEST_WEBHOOK_TOKEN>
 //   Content-Type: application/json
 //   {
 //     "email": "patient@example.com",
@@ -37,11 +37,12 @@ const RESEND_API_KEY = process.env.RESEND_API_KEY;
 // 9 September 2026 and handed to Mai for the CRM, but nothing ever read it —
 // this handler still compared against LP_TRACK_SHARED_TOKEN, which track.js
 // also uses. Every conversion the CRM posted from that day on came back 401
-// (KSA-877425), so Google Ads stopped seeing bookings. Accept the CRM's own
-// token first and keep the shared one working, and fail closed when neither is
+// (KSA-877425), so Google Ads stopped seeing bookings. Only the CRM's own token
+// is accepted: LP_TRACK_SHARED_TOKEN is embedded in public landing-page source
+// (glasses.ksa.ee), so accepting it here let anyone post a fake booking that
+// we would upload to Google Ads as a conversion. Fail closed when it is not
 // configured rather than comparing against "Bearer undefined".
 const CRM_TOKEN = process.env.KIIRTEST_WEBHOOK_TOKEN;
-const SHARED_TOKEN = process.env.LP_TRACK_SHARED_TOKEN;
 const SLACK_KIIRTEST_WEBHOOK = process.env.SLACK_KIIRTEST_CHANNEL_WEBHOOK_URL ||
   process.env.SLACK_WEBHOOK_URL;
 const SUPABASE_URL = process.env.SUPABASE_URL || '';
@@ -463,8 +464,7 @@ export default async function handler(req, res) {
   }
 
   const auth = req.headers['authorization'] || '';
-  const accepted = [CRM_TOKEN, SHARED_TOKEN].filter(Boolean).map((t) => `Bearer ${t}`);
-  if (!accepted.length || !accepted.includes(auth)) {
+  if (!CRM_TOKEN || auth !== `Bearer ${CRM_TOKEN}`) {
     await alertOnce(
       '401',
       60,

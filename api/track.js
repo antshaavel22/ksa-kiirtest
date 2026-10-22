@@ -30,8 +30,18 @@ const isPlaceholder = s => s && /^\{[^}]+\}$/.test(s.trim());
 // Pure numeric Meta entity ID, e.g. 6753232351941
 const isMetaId = s => s && /^\d{10,}$/.test(s.trim());
 
-async function utmLabel(utm) {
-  if (!utm) return 'Otse';
+async function utmLabel(rawUtm) {
+  if (!rawUtm) return 'Otse';
+  // The quiz pages send the landing URL's parameters under their own names
+  // (utm_source, utm_medium, utm_campaign, utm_content); this function was
+  // written for source/medium/campaign/content. Without the mapping every
+  // tagged Meta or newsletter visit fell through to "Otse".
+  const utm = Object.assign({}, rawUtm, {
+    source: rawUtm.source || rawUtm.utm_source,
+    medium: rawUtm.medium || rawUtm.utm_medium,
+    campaign: rawUtm.campaign || rawUtm.utm_campaign,
+    content: rawUtm.content || rawUtm.utm_content,
+  });
 
   // All fields empty → direct / no tracking
   const hasAny = utm.gclid || utm.gbraid || utm.wbraid || utm.fbclid || utm.source || utm.referrer || utm.campaign;
@@ -1786,6 +1796,10 @@ export default async function handler(req, res) {
       buildCRMPayload({ body, leadData, lang, name, phone, email, adSource, code: body.code, eventType: type }),
       type,
     );
+    // Counted (ledger → daily report) and in Lilia's CRM queue, but not posted to
+    // Slack: the same person's email_captured message is already there, and these
+    // clicks were taken out of the channel as noise on 2026-06-17.
+    return res.status(200).json({ ok: true, slack: 'skipped_booking_click' });
 
   } else if (type === 'hot_lead_lens_user') {
     // Daily lens user — high-value lead, flag for Lilia to call same day

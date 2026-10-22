@@ -410,6 +410,17 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
     try {
       const here = new URLSearchParams(location.search), fresh = {};
       ATTR_KEYS.forEach(k => { const v = here.get(k); if (v) fresh[k] = v.slice(0, 200); });
+      // Where the visit came from when the link carried no utm tags (ksa.ee,
+      // Google organic, a newsletter link without tags). The server already turns
+      // a referrer into "Orgaaniline — host"; it was never sent, so all of these
+      // showed as "Otse" in Slack and in the daily report.
+      try {
+        const ref = document.referrer ? new URL(document.referrer) : null;
+        if (ref && ref.hostname !== location.hostname && !sessionStorage.getItem(ATTR_STORE + '_ref')) {
+          fresh.referrer = (ref.origin + ref.pathname).slice(0, 200);
+          sessionStorage.setItem(ATTR_STORE + '_ref', '1');
+        }
+      } catch (e) {}
       if (Object.keys(fresh).length) {
         const prev = JSON.parse(sessionStorage.getItem(ATTR_STORE) || '{}');
         sessionStorage.setItem(ATTR_STORE, JSON.stringify(Object.assign(prev, fresh)));
@@ -431,6 +442,25 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
     } catch (e) { return 'kt_' + Date.now().toString(36); }
   }
   attrCapture();
+
+  // Booking-button click → /api/track book_now_clicked. The daily report's
+  // "Broneerimise klikid" counts these, and the quiz never sent them, so the
+  // report always said 0. Beacon so the new tab opening never waits on it.
+  window.ksaBookClick = function () {
+    try {
+      const b = BOOKING[answers.route] || BOOKING.flow3;
+      const payload = JSON.stringify({
+        type: 'book_now_clicked', email: answers.email, name: answers.name, language: LANG,
+        client_session_id: leadId(), utm: attrGet(), lp_source: 'LP-Kiirtest-ET',
+        result: answers.resultType, route: answers.route, code: b.code, promoCode: b.code, from: 'kiirtest',
+        answers: { forWhom: answers.forWhom, gender: answers.gender, age: answers.age, vision: answers.vision,
+          prescription: answers.prescription || 'N/A', lenses: answers.lenses, stability: answers.stability, interest: answers.interest },
+        timestamp: new Date().toISOString()
+      });
+      if (navigator.sendBeacon) navigator.sendBeacon('/api/track', new Blob([payload], { type: 'application/json' }));
+      else fetch('/api/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true });
+    } catch (e) {}
+  };
 
   function bookingUrl(route) {
     const b = BOOKING[route] || BOOKING.flow3;
@@ -724,7 +754,7 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
           <h4>${r.cta}</h4>
           <p>Broneerige õige uuring kohe — sooduskoodiga.</p>
           ${priceHtml}
-          <a href="${bookingUrl(answers.route)}" class="btn-cta-book" target="_blank" rel="noopener" style="margin-top:12px;display:inline-flex;" onclick="if(typeof fbq!=='undefined')fbq('track','Schedule');">
+          <a href="${bookingUrl(answers.route)}" class="btn-cta-book" target="_blank" rel="noopener" style="margin-top:12px;display:inline-flex;" onclick="ksaBookClick();if(typeof fbq!=='undefined')fbq('track','Schedule');">
             ${r.cta}
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>

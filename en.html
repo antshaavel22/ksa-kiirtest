@@ -74,6 +74,9 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
   .path-card h4 { margin: 0 0 6px; font-size: var(--text-lg, 1.1rem); font-weight: 600; }
   .path-card p { margin: 0 0 14px; font-size: var(--text-sm, .9rem); color: var(--color-text-secondary, #555); line-height: 1.5; }
   .path-price { font-weight: 600; }
+  .result-points { max-width: 380px; margin: 0 auto 16px; padding-left: 20px; text-align: left; color: var(--color-text-secondary, #5a6b6c); font-size: .95rem; }
+  .result-points li { margin-bottom: 6px; line-height: 1.5; }
+  .path-note { margin: 10px 0 0 !important; font-size: var(--text-sm, .9rem); }
   .path-price .old { font-weight: 400; color: var(--color-text-muted, #999); text-decoration: line-through; margin-left: 6px; font-size: .9em; }
   .callback-row { display: flex; gap: 8px; flex-wrap: wrap; }
   .callback-row .step-textinput { flex: 1; min-width: 160px; }
@@ -647,7 +650,13 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
     flow3: {
       label: 'Nearsighted eyes',
       title: 'You would likely be a suitable Flow3 candidate.',
-      text: 'Your age and prescription match the conditions for the Flow3 laser procedure. At the exam we assess your eyes precisely and give you a written evaluation.',
+      text: 'Your age and prescription match the Flow3 conditions. Whether laser treatment suits your eyes is decided at the Flow3 eye exam.',
+      points: [
+        '60 minutes with an optometrist and an eye doctor, including corneal and retinal measurements, plus a written assessment.',
+        `With code ${BOOKING.flow3.code} the exam costs ${BOOKING.flow3.price.replace(' ', '&nbsp;')} (usual price ${BOOKING.flow3.old.replace(' ', '&nbsp;')}).`,
+        `If you have Flow3 or Flow Signature Line within 60 days, we deduct the full exam price of ${BOOKING.flow3.old.replace(' ', '&nbsp;')} from the procedure price.`
+      ],
+      note: 'The exam does not commit you to the procedure. You see free times in Tallinn and Tartu as soon as you book.',
       cta: 'Book a Flow3 eye exam', good: true
     },
     audit: {
@@ -744,6 +753,7 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
       <p class="result-label ${r.good ? '' : 'result-label--info'}">${r.label}</p>
       <h2 class="result-title">${r.title}</h2>
       <p class="result-text">${r.text}</p>
+      ${r.points ? `<ul class="result-points">${r.points.map(p => `<li>${p}</li>`).join('')}</ul>` : ''}
       ${stabilityNote}
       <div class="result-paths">
         <div class="path-card path-card--primary">
@@ -754,6 +764,7 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
             ${r.cta}
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
+          ${r.note ? `<p class="path-note">${r.note}</p>` : ''}
         </div>
         <div class="path-card">
           <h4>I have more questions</h4>

@@ -574,6 +574,9 @@ const EMAIL = {
     ctaUrl: 'https://booking.ksa.ee/?lang=et&service=flow',
     ctaAudit: 'Broneeri nägemisuuring Audit',
     ctaAuditUrl: 'https://booking.ksa.ee/?lang=et&service=audit',
+    introKids: 'Tegid meie Flow3 kiirtesti. Laste nägemine areneb kiiresti ja varajane kontroll on oluline. Meie spetsialistid teevad lapsele põhjaliku ja sõbraliku nägemiskontrolli.',
+    ctaKids: 'Broneeri laste silmauuring',
+    ctaKidsUrl: 'https://booking.ksa.ee/?lang=et&service=kids',
     contact: 'Kirjuta mulle: <a href="mailto:lilia@ksa.ee" style="color:#87BE23;">lilia@ksa.ee</a> või helista: <a href="tel:+3726445060" style="color:#87BE23;">+372 644 5060</a>',
     signOff: 'Lilia<br><span style="font-weight:400;color:#888;">Kliendisuhete koordinaator · KSA Silmakeskus</span>',
   },
@@ -585,6 +588,9 @@ const EMAIL = {
     ctaUrl: 'https://booking.ksa.ee/?lang=en&service=flow',
     ctaAudit: 'Book Vision Audit exam',
     ctaAuditUrl: 'https://booking.ksa.ee/?lang=en&service=audit',
+    introKids: 'You completed our Flow3 quick test. Children\'s vision develops fast and early checks matter. Our specialists give your child a thorough, friendly vision check.',
+    ctaKids: 'Book a children\'s eye exam',
+    ctaKidsUrl: 'https://booking.ksa.ee/?lang=en&service=kids',
     contact: 'Write to me: <a href="mailto:lilia@ksa.ee" style="color:#87BE23;">lilia@ksa.ee</a> or call: <a href="tel:+3726445060" style="color:#87BE23;">+372 644 5060</a>',
     signOff: 'Lilia<br><span style="font-weight:400;color:#888;">Customer Relations Coordinator · KSA Eye Centre</span>',
   },
@@ -596,6 +602,9 @@ const EMAIL = {
     ctaUrl: 'https://booking.ksa.ee/?lang=ru&service=flow',
     ctaAudit: 'Записаться на обследование Audit',
     ctaAuditUrl: 'https://booking.ksa.ee/?lang=ru&service=audit',
+    introKids: 'Вы прошли наш экспресс-тест Flow3. Зрение детей развивается быстро, и ранняя проверка важна. Наши специалисты проведут ребенку полную и дружелюбную проверку зрения.',
+    ctaKids: 'Записать ребенка на обследование',
+    ctaKidsUrl: 'https://booking.ksa.ee/?lang=ru&service=kids',
     contact: 'Напишите мне: <a href="mailto:lilia@ksa.ee" style="color:#87BE23;">lilia@ksa.ee</a> или позвоните: <a href="tel:+3726445060" style="color:#87BE23;">+372 644 5060</a>',
     signOff: 'Lilia<br><span style="font-weight:400;color:#888;">Координатор по работе с клиентами · KSA Silmakeskus</span>',
   },
@@ -674,7 +683,8 @@ function buildEmailHtml(lang, name, promoCode, result, answers) {
   const isGood = result === 'good_candidate';
 
   // Lilia's intro paragraph
-  const introText = isGood ? t.introGood : t.introConsult;
+  const isKids = result === 'kids';
+  const introText = isGood ? t.introGood : isKids ? t.introKids : t.introConsult;
   const introHtml = `
   <!-- INTRO -->
   <tr><td style="padding:4px 28px 20px;">
@@ -740,10 +750,12 @@ function buildEmailHtml(lang, name, promoCode, result, answers) {
       return `${url}${url.includes('?') ? '&' : '?'}promokood=${encodeURIComponent(code)}`;
     }
   };
+  // A minor's quiz routes to the children's exam (BLOGKIDS), never to Audit:
+  // the Audit link with the kids code opened the wrong exam with a code it rejects.
   const ctaUrl = isGood
     ? withPromoCode(t.ctaUrl, promoCode)
-    : withPromoCode(t.ctaAuditUrl, promoCode);
-  const ctaLabel = isGood ? t.cta : t.ctaAudit;
+    : withPromoCode(isKids ? t.ctaKidsUrl : t.ctaAuditUrl, promoCode);
+  const ctaLabel = isGood ? t.cta : isKids ? t.ctaKids : t.ctaAudit;
   const ctaHtml = `
   <!-- CTA -->
   <tr><td style="padding:24px 28px 20px;text-align:center;">
@@ -797,9 +809,9 @@ function buildEmailHtml(lang, name, promoCode, result, answers) {
 // Subject line builder
 function getSubject(lang, result) {
   const SUBJECTS = {
-    ET: { good: 'Sinu kiirtesti tulemus: Flow3 uuring 39 €', audit: 'Sinu kiirtesti tulemus ja Audit-uuringu kood', other: 'Sinu kiirtesti tulemus — KSA Silmakeskus' },
-    EN: { good: 'Your quick test result: Flow3 exam for 39 €', audit: 'Your quick test result and Audit exam code', other: 'Your quick test result — KSA Eye Centre' },
-    RU: { good: 'Результат теста: обследование Flow3 за 39 €', audit: 'Результат теста: код на обследование Audit', other: 'Ваш результат экспресс-теста — KSA Silmakeskus' },
+    ET: { good: 'Sinu kiirtesti tulemus: Flow3 uuring 39 €', audit: 'Sinu kiirtesti tulemus: nägemisuuring Audit', other: 'Sinu kiirtesti tulemus — KSA Silmakeskus' },
+    EN: { good: 'Your quick test result: Flow3 exam for 39 €', audit: 'Your quick test result: Vision Audit exam', other: 'Your quick test result — KSA Eye Centre' },
+    RU: { good: 'Результат теста: обследование Flow3 за 39 €', audit: 'Результат теста: обследование Audit', other: 'Ваш результат экспресс-теста — KSA Silmakeskus' },
   };
   const s = SUBJECTS[lang] || SUBJECTS.ET;
   if (result === 'good_candidate') return s.good;

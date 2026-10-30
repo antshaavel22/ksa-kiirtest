@@ -234,7 +234,7 @@ export async function uploadGoogleAdsBooking(body, options = {}) {
     headers['login-customer-id'] = GOOGLE_ADS_LOGIN_CUSTOMER_ID;
   }
 
-  const r = await fetch(`https://googleads.googleapis.com/v22/customers/${GOOGLE_ADS_CUSTOMER_ID}:uploadClickConversions`, {
+  const r = await fetch(`https://googleads.googleapis.com/v25/customers/${GOOGLE_ADS_CUSTOMER_ID}:uploadClickConversions`, {
     method: 'POST',
     headers,
     body: JSON.stringify({

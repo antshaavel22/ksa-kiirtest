@@ -839,9 +839,12 @@ function valueOrDash(value) {
 function isQualifiedFlow3Answers(answers = {}) {
   const eligibleAge = ['18-25', '26-35', '36-45', '18_45'].includes(String(answers.age || answers.age_band || ''));
   const vision = String(answers.vision || answers.vision_issue || '').toLowerCase();
-  const isMinus = vision === 'miinus' || vision === 'myopia' || vision.includes('minus') || vision.includes('myop');
-  const prescription = String(answers.prescription || '').toLowerCase();
-  const tooHighMinus = prescription.includes('rohkem kui -9') || prescription.includes('more than -9') || prescription.includes('больше -9');
+  // The quiz sends 'Miinusprillid' in every language; without the 'miinus'
+  // prefix match every booking click was dropped as not qualified.
+  const isMinus = vision.startsWith('miinus') || vision === 'myopia' || vision.includes('minus') || vision.includes('myop');
+  // The quiz labels use the typographic minus (−9); compare on a plain hyphen.
+  const prescription = String(answers.prescription || '').toLowerCase().replace(/\u2212/g, '-');
+  const tooHighMinus = ['rohkem kui -9', 'more than -9', 'больше -9', 'üle -9', 'over -9', 'свыше -9'].some(t => prescription.includes(t));
   return eligibleAge && isMinus && !tooHighMinus;
 }
 

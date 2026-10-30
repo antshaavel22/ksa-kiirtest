@@ -74,6 +74,9 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
   .path-card h4 { margin: 0 0 6px; font-size: var(--text-lg, 1.1rem); font-weight: 600; }
   .path-card p { margin: 0 0 14px; font-size: var(--text-sm, .9rem); color: var(--color-text-secondary, #555); line-height: 1.5; }
   .path-price { font-weight: 600; }
+  .result-points { max-width: 380px; margin: 0 auto 16px; padding-left: 20px; text-align: left; color: var(--color-text-secondary, #5a6b6c); font-size: .95rem; }
+  .result-points li { margin-bottom: 6px; line-height: 1.5; }
+  .path-note { margin: 10px 0 0 !important; font-size: var(--text-sm, .9rem); }
   .path-price .old { font-weight: 400; color: var(--color-text-muted, #999); text-decoration: line-through; margin-left: 6px; font-size: .9em; }
   .callback-row { display: flex; gap: 8px; flex-wrap: wrap; }
   .callback-row .step-textinput { flex: 1; min-width: 160px; }
@@ -410,6 +413,17 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
     try {
       const here = new URLSearchParams(location.search), fresh = {};
       ATTR_KEYS.forEach(k => { const v = here.get(k); if (v) fresh[k] = v.slice(0, 200); });
+      // Where the visit came from when the link carried no utm tags (ksa.ee,
+      // Google organic, a newsletter link without tags). The server already turns
+      // a referrer into "Orgaaniline — host"; it was never sent, so all of these
+      // showed as "Otse" in Slack and in the daily report.
+      try {
+        const ref = document.referrer ? new URL(document.referrer) : null;
+        if (ref && ref.hostname !== location.hostname && !sessionStorage.getItem(ATTR_STORE + '_ref')) {
+          fresh.referrer = (ref.origin + ref.pathname).slice(0, 200);
+          sessionStorage.setItem(ATTR_STORE + '_ref', '1');
+        }
+      } catch (e) {}
       if (Object.keys(fresh).length) {
         const prev = JSON.parse(sessionStorage.getItem(ATTR_STORE) || '{}');
         sessionStorage.setItem(ATTR_STORE, JSON.stringify(Object.assign(prev, fresh)));
@@ -431,6 +445,25 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
     } catch (e) { return 'kt_' + Date.now().toString(36); }
   }
   attrCapture();
+
+  // Booking-button click → /api/track book_now_clicked. The daily report's
+  // "Broneerimise klikid" counts these, and the quiz never sent them, so the
+  // report always said 0. Beacon so the new tab opening never waits on it.
+  window.ksaBookClick = function () {
+    try {
+      const b = BOOKING[answers.route] || BOOKING.flow3;
+      const payload = JSON.stringify({
+        type: 'book_now_clicked', email: answers.email, name: answers.name, language: LANG,
+        client_session_id: leadId(), utm: attrGet(), lp_source: 'LP-Kiirtest-RU',
+        result: answers.resultType, route: answers.route, code: b.code, promoCode: b.code, from: 'kiirtest',
+        answers: { forWhom: answers.forWhom, gender: answers.gender, age: answers.age, vision: answers.vision,
+          prescription: answers.prescription || 'N/A', lenses: answers.lenses, stability: answers.stability, interest: answers.interest },
+        timestamp: new Date().toISOString()
+      });
+      if (navigator.sendBeacon) navigator.sendBeacon('/api/track', new Blob([payload], { type: 'application/json' }));
+      else fetch('/api/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true });
+    } catch (e) {}
+  };
 
   function bookingUrl(route) {
     const b = BOOKING[route] || BOOKING.flow3;
@@ -617,7 +650,13 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
     flow3: {
       label: 'Близорукие глаза',
       title: 'Вы, вероятно, были бы подходящим кандидатом для Flow3.',
-      text: 'Ваш возраст и рецепт соответствуют условиям лазерной процедуры Flow3. На обследовании мы точно оценим состояние ваших глаз и дадим письменное заключение.',
+      text: 'Ваш возраст и сила очков соответствуют условиям Flow3. Подходит ли лазерная процедура вашим глазам, покажет обследование Flow3.',
+      points: [
+        '60 минут: обследование у оптометриста и глазного врача (в том числе измерения роговицы и глазного дна) и письменное заключение.',
+        `С промокодом ${BOOKING.flow3.code} обследование стоит ${BOOKING.flow3.price.replace(' ', '&nbsp;')} (обычная цена ${BOOKING.flow3.old.replace(' ', '&nbsp;')}).`,
+        `Если вы сделаете процедуру Flow3 или Flow Signature Line в течение 60 дней, мы вычтем из ее цены полную стоимость обследования — ${BOOKING.flow3.old.replace(' ', '&nbsp;')}.`
+      ],
+      note: 'Обследование ни к чему вас не обязывает. Свободное время в Таллинне и Тарту видно сразу при записи.',
       cta: 'Записаться на обследование Flow3', good: true
     },
     audit: {
@@ -714,16 +753,18 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
       <p class="result-label ${r.good ? '' : 'result-label--info'}">${r.label}</p>
       <h2 class="result-title">${r.title}</h2>
       <p class="result-text">${r.text}</p>
+      ${r.points ? `<ul class="result-points">${r.points.map(p => `<li>${p}</li>`).join('')}</ul>` : ''}
       ${stabilityNote}
       <div class="result-paths">
         <div class="path-card path-card--primary">
           <h4>${r.cta}</h4>
           <p>Запишитесь на нужное обследование сразу — с промокодом.</p>
           ${priceHtml}
-          <a href="${bookingUrl(answers.route)}" class="btn-cta-book" target="_blank" rel="noopener" style="margin-top:12px;display:inline-flex;" onclick="if(typeof fbq!=='undefined')fbq('track','Schedule');">
+          <a href="${bookingUrl(answers.route)}" class="btn-cta-book" target="_blank" rel="noopener" style="margin-top:12px;display:inline-flex;" onclick="ksaBookClick();if(typeof fbq!=='undefined')fbq('track','Schedule');">
             ${r.cta}
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7.5 3.5l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
+          ${r.note ? `<p class="path-note">${r.note}</p>` : ''}
         </div>
         <div class="path-card">
           <h4>У меня есть вопросы</h4>

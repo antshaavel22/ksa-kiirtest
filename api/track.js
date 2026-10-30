@@ -30,8 +30,18 @@ const isPlaceholder = s => s && /^\{[^}]+\}$/.test(s.trim());
 // Pure numeric Meta entity ID, e.g. 6753232351941
 const isMetaId = s => s && /^\d{10,}$/.test(s.trim());
 
-async function utmLabel(utm) {
-  if (!utm) return 'Otse';
+async function utmLabel(rawUtm) {
+  if (!rawUtm) return 'Otse';
+  // The quiz pages send the landing URL's parameters under their own names
+  // (utm_source, utm_medium, utm_campaign, utm_content); this function was
+  // written for source/medium/campaign/content. Without the mapping every
+  // tagged Meta or newsletter visit fell through to "Otse".
+  const utm = Object.assign({}, rawUtm, {
+    source: rawUtm.source || rawUtm.utm_source,
+    medium: rawUtm.medium || rawUtm.utm_medium,
+    campaign: rawUtm.campaign || rawUtm.utm_campaign,
+    content: rawUtm.content || rawUtm.utm_content,
+  });
 
   // All fields empty → direct / no tracking
   const hasAny = utm.gclid || utm.gbraid || utm.wbraid || utm.fbclid || utm.source || utm.referrer || utm.campaign;
@@ -558,34 +568,43 @@ function buildInstallmentGuideEmail(name) {
 const EMAIL = {
   ET: {
     greeting: 'Tere!',
-    introGood: 'Tegid meie Flow3 kiirtesti ja sinu tulemus näitas, et laserprotseduur võiks sulle sobida. Tahtsime veenduda, et said oma sooduskoodi kätte ja et kõik on selge.',
+    introGood: 'Tegid meie Flow3 kiirtesti ja sinu vastuste põhjal võiks Flow3 laserprotseduur sulle sobida. Kindla vastuse annab Flow3 silmauuring: 60 minutit optometristi ja silmaarsti juures (sh sarvkesta ja silmapõhja mõõtmised) ning kirjalik hinnang. Kui teed Flow3 või Flow Signature Line\'i protseduuri 60 päeva jooksul, arvestame selle hinnast maha uuringu täishinna 149 €. Uuring ei kohusta sind protseduuriks.',
     introConsult: 'Tegid meie Flow3 kiirtesti. Sinu vastuste põhjal sobib sulle nägemisuuring Audit — optometrist ja arst teevad põhjalikud uuringud ja saadavad kirjaliku raporti.',
     cta: 'Broneeri aeg — maksa veebis 39 €',
     ctaUrl: 'https://booking.ksa.ee/?lang=et&service=flow',
     ctaAudit: 'Broneeri nägemisuuring Audit',
-    ctaAuditUrl: 'https://booking.ksa.ee/?lang=et&funnel=audit',
+    ctaAuditUrl: 'https://booking.ksa.ee/?lang=et&service=audit',
+    introKids: 'Tegid meie Flow3 kiirtesti. Laste nägemine areneb kiiresti ja varajane kontroll on oluline. Meie spetsialistid teevad lapsele põhjaliku ja sõbraliku nägemiskontrolli.',
+    ctaKids: 'Broneeri laste silmauuring',
+    ctaKidsUrl: 'https://booking.ksa.ee/?lang=et&service=kids',
     contact: 'Kirjuta mulle: <a href="mailto:lilia@ksa.ee" style="color:#87BE23;">lilia@ksa.ee</a> või helista: <a href="tel:+3726445060" style="color:#87BE23;">+372 644 5060</a>',
     signOff: 'Lilia<br><span style="font-weight:400;color:#888;">Kliendisuhete koordinaator · KSA Silmakeskus</span>',
   },
   EN: {
     greeting: 'Hello!',
-    introGood: 'You completed our Flow3 quick test and your result showed that laser eye surgery could be right for you. We wanted to make sure you received your discount code and that everything is clear.',
+    introGood: 'You completed our Flow3 quick test, and based on your answers the Flow3 laser procedure could suit you. The Flow3 eye exam gives the definite answer: 60 minutes with an optometrist and an eye doctor (including corneal and retinal measurements) and a written assessment. If you have Flow3 or Flow Signature Line within 60 days, we deduct the full exam price of 149 € from the procedure price. The exam does not commit you to the procedure.',
     introConsult: 'You completed our Flow3 quick test. Based on your answers, we recommend a Vision Audit exam — our optometrist and doctor will do a thorough assessment and send you a written report.',
     cta: 'Book your appointment — pay online €39',
     ctaUrl: 'https://booking.ksa.ee/?lang=en&service=flow',
     ctaAudit: 'Book Vision Audit exam',
-    ctaAuditUrl: 'https://booking.ksa.ee/?lang=en&funnel=audit',
+    ctaAuditUrl: 'https://booking.ksa.ee/?lang=en&service=audit',
+    introKids: 'You completed our Flow3 quick test. Children\'s vision develops fast and early checks matter. Our specialists give your child a thorough, friendly vision check.',
+    ctaKids: 'Book a children\'s eye exam',
+    ctaKidsUrl: 'https://booking.ksa.ee/?lang=en&service=kids',
     contact: 'Write to me: <a href="mailto:lilia@ksa.ee" style="color:#87BE23;">lilia@ksa.ee</a> or call: <a href="tel:+3726445060" style="color:#87BE23;">+372 644 5060</a>',
     signOff: 'Lilia<br><span style="font-weight:400;color:#888;">Customer Relations Coordinator · KSA Eye Centre</span>',
   },
   RU: {
     greeting: 'Здравствуйте!',
-    introGood: 'Вы прошли наш экспресс-тест Flow3, и результат показал, что лазерная коррекция зрения может вам подойти. Хотели убедиться, что вы получили свой код скидки и всё понятно.',
+    introGood: 'Вы прошли наш экспресс-тест Flow3, и по вашим ответам лазерная процедура Flow3 может вам подойти. Точный ответ даст обследование Flow3: 60 минут у оптометриста и глазного врача (в том числе измерения роговицы и глазного дна) и письменное заключение. Если вы сделаете процедуру Flow3 или Flow Signature Line в течение 60 дней, мы вычтем из ее цены полную стоимость обследования — 149 €. Обследование ни к чему вас не обязывает.',
     introConsult: 'Вы прошли наш экспресс-тест Flow3. По вашим ответам вам подойдёт обследование Audit — оптометрист и врач проведут детальную диагностику и составят письменное заключение.',
     cta: 'Записаться на приём — онлайн-оплата 39 €',
     ctaUrl: 'https://booking.ksa.ee/?lang=ru&service=flow',
     ctaAudit: 'Записаться на обследование Audit',
-    ctaAuditUrl: 'https://booking.ksa.ee/?lang=ru&funnel=audit',
+    ctaAuditUrl: 'https://booking.ksa.ee/?lang=ru&service=audit',
+    introKids: 'Вы прошли наш экспресс-тест Flow3. Зрение детей развивается быстро, и ранняя проверка важна. Наши специалисты проведут ребенку полную и дружелюбную проверку зрения.',
+    ctaKids: 'Записать ребенка на обследование',
+    ctaKidsUrl: 'https://booking.ksa.ee/?lang=ru&service=kids',
     contact: 'Напишите мне: <a href="mailto:lilia@ksa.ee" style="color:#87BE23;">lilia@ksa.ee</a> или позвоните: <a href="tel:+3726445060" style="color:#87BE23;">+372 644 5060</a>',
     signOff: 'Lilia<br><span style="font-weight:400;color:#888;">Координатор по работе с клиентами · KSA Silmakeskus</span>',
   },
@@ -593,9 +612,9 @@ const EMAIL = {
 
 // ── Promo code block per language ─────────────────────────────────────────────
 const PROMO_TEXT = {
-  ET: { label: 'Sinu tänane sooduskood', sub: 'Kehtib täna kuni südaööni — kasuta broneeringul' },
-  EN: { label: 'Your discount code for today', sub: 'Valid today until midnight — use when booking' },
-  RU: { label: 'Ваш код скидки на сегодня', sub: 'Действует до полуночи — используйте при бронировании' },
+  ET: { label: 'Sinu sooduskood', sub: 'Allolev nupp lisab koodi broneeringule ise' },
+  EN: { label: 'Your discount code', sub: 'The button below adds the code to your booking' },
+  RU: { label: 'Ваш промокод', sub: 'Кнопка ниже сама добавит код к записи' },
 };
 
 // ── Personalised result block per language ────────────────────────────────────
@@ -664,7 +683,8 @@ function buildEmailHtml(lang, name, promoCode, result, answers) {
   const isGood = result === 'good_candidate';
 
   // Lilia's intro paragraph
-  const introText = isGood ? t.introGood : t.introConsult;
+  const isKids = result === 'kids';
+  const introText = isGood ? t.introGood : isKids ? t.introKids : t.introConsult;
   const introHtml = `
   <!-- INTRO -->
   <tr><td style="padding:4px 28px 20px;">
@@ -730,10 +750,12 @@ function buildEmailHtml(lang, name, promoCode, result, answers) {
       return `${url}${url.includes('?') ? '&' : '?'}promokood=${encodeURIComponent(code)}`;
     }
   };
+  // A minor's quiz routes to the children's exam (BLOGKIDS), never to Audit:
+  // the Audit link with the kids code opened the wrong exam with a code it rejects.
   const ctaUrl = isGood
     ? withPromoCode(t.ctaUrl, promoCode)
-    : t.ctaAuditUrl;
-  const ctaLabel = isGood ? t.cta : t.ctaAudit;
+    : withPromoCode(isKids ? t.ctaKidsUrl : t.ctaAuditUrl, promoCode);
+  const ctaLabel = isGood ? t.cta : isKids ? t.ctaKids : t.ctaAudit;
   const ctaHtml = `
   <!-- CTA -->
   <tr><td style="padding:24px 28px 20px;text-align:center;">
@@ -785,13 +807,15 @@ function buildEmailHtml(lang, name, promoCode, result, answers) {
 }
 
 // Subject line builder
-function getSubject(lang) {
+function getSubject(lang, result) {
   const SUBJECTS = {
-    ET: 'Sinu Flow3 kiirtest tulemus — KSA Silmakeskus',
-    EN: 'Your Flow3 quick test result — KSA Eye Centre',
-    RU: 'Ваш результат экспресс-теста Flow3 — KSA Silmakeskus',
+    ET: { good: 'Sinu kiirtesti tulemus: Flow3 uuring 39 €', audit: 'Sinu kiirtesti tulemus: nägemisuuring Audit', other: 'Sinu kiirtesti tulemus — KSA Silmakeskus' },
+    EN: { good: 'Your quick test result: Flow3 exam for 39 €', audit: 'Your quick test result: Vision Audit exam', other: 'Your quick test result — KSA Eye Centre' },
+    RU: { good: 'Результат теста: обследование Flow3 за 39 €', audit: 'Результат теста: обследование Audit', other: 'Ваш результат экспресс-теста — KSA Silmakeskus' },
   };
-  return SUBJECTS[lang] || SUBJECTS.ET;
+  const s = SUBJECTS[lang] || SUBJECTS.ET;
+  if (result === 'good_candidate') return s.good;
+  return result === 'audit' ? s.audit : s.other;
 }
 
 // ── Detect language from lp_source or language field ─────────────────────────
@@ -1325,22 +1349,25 @@ export default async function handler(req, res) {
     const promoCode = clientPromoCode || getDailyCode();
     const label = result === 'good_candidate' ? 'Sobiv kandidaat' : 'Vajab konsultatsiooni';
 
-    // Slack: email captured — full lead record
+    // Slack: email captured. The first line answers what reception needs at a
+    // glance — is this an 18–45 myope, how keen, what has already been sent —
+    // and the quiz details follow on one line instead of ten fields.
+    const HEAT = { 'Jah, aktiivselt': '🔥 kuum', 'Olen mõelnud': '🟡 soe', 'Alles uurin maad': '⚪ uurib' };
+    const heat = HEAT[answers.interest] || (answers.interest ? answers.interest : 'huvi teadmata');
+    const status = result === 'good_candidate'
+      ? `🟢 *Sobiv kandidaat — Flow3* · ${heat}`
+      : result === 'kids'
+        ? `🧒 *Vajab konsultatsiooni — laste uuring*`
+        : `⚪ *Vajab konsultatsiooni — Audit*`;
+    const sent = result === 'good_candidate'
+      ? `E-postiga läks kood *${promoCode}* (Flow3 uuring) — broneering tuleb siia eraldi teatena.`
+      : `E-kirja broneerimisnupp sisaldab koodi *${promoCode}*.`;
+    const profile = [answers.age, answers.vision, answers.prescription, answers.gender, lang]
+      .filter(v => v && v !== 'N/A').join(' · ');
     blocks = [
-      { type: 'header', text: { type: 'plain_text', text: `📧 E-post kogutud — Kiirtest` } },
-      { type: 'section', fields: [
-        { type: 'mrkdwn', text: `*E-post:*\n${email || '—'}` },
-        { type: 'mrkdwn', text: `*Tulemus:*\n${label}` },
-        { type: 'mrkdwn', text: `*Sooduskood:*\n${promoCode}` },
-        { type: 'mrkdwn', text: `*Keel:*\n${lang}` },
-        { type: 'mrkdwn', text: `*Reklaamiallikas:*\n${adSource || '—'}` },
-        { type: 'mrkdwn', text: `*Sugu:*\n${answers.gender || '—'}` },
-        { type: 'mrkdwn', text: `*Vanus:*\n${answers.age || '—'}` },
-        { type: 'mrkdwn', text: `*Nägemine:*\n${answers.vision || '—'}` },
-        { type: 'mrkdwn', text: `*Dioptrid:*\n${answers.prescription || '—'}` },
-        { type: 'mrkdwn', text: `*Huvi tase:*\n${answers.interest || '—'}` },
-      ]},
-      { type: 'context', elements: [{ type: 'mrkdwn', text: `_${ts}_` }] },
+      { type: 'section', text: { type: 'mrkdwn', text: `${status}\n${sent}` } },
+      { type: 'section', text: { type: 'mrkdwn', text: `${profile || '—'}\n${email || '—'} · ${adSource || 'Otse'}` } },
+      { type: 'context', elements: [{ type: 'mrkdwn', text: `📧 E-post kogutud — Kiirtest · _${ts}_` }] },
     ];
 
     // ── Send combined KAISA email via Resend ─────────────────────────────────
@@ -1357,7 +1384,7 @@ export default async function handler(req, res) {
             from: FROM_EMAIL,
             to: [email],
             reply_to: 'info@ksa.ee',
-            subject: getSubject(lang),
+            subject: getSubject(lang, result),
             html,
           }),
         });
@@ -1786,6 +1813,10 @@ export default async function handler(req, res) {
       buildCRMPayload({ body, leadData, lang, name, phone, email, adSource, code: body.code, eventType: type }),
       type,
     );
+    // Counted (ledger → daily report) and in Lilia's CRM queue, but not posted to
+    // Slack: the same person's email_captured message is already there, and these
+    // clicks were taken out of the channel as noise on 2026-06-17.
+    return res.status(200).json({ ok: true, slack: 'skipped_booking_click' });
 
   } else if (type === 'hot_lead_lens_user') {
     // Daily lens user — high-value lead, flag for Lilia to call same day

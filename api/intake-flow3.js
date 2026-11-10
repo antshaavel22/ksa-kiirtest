@@ -72,6 +72,14 @@ export default async function handler(req, res) {
   }
   body = body || {};
 
+  // Same test markers /api/track already honours, so a smoke test of the callback
+  // form cannot create a real CRM ticket for reception. (Not the "TEST " name
+  // convention: Mai uses that on purpose to create tickets while testing the CRM.)
+  const markerEmail = String(body?.contact?.email || '').toLowerCase().trim();
+  if (markerEmail === 'diagnostics-test@ksa.ee' || /^test\+|\+test@|@example\.(com|ee)$|smoke[-_]?test/i.test(markerEmail)) {
+    return res.status(200).json({ ok: true, skipped: 'test_or_diagnostic_event' });
+  }
+
   // ── Validate + normalise per Mai's payload spec ──────────────────────────────
   const source = body.source;
   const lang = body.lang;

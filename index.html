@@ -20,6 +20,17 @@ gtag("config", "AW-18030087653");
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="KSA Silmakeskuse nägemistest — paari minutiga selgub, milline nägemisuuring teile kõige rohkem sobiks.">
+  <link rel="canonical" href="https://kiirtest.ksa.ee/">
+  <link rel="alternate" hreflang="et" href="https://kiirtest.ksa.ee/">
+  <link rel="alternate" hreflang="ru" href="https://kiirtest.ksa.ee/ru">
+  <link rel="alternate" hreflang="en" href="https://kiirtest.ksa.ee/en">
+  <link rel="alternate" hreflang="x-default" href="https://kiirtest.ksa.ee/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="KSA Silmakeskus">
+  <meta property="og:locale" content="et_EE">
+  <meta property="og:title" content="Nägemistest — KSA Silmakeskus">
+  <meta property="og:description" content="KSA Silmakeskuse nägemistest — paari minutiga selgub, milline nägemisuuring teile kõige rohkem sobiks.">
+  <meta property="og:url" content="https://kiirtest.ksa.ee/">
   <title>Nägemistest — KSA Silmakeskus</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -115,11 +126,11 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
     </a>
     <div class="header__actions">
       <nav class="lang-switch" aria-label="Keelevalik">
-        <a href="index.html" class="active" aria-current="page">ET</a>
+        <a href="/" class="active" aria-current="page">ET</a>
         <span class="sep">|</span>
-        <a href="ru.html">RU</a>
+        <a href="/ru">RU</a>
         <span class="sep">|</span>
-        <a href="en.html">EN</a>
+        <a href="/en">EN</a>
       </nav>
     </div>
   </div>
@@ -396,7 +407,6 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
   const LANG = 'ET';
   // Bump when the consent wording changes, so each lead records which text it agreed to.
   const CONSENT_TEXT_VERSION = 'kiirtest-2026-10';
-  const DRAW_MONTH = '2026-07';            // July draw the 2× feeds into
   const BOOKING = {
     flow3: { slug: 'flow',  code: 'KIIRTEST39', price: '39 €', old: '149 €' },
     audit: { slug: 'audit', code: 'BLOG139',  price: '139 €', old: '149 €' },
@@ -413,6 +423,15 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
     try {
       const here = new URLSearchParams(location.search), fresh = {};
       ATTR_KEYS.forEach(k => { const v = here.get(k); if (v) fresh[k] = v.slice(0, 200); });
+      // Links from our blog, newsletter and ksa.ee carry ?source=blog|newsletter|loos&funnel=...
+      // instead of utm tags and were never read, so that traffic showed as "Otse".
+      if (!fresh.utm_source && here.get('source')) {
+        fresh.utm_source = here.get('source').slice(0, 60);
+        if (!fresh.utm_medium) fresh.utm_medium = (here.get('funnel') || 'internal').slice(0, 60);
+      }
+      // The article (slug) and the test variant ride along as campaign / content.
+      if (!fresh.utm_campaign && here.get('slug')) fresh.utm_campaign = here.get('slug').slice(0, 80);
+      if (!fresh.utm_content && here.get('ab_variant')) fresh.utm_content = here.get('ab_variant').slice(0, 40);
       // Where the visit came from when the link carried no utm tags (ksa.ee,
       // Google organic, a newsletter link without tags). The server already turns
       // a referrer into "Orgaaniline — host"; it was never sent, so all of these
@@ -533,7 +552,7 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
     grid.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
     const val = btn.dataset.value;
-    if (step === 0) answers.forWhom = val;
+    if (step === 0) { answers.forWhom = val; applyWhoLabels(val); }
     if (step === 1) answers.gender = val;
     if (step === 2) answers.age = val;
     if (step === 3) { answers.vision = val; answers.prescription = ''; buildStrengthStep(); }
@@ -604,6 +623,12 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
     document.getElementById('complaints-other').value = '';
     document.getElementById('emailGate').style.display = '';
     document.getElementById('gateForm').reset();
+    // The button was left disabled with its label hidden after the first submit, so a
+    // second run could never be finished without reloading the page.
+    const gb = document.getElementById('gateBtn');
+    if (gb) { gb.disabled = false; gb.classList.remove('loading'); }
+    const cbErr = document.getElementById('cbError'); if (cbErr && cbErr.remove) cbErr.remove();
+    applyWhoLabels('');
     document.getElementById('resultReveal').style.display = 'none';
     document.getElementById('resultReveal').innerHTML = '';
     transitionTo('result', 0, true);
@@ -700,10 +725,7 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
     btn.disabled = true; btn.classList.add('loading');
 
     // 1) Lead → /api/track (email_captured: Slack + CRM + Resend)
-    try {
-      await fetch('/api/track', {
-        method: 'POST', headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({
+    const leadPayload = JSON.stringify({
           type: 'email_captured', email, language: LANG,
           consent,
           client_session_id: leadId(), utm: attrGet(),
@@ -718,17 +740,9 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
             extraSymptoms: answers.extraSymptoms.join(', ') || '—', interest: answers.interest
           },
           timestamp: new Date().toISOString()
-        })
-      });
-    } catch(_) {}
+        });
+    if ((await postLead(leadPayload)) === 'failed') keepPending(leadPayload);
 
-    // 2) 2× draw entry → Supabase
-    try {
-      await fetch('/api/draw-entry', {
-        method: 'POST', headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ email, first_name: name, language: LANG, month: DRAW_MONTH, source: 'kiirtest', marketing_consent: consentGiven })
-      });
-    } catch(_) {}
 
     // 3) Conversions
     if (typeof gtag !== 'undefined') gtag('event','conversion',{'send_to':'AW-18030087653/lXXnCMHKwI8cEOWbtZVD'});
@@ -787,6 +801,54 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
     window.scrollTo({top:0, behavior:'smooth'});
   }
 
+  // ── Lead delivery that survives a bad connection ────────────────────────
+  // One retry, then the lead stays on the device and is sent on the next visit
+  // instead of vanishing. Returns 'ok' | 'rejected' (4xx: retrying will not help) | 'failed'.
+  const PENDING_KEY = 'ksa_kiirtest_pending';
+  async function postLead(payloadJson) {
+    for (let i = 0; i < 2; i++) {
+      try {
+        const r = await fetch('/api/track', { method: 'POST', headers: {'Content-Type':'application/json'}, body: payloadJson, keepalive: true });
+        if (r.ok) return 'ok';
+        if (r.status < 500) return 'rejected';
+      } catch (e) {}
+      await new Promise(res => setTimeout(res, 900));
+    }
+    return 'failed';
+  }
+  function keepPending(payloadJson) {
+    try { const q = JSON.parse(localStorage.getItem(PENDING_KEY) || '[]'); q.push(payloadJson); localStorage.setItem(PENDING_KEY, JSON.stringify(q.slice(-5))); } catch (e) {}
+  }
+  async function flushPending() {
+    try {
+      const q = JSON.parse(localStorage.getItem(PENDING_KEY) || '[]');
+      if (!q.length) return;
+      localStorage.removeItem(PENDING_KEY);
+      for (const p of q) { if ((await postLead(p)) === 'failed') keepPending(p); }
+    } catch (e) {}
+  }
+  function showCallbackError(msg) {
+    let el = document.getElementById('cbError');
+    if (!el) {
+      el = document.createElement('p'); el.id = 'cbError'; el.setAttribute('role', 'alert');
+      el.style.cssText = 'color:#b3261e;font-size:14px;line-height:1.4;margin-top:10px';
+      document.getElementById('callbackForm').appendChild(el);
+    }
+    el.textContent = msg;
+  }
+
+  // ── Wording when the test is for someone else ───────────────────────────
+  // The questions said "your age / your glasses" even after "for my child", so a
+  // parent often answered about themselves. Wording only: routing is unchanged.
+  const WHO_LABELS = {"Oma lapsele": {"1": "Lapse sugu", "2": "Lapse vanus", "3": "Milliseid prille laps kannab?", "5": "Kas laps kannab kontaktläätsesid?", "6": "Kas lapse nägemine on viimase aasta jooksul olnud stabiilne?", "7": "Mis lapse nägemise juures kõige rohkem häirib?", "9": "Kas olete mõelnud lapse nägemise korrigeerimisele?"}, "Sõbrale või lähedasele": {"1": "Tema sugu", "2": "Tema vanus", "3": "Milliseid prille ta kannab?", "5": "Kas ta kannab kontaktläätsesid?", "6": "Kas tema nägemine on viimase aasta jooksul olnud stabiilne?", "7": "Mis teda tema nägemise juures kõige rohkem häirib?", "9": "Kas ta on mõelnud nägemise korrigeerimisele?"}};
+  function applyWhoLabels(who) {
+    const set = WHO_LABELS[who] || {};
+    document.querySelectorAll('.step-question').forEach((h, i) => {
+      if (h.dataset.orig === undefined) h.dataset.orig = h.textContent;
+      h.textContent = set[i] !== undefined ? set[i] : h.dataset.orig;
+    });
+  }
+
   async function onCallbackSubmit(e) {
     e.preventDefault();
     const phone = document.getElementById('cb-phone').value.trim();
@@ -794,10 +856,7 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
     if (!phone) { document.getElementById('cb-phone').focus(); return; }
     const btn = document.getElementById('cbBtn');
     btn.disabled = true; btn.classList.add('loading');
-    try {
-      await fetch('/api/track', {
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({
+    const cbPayload = JSON.stringify({
           type: 'callback_requested', language: LANG, lp_source:'LP-Kiirtest-ET',
           result: answers.resultType, route: answers.route,
           promoCode: (BOOKING[answers.route]||BOOKING.flow3).code, code: (BOOKING[answers.route]||BOOKING.flow3).code, from: 'kiirtest',
@@ -810,9 +869,12 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
             extraSymptoms: answers.extraSymptoms.join(', ') || '—', interest: answers.interest
           },
           timestamp: new Date().toISOString()
-        })
-      });
-    } catch(_) {}
+        });
+    if ((await postLead(cbPayload)) !== 'ok') {
+      showCallbackError("Palve saatmine ei õnnestunud. Palun helistage meile: +372 644 5060.");
+      btn.disabled = false; btn.classList.remove('loading');
+      return;
+    }
     if (typeof fbq !== 'undefined') fbq('track','Contact');
     document.getElementById('callbackForm').style.display = 'none';
     document.getElementById('cbDone').style.display = 'block';
@@ -820,6 +882,13 @@ src="https://www.facebook.com/tr?id=116445785392738&ev=PageView&noscript=1"
 
   // ── Init ──────────────────────────────────────────
   updateProgress(0);
+  flushPending();
+  // Language links keep the query string, so a visitor who switches language mid-funnel
+  // keeps their click ids and campaign tags.
+  function keepQueryOnLangLinks() {
+    document.querySelectorAll('.lang-switch a').forEach(a => { a.href = a.getAttribute('href').split('?')[0] + location.search + location.hash; });
+  }
+  keepQueryOnLangLinks();
   document.querySelectorAll('.quiz-step:not(.active)').forEach(s => {
     s.style.position = 'absolute'; s.style.opacity = '0';
     s.style.transform = 'translateX(40px)'; s.style.pointerEvents = 'none';

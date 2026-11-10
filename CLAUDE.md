@@ -20,17 +20,20 @@ Ads conversion upload.
 | `taname*.html` | thank-you pages |
 | `19.html` | legacy 19 € landing page, served at `/19` and `/broneeri-19` |
 | `lilia-qr.html` | QR landing page for Lilia's printed material |
-| `uus.html` | v3 draft, not linked from anywhere |
 | `api/track.js` | lead → Slack, CRM, Resend, Brevo |
 | `api/booking-completed.js` | booking webhook → cancels follow-ups, uploads the Google Ads conversion |
 | `vercel.json` | the pretty URLs (`/19`, `/en`, `/ru`, `/lilia`) and CSP |
 
 ## Branches and deploying — read this before anything else
 
-- **`kiirtest-v3` is live.** It is the repository default branch. Work from it.
-- **`master` is Vercel's production branch, and pushing to it deploys kiirtest.ksa.ee
-  immediately.** No review, no promote, no undo button. It was four months stale until
-  12 October, when it was fast-forwarded onto `kiirtest-v3`; the two now hold the same commit.
+- **`master` is live.** It is Vercel's production branch, and pushing to it deploys
+  kiirtest.ksa.ee immediately. No review, no promote, no undo button. Start every piece of
+  work from the current `origin/master`.
+- **`kiirtest-v3` is stale.** It was fast-forwarded onto `master` on 12 October, but every
+  change since (source tracking, new result copy, the Google Ads API v25 fix) went to
+  `master` through pull requests and `kiirtest-v3` was left behind. Do not branch from it
+  and never merge it into `master`: that would undo those changes. (The GitHub default
+  branch setting may still say `kiirtest-v3`; Ants can switch it.)
 - **So never push to `master`.** Work on your own branch (`silvia/<what>`, `jana/<what>`),
   push that, and say what changed. A push to your own branch builds a preview and touches
   nothing live.
@@ -93,6 +96,9 @@ images. In practice that is the HTML between the `<style>` and `<script>` blocks
 
 ## Before handing back
 
-Open the changed page in a browser and walk the quiz to the result, on a phone-width
-viewport. There are no tests here; walking the funnel is the test. Then say in one sentence
-what changed and what still needs deploying.
+1. Run `node --test tests/*.test.mjs` (Node 22 or later, nothing to install). It checks the
+   eligibility rule across all three quiz files, that no lead event can drop silently, that
+   visitor text is escaped, and that the three pages agree with each other.
+2. Open the changed page in a browser and walk the quiz to the result on a phone-width
+   viewport. The tests do not replace this.
+3. Say in one sentence what changed and what still needs deploying.

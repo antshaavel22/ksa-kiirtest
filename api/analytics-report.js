@@ -8,19 +8,39 @@ const SLACK_WEBHOOK = process.env.SLACK_KIIRTEST_CHANNEL_WEBHOOK_URL ||
 
 const DAILY_TARGET = 10; // paid Flow exams per day target
 
-// Fetch emails from Resend (max 100 per call)
-async function fetchResendEmails(limit = 100) {
-  const res = await fetch(`https://api.resend.com/emails?limit=${limit}`, {
-    headers: { Authorization: `Bearer ${RESEND_API_KEY}` },
-  });
-  const data = await res.json();
-  return data.data || [];
+// The date (YYYY-MM-DD) an email was sent on in Tallinn. Resend stamps UTC, and the
+// report days are Tallinn days, so the evening hours used to land on the wrong day.
+function tallinnDate(iso) {
+  const d = new Date(String(iso || '').replace(' ', 'T').replace(/\+00$/, 'Z'));
+  return isNaN(d) ? null : d.toLocaleDateString('sv-SE', { timeZone: 'Europe/Tallinn' });
+}
+
+// Fetch emails from Resend, newest first, following the cursor until the page that
+// starts before `fromDate` (the list holds every email sent, customer copies
+// included, so one page of 100 covers little more than a day).
+async function fetchResendEmails(fromDate, maxPages = 25) {
+  const all = [];
+  let after = null;
+  for (let page = 0; page < maxPages; page++) {
+    const res = await fetch(`https://api.resend.com/emails?limit=100${after ? `&after=${after}` : ''}`, {
+      headers: { Authorization: `Bearer ${RESEND_API_KEY}` },
+    });
+    const data = await res.json();
+    const batch = data.data || [];
+    all.push(...batch);
+    if (!batch.length || !data.has_more) break;
+    const oldest = tallinnDate(batch[batch.length - 1].created_at);
+    if (oldest && oldest < fromDate) break;
+    after = batch[batch.length - 1].id;
+    await new Promise(r => setTimeout(r, 550)); // stay under Resend's request rate limit
+  }
+  return all;
 }
 
 // Filter emails to a date range (YYYY-MM-DD strings, Tallinn TZ)
 function inRange(email, fromDate, toDate) {
-  const d = email.created_at?.slice(0, 10);
-  return d >= fromDate && d <= toDate;
+  const d = tallinnDate(email.created_at);
+  return !!d && d >= fromDate && d <= toDate;
 }
 
 function isoToTallinn(date) {
@@ -112,7 +132,13 @@ function progressBar(value, target, width = 10) {
 }
 
 export default async function handler(req, res) {
-  // Verify cron secret (Vercel sets this automatically for cron invocations)
+  // Vercel sends `Authorization: Bearer $CRON_SECRET` on cron calls when the CRON_SECRET
+  // environment variable exists. Once it is set, nobody else can make this endpoint post
+  // to Slack or read the Resend ledger. (Until it is set the endpoint stays open, as before.)
+  const cronSecret = process.env.CRON_SECRET;
+  if (cronSecret && req.headers['authorization'] !== `Bearer ${cronSecret}`) {
+    return res.status(401).json({ ok: false, error: 'Unauthorized' });
+  }
   // Allow GET for cron, and also allow manual POST with ?type=daily|weekly
   const isWeekly = req.url?.includes('type=weekly') || req.headers['x-report-type'] === 'weekly';
   const now = isoToTallinn(new Date());
@@ -138,7 +164,7 @@ export default async function handler(req, res) {
     periodLabel = fromDate;
   }
 
-  const emails = await fetchResendEmails(100);
+  const emails = await fetchResendEmails(fromDate);
   const stats = analyze(emails, fromDate, toDate);
 
   // Daily target context
@@ -156,7 +182,7 @@ export default async function handler(req, res) {
     const byDay = {};
     const internal = emails.filter(e => e.to?.includes('registreerumised@ksa.ee') && !e.subject?.includes('audit-test'));
     for (const e of internal) {
-      const d = e.created_at?.slice(0, 10);
+      const d = tallinnDate(e.created_at);
       if (!d || d < fromDate || d > toDate) continue;
       byDay[d] = (byDay[d] || 0) + 1;
     }

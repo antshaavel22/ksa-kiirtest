@@ -1,7 +1,17 @@
+import { createHash } from 'crypto';
 // api/track.js — Vercel serverless function
 // Slack notifications + Resend email auto-responder for kiirtest form submissions
 
 const SLACK_WEBHOOK = process.env.SLACK_WEBHOOK_URL;
+
+// Every outbound call in this file gets a deadline, so one hung service (Slack,
+// Resend, the CRM) cannot hold the handler, and the lead alert queued behind it, open.
+const fetch = (url, opts = {}) => {
+  if (opts.signal) return globalThis.fetch(url, opts);
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 8000);
+  return globalThis.fetch(url, { ...opts, signal: ctrl.signal }).finally(() => clearTimeout(timer));
+};
 const SLACK_KIIRTEST_WEBHOOK = process.env.SLACK_KIIRTEST_CHANNEL_WEBHOOK_URL || null;
 const SLACK_LP_WEBHOOK = process.env.SLACK_LP_CHANNEL_WEBHOOK_URL || null;
 const LP_TRACK_SHARED_TOKEN = process.env.LP_TRACK_SHARED_TOKEN;
@@ -68,7 +78,9 @@ async function utmLabel(rawUtm) {
   } else if (med === 'email' || src === 'chipmonkey' || src === 'email') {
     channel = `E-post${utm.source && utm.source.toLowerCase() !== 'email' ? ' (' + utm.source + ')' : ''}`;
   } else if (utm.source) {
-    channel = utm.source;
+    // Our own links into the quiz (?source=blog|newsletter|loos) become utm_source.
+    const OWN = { blog: 'Blogi', newsletter: 'E-post — uudiskiri', loos: 'Loos (kinkekaart)' };
+    channel = OWN[src] || utm.source;
   }
 
   if (!channel) return utm.referrer ? `Orgaaniline — ${utm.referrer}` : 'Otse';
@@ -113,6 +125,76 @@ async function utmLabel(rawUtm) {
 function getDailyCode() {
   return 'KIIRTEST39';
 }
+
+// The promo code arrives from the browser and is printed into the result email and
+// the staff notifications, so only something shaped like a code is accepted;
+// anything else falls back to the daily code.
+function safePromo(raw) {
+  const s = String(raw || '').trim();
+  return /^[A-Za-z0-9][A-Za-z0-9-]{2,23}$/.test(s) ? s : getDailyCode();
+}
+
+// Visitor-supplied text ends up in HTML emails and Slack mrkdwn. Escaping &, < and >
+// once, at the door, makes both safe (Slack needs exactly these three, and in HTML
+// they render back as the typed characters) and stops <!channel> / <@user> tricks.
+const escText = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+function sanitizeBody(b) {
+  if (!b || typeof b !== 'object' || Array.isArray(b)) return {};
+  const clean = (v, depth, key) => {
+    if (typeof v === 'string') {
+      // Control characters go everywhere; line breaks stay only in the free-text answers, so
+      // a name or address can never smuggle one into an email subject line.
+      const FREE_TEXT = key === 'bother' || key === 'complaintsOther' || key === 'message' || key === 'comment';
+      const noCtl = v.replace(FREE_TEXT ? /[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g : /[\u0000-\u001f]+/g, ' ').slice(0, 2000);
+      // Addresses keep '&' (valid in a local part) but lose anything that could open a tag.
+      return key === 'email' ? noCtl.replace(/[<>"\s]/g, '') : escText(noCtl);
+    }
+    if (Array.isArray(v)) return depth > 4 ? [] : v.slice(0, 50).map(x => clean(x, depth + 1, key));
+    if (v && typeof v === 'object') {
+      if (depth > 4) return {};
+      const o = {};
+      for (const k of Object.keys(v).slice(0, 60)) {
+        if (k === '__proto__' || k === 'constructor' || k === 'prototype') continue;
+        o[k] = clean(v[k], depth + 1, k);
+      }
+      return o;
+    }
+    return v;
+  };
+  const out = clean(b, 0, '');
+  // The phone number is put into <tel:...> links: digits and dial characters only.
+  if (out.contact && typeof out.contact.phone === 'string') out.contact.phone = out.contact.phone.replace(/[^0-9+()\-\s]/g, '').slice(0, 32);
+  return out;
+}
+function isPlausibleEmail(e) {
+  return typeof e === 'string' && e.length <= 320 && /^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]{2,}$/.test(e);
+}
+
+// The quiz sends utm_source/utm_medium/...; the CRM payload and the Slack label code
+// read source/medium/... — without this every CRM ticket said ad_source "direct".
+function normUtm(raw) {
+  const u = raw && typeof raw === 'object' ? raw : {};
+  return Object.assign({}, u, {
+    source: u.source || u.utm_source,
+    medium: u.medium || u.utm_medium,
+    campaign: u.campaign || u.utm_campaign,
+    content: u.content || u.utm_content,
+  });
+}
+
+// Small per-instance guards. Serverless instances do not share memory, so these are
+// a brake on bursts and repeats, not a hard limit.
+const _guard = new Map();
+function hitsWithin(key, windowMs) {
+  const now = Date.now();
+  const arr = (_guard.get(key) || []).filter(ts => now - ts < windowMs);
+  arr.push(now);
+  _guard.set(key, arr);
+  if (_guard.size > 5000) for (const k of _guard.keys()) { _guard.delete(k); if (_guard.size < 2500) break; }
+  return arr.length;
+}
+const rateLimited = (key, max, windowMs) => hitsWithin(key, windowMs) > max;
+const seenRecently = (key, ttlMs) => hitsWithin(key, ttlMs) > 1;
 
 // ── KAISA-436: Mai CRM intake ────────────────────────────────────────────────
 // Booking-intent events (book_now_clicked, bridge_19_book_clicked,
@@ -243,7 +325,7 @@ function buildEmailLeadPayload({ body, answers, lang, email, result, promoCode, 
   const ageBand = mappedAge || '18_45';
   const visionIssue = mapVisionIssue(answers.vision || answers.vision_issue);
   const sphere = parseSphere(answers.prescription ?? answers.prescription_sphere);
-  const u = body?.utm || {};
+  const u = normUtm(body?.utm);
   const ids = {};
   if (u.gclid)  ids.gclid  = u.gclid;
   if (u.gbraid) ids.gbraid = u.gbraid;
@@ -425,18 +507,18 @@ function buildCRMPayload({ body, leadData, lang, name, phone, email, adSource, c
     quiz_meta: {
       discount_code: code || body?.code || null,
       quiz_answers: leadData || {},
-      ad_source: detectAdSource(body?.utm?.source, body?.utm?.medium),
+      ad_source: detectAdSource(normUtm(body?.utm).source, normUtm(body?.utm).medium),
       event_type: eventType,
     },
     utm: {
-      source: body?.utm?.source || null,
-      medium: body?.utm?.medium || null,
-      campaign: body?.utm?.campaign || null,
+      source: normUtm(body?.utm).source || null,
+      medium: normUtm(body?.utm).medium || null,
+      campaign: normUtm(body?.utm).campaign || null,
     },
     // KAISA-436b (Google Ads): forward click IDs so bookings can be imported back to Ads (gclid match).
     // Frontend captures these into utm (index.html). CRM must accept + store gclid on the ticket.
     click_ids: (() => {
-      const u = body?.utm || {};
+      const u = normUtm(body?.utm);
       const ids = {};
       if (u.gclid)  ids.gclid  = u.gclid;
       if (u.gbraid) ids.gbraid = u.gbraid;
@@ -1303,12 +1385,22 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
+  // A real visitor sends a handful of events a minute. Far more than that from one
+  // address is a script, and every accepted event can email a stranger and ping Slack.
+  // No address (header missing) means no limiting: a shared bucket would throttle real
+  // visitors together, and losing a real lead is worse than letting a script through.
+  const clientIp = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim();
+  if (clientIp && rateLimited('ip:' + clientIp, 30, 60 * 1000)) {
+    return res.status(429).json({ ok: false, error: 'rate_limited' });
+  }
+
   let body;
   try {
     body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
   } catch (e) {
     return res.status(400).json({ error: 'Invalid JSON' });
   }
+  body = sanitizeBody(body);
 
   const { type, result, language, lp_source, answers: rawAnswers = {}, contact, promoCode: clientPromoCode, utm, timestamp } = body;
   const answers = rawAnswers || {};
@@ -1345,11 +1437,19 @@ export default async function handler(req, res) {
   // ── email_captured: patient entered email at gate — send combined KAISA email ─
   if (type === 'email_captured') {
     const { email } = body;
-    if (!hasContactData(email)) {
+    if (!hasContactData(email) || !isPlausibleEmail(email)) {
       return res.status(200).json({ ok: true, skipped: 'email_capture_without_email' });
     }
+    // The page retries a submission that looked like it failed, and a lost response can
+    // make the first attempt a success. A byte-for-byte identical payload inside ten minutes
+    // is that retry, so it must not become a second Slack card and CRM ticket. It has to be
+    // the WHOLE payload: one parent doing the test for two children with one address sends
+    // the same session, address and result with different answers, and both are real leads.
+    if (body.client_session_id && seenRecently('lead:' + createHash('sha1').update(JSON.stringify(body)).digest('hex'), 10 * 60 * 1000)) {
+      return res.status(200).json({ ok: true, skipped: 'duplicate_recent' });
+    }
     const lang = detectLang(lp_source, language);
-    const promoCode = clientPromoCode || getDailyCode();
+    const promoCode = safePromo(clientPromoCode);
     const label = result === 'good_candidate' ? 'Sobiv kandidaat' : 'Vajab konsultatsiooni';
 
     // Slack: email captured. The first line answers what reception needs at a
@@ -1375,7 +1475,13 @@ export default async function handler(req, res) {
 
     // ── Send combined KAISA email via Resend ─────────────────────────────────
     if (email && RESEND_API_KEY) {
+      // Never let this endpoint be used to mail the same stranger over and over: a
+      // repeat within 10 minutes still reaches Slack and the CRM, it just skips the email.
+      const repeatSend = seenRecently('mail:' + String(email).toLowerCase(), 10 * 60 * 1000);
       try {
+        if (repeatSend) {
+          console.log('Skip repeat result email (10 min):', email);
+        } else {
         const html = buildEmailHtml(lang, null, promoCode, result, answers);
         const emailRes = await fetch('https://api.resend.com/emails', {
           method: 'POST',
@@ -1403,6 +1509,7 @@ export default async function handler(req, res) {
           // To re-enable, uncomment the line below and re-run cancel script first
           // if there's a queue from a previous run.
           // scheduleSequence(email, lang, promoCode).catch(err => console.error('Sequence err:', err));
+        }
         }
       } catch (err) {
         console.error('Resend fetch error:', err);
@@ -1580,7 +1687,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true, skipped: 'form_contact_without_contact' });
     }
     const lang = detectLang(lp_source, language);
-    const promoCode = clientPromoCode || getDailyCode();
+    const promoCode = safePromo(clientPromoCode);
 
     blocks = [
       { type: 'header', text: { type: 'plain_text', text: `📋 Kontakt jäetud — Kiirtest` } },

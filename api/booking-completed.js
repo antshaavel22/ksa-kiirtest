@@ -465,13 +465,20 @@ export default async function handler(req, res) {
 
   const auth = req.headers['authorization'] || '';
   if (!CRM_TOKEN || auth !== `Bearer ${CRM_TOKEN}`) {
-    await alertOnce(
-      '401',
-      60,
-      ':rotating_light: *Konversioonid põrkavad tagasi.* `/api/booking-completed` vastas 401 — ' +
-      'CRM saadab tokenit, mida server vastu ei võta, nii et ükski broneering ei jõua Google Adsi. ' +
-      'Kontrolli `KIIRTEST_WEBHOOK_TOKEN` Vercelis ja CRM-is. Eelmine kord jäi see märkamata 33 päevaks.'
-    );
+    // Only an integration failure should page the team: the server has no token set,
+    // or a caller presented one that does not match. A request with no credentials at
+    // all is a probe or a scanner; it gets the 401 without an alarm (a stranger could
+    // otherwise raise a red alert at will, or use it to burn the one-per-hour limit
+    // before a real outage).
+    if (!CRM_TOKEN || auth) {
+      await alertOnce(
+        '401',
+        60,
+        ':rotating_light: *Konversioonid põrkavad tagasi.* `/api/booking-completed` vastas 401 — ' +
+        'CRM saadab tokenit, mida server vastu ei võta, nii et ükski broneering ei jõua Google Adsi. ' +
+        'Kontrolli `KIIRTEST_WEBHOOK_TOKEN` Vercelis ja CRM-is. Eelmine kord jäi see märkamata 33 päevaks.'
+      );
+    }
     return res.status(401).json({ ok: false, error: 'Unauthorized' });
   }
 

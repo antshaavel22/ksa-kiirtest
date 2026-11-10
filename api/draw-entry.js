@@ -57,6 +57,7 @@ module.exports = async (req, res) => {
     return res.status(400).json({ ok: false, error: 'bad_json' });
   }
 
+  if (!body || typeof body !== 'object') body = {};
   const email = (body.email || '').trim().toLowerCase();
   const first_name = (body.first_name || '').trim() || null;
   const language = (body.language || 'et').toLowerCase();  // newsletter_entries CHECK requires 'et'|'ru'|'en'
@@ -72,6 +73,10 @@ module.exports = async (req, res) => {
 
   if (!isEmail(email)) {
     return res.status(200).json({ ok: true, skipped: 'no_valid_email' });
+  }
+  // Test markers (same set as /api/track) must not write rows into the draw table.
+  if (email === 'diagnostics-test@ksa.ee' || /^test\+|\+test@|@example\.(com|ee)$|smoke[-_]?test/i.test(email)) {
+    return res.status(200).json({ ok: true, skipped: 'test_or_diagnostic_event' });
   }
   if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
     // Fail soft — never block the user's result on a missing env var.

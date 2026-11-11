@@ -568,7 +568,7 @@ function buildInstallmentGuideEmail(name) {
 const EMAIL = {
   ET: {
     greeting: 'Tere!',
-    introGood: 'Tegid meie Flow3 kiirtesti ja sinu vastuste põhjal võiks Flow3 laserprotseduur sulle sobida. Kindla vastuse annab Flow3 silmauuring: 60 minutit optometristi ja silmaarsti juures (sh sarvkesta ja silmapõhja mõõtmised) ning kirjalik hinnang. Kui teed Flow3 või Flow Signature Line\'i protseduuri 60 päeva jooksul, arvestame selle hinnast maha uuringu täishinna 149 €. Uuring ei kohusta sind protseduuriks.',
+    introGood: 'Tegid meie Flow3 kiirtesti ja sinu vastuste põhjal võiks Flow3 laserprotseduur sulle sobida. Kindla vastuse annab Flow3 silmauuring: 60 minutit optometristi ja silmaarsti juures (sh sarvkesta ja silmapõhja mõõtmised). Kui teed Flow3 või Flow Signature Line\'i protseduuri 60 päeva jooksul, arvestame selle hinnast maha uuringu täishinna 149 €. Uuring ei kohusta sind protseduuriks.',
     introConsult: 'Tegid meie Flow3 kiirtesti. Sinu vastuste põhjal sobib sulle nägemisuuring Audit — optometrist ja arst teevad põhjalikud uuringud ja saadavad kirjaliku raporti.',
     cta: 'Broneeri aeg — maksa veebis 39 €',
     ctaUrl: 'https://booking.ksa.ee/?lang=et&service=flow',
@@ -582,7 +582,7 @@ const EMAIL = {
   },
   EN: {
     greeting: 'Hello!',
-    introGood: 'You completed our Flow3 quick test, and based on your answers the Flow3 laser procedure could suit you. The Flow3 eye exam gives the definite answer: 60 minutes with an optometrist and an eye doctor (including corneal and retinal measurements) and a written assessment. If you have Flow3 or Flow Signature Line within 60 days, we deduct the full exam price of 149 € from the procedure price. The exam does not commit you to the procedure.',
+    introGood: 'You completed our Flow3 quick test, and based on your answers the Flow3 laser procedure could suit you. The Flow3 eye exam gives the definite answer: 60 minutes with an optometrist and an eye doctor (including corneal and retinal measurements). If you have Flow3 or Flow Signature Line within 60 days, we deduct the full exam price of 149 € from the procedure price. The exam does not commit you to the procedure.',
     introConsult: 'You completed our Flow3 quick test. Based on your answers, we recommend a Vision Audit exam — our optometrist and doctor will do a thorough assessment and send you a written report.',
     cta: 'Book your appointment — pay online €39',
     ctaUrl: 'https://booking.ksa.ee/?lang=en&service=flow',
@@ -596,7 +596,7 @@ const EMAIL = {
   },
   RU: {
     greeting: 'Здравствуйте!',
-    introGood: 'Вы прошли наш экспресс-тест Flow3, и по вашим ответам лазерная процедура Flow3 может вам подойти. Точный ответ даст обследование Flow3: 60 минут у оптометриста и глазного врача (в том числе измерения роговицы и глазного дна) и письменное заключение. Если вы сделаете процедуру Flow3 или Flow Signature Line в течение 60 дней, мы вычтем из ее цены полную стоимость обследования — 149 €. Обследование ни к чему вас не обязывает.',
+    introGood: 'Вы прошли наш экспресс-тест Flow3, и по вашим ответам лазерная процедура Flow3 может вам подойти. Точный ответ даст обследование Flow3: 60 минут у оптометриста и глазного врача (в том числе измерения роговицы и глазного дна). Если вы сделаете процедуру Flow3 или Flow Signature Line в течение 60 дней, мы вычтем из ее цены полную стоимость обследования — 149 €. Обследование ни к чему вас не обязывает.',
     introConsult: 'Вы прошли наш экспресс-тест Flow3. По вашим ответам вам подойдёт обследование Audit — оптометрист и врач проведут детальную диагностику и составят письменное заключение.',
     cta: 'Записаться на приём — онлайн-оплата 39 €',
     ctaUrl: 'https://booking.ksa.ee/?lang=ru&service=flow',
